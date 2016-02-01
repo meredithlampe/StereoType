@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>D3 World Map</title>
+    <style>
+        .neighborhoodOutline {
+            stroke: navy;
+            stroke-width: 0.5px;
+            fill: gray;
+        }
+
+        .neighborhoodInnerPath {
+            stroke-width: 3 px;
+            fill: none;
+        }
+
+
+    </style>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://d3js.org/topojson.v0.min.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var width = 900;
+    var height = 600;
+    var rotate = [122, 0, 0];
+    var center = [0, 47.3097];
+    var scale  = 150000;
+    var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
+
+
+    var projection = d3.geo.mercator()
+            .rotate(rotate)
+            .scale(scale)
+            .translate(offset)
+            .precision(.5);
+
+    var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height * 2);
+
+    var path = d3.geo.path()
+            .projection(projection);
+
+    var neighborhoodGroup = svg.append("g")
+            .attr('id', 'neighborhoodGroup');
+
+    /*parses json, call back function selects all paths (none exist yet)
+            and joins data (all neighborhoods) with each path. since there are no
+            paths, all data points are waiting in 'update.enter'. calling
+            'enter()' gives us these points, and appends a path for each of them,
+            attributing a path and id to each.*/
+
+    //maybe don't need this
+    var topoGeometries;
+
+    d3.json("json/neighborhoods.json", function(error, topology) {
+
+        topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
+                .geometries;
+
+        neighborhoodGroup.selectAll("path")
+                .data(topoGeometries)
+                .enter()
+                .append("path")
+                .attr("d", path)
+                .attr("class", "neighborhoodOutline")
+                .attr("id", function(d) {
+                        return "n_" + d.id
+
+                });
+
+        neighborhoodGroup.selectAll(".neighborhoodInnerPath")
+                .data(topoGeometries)
+                .enter()
+                .append("path")
+                .attr("neighborhoodBounds", path)
+                .attr("class", "neighborhoodInnerPath")
+                .attr("stroke", function(d) {
+                    var letters = '0123456789ABCDEF'.split('');
+                    var color = '#';
+                    for (var i = 0; i < 6; i++ ) {
+                        color += letters[Math.floor(Math.random() * 16)];
+                    }
+                    return color;
+                })
+                .attr("d", function(d) {
+                    var neighborhoodBoundsString = this.getAttribute("neighborhoodBounds");
+                    var pathCoords = neighborhoodBoundsString.split('L');
+                    var firstPath = pathCoords[0];
+                    for (var i = 1; i <= 2; i++) {
+                        firstPath += "L " + pathCoords[i];
+                    }
+                    return firstPath;
+                });
+
+    });
+
+
+</script>
+</body>
+</html>
