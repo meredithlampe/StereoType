@@ -8,6 +8,7 @@
             stroke: navy;
             stroke-width: 0.5px;
             fill: gray;
+
         }
 
         .neighborhoodInnerPath {
@@ -18,7 +19,9 @@
 
     </style>
     <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="http://d3js.org/topojson.v0.min.js"></script>
+    <script src="https://d3js.org/topojson.v0.min.js"></script>
+    <script src="http://www.d3plus.org/js/d3.js"></script>
+    <script src="http://www.d3plus.org/js/d3plus.js"></script>
 </head>
 <body>
 <script type="text/javascript">
@@ -68,8 +71,16 @@
                 .attr("class", "neighborhoodOutline")
                 .attr("id", function(d) {
                         return "n_" + d.id
-
                 });
+//                .attr("fill", function() {
+//                    var letters = '0123456789ABCDEF'.split('');
+//                    var color = '#';
+//                    for (var i = 0; i < 6; i++ ) {
+//                        color += letters[Math.floor(Math.random() * 16)];
+//                    }
+//                    return color;
+//                });
+
 
         neighborhoodGroup.selectAll(".neighborhoodInnerPath")
                 .data(topoGeometries)
@@ -77,23 +88,53 @@
                 .append("path")
                 .attr("neighborhoodBounds", path)
                 .attr("class", "neighborhoodInnerPath")
-                .attr("stroke", function(d) {
-                    var letters = '0123456789ABCDEF'.split('');
-                    var color = '#';
-                    for (var i = 0; i < 6; i++ ) {
-                        color += letters[Math.floor(Math.random() * 16)];
-                    }
-                    return color;
+                .attr("id", function(d) {
+                    return "inner_" + d.id;
                 })
                 .attr("d", function(d) {
                     var neighborhoodBoundsString = this.getAttribute("neighborhoodBounds");
-                    var pathCoords = neighborhoodBoundsString.split('L');
-                    var firstPath = pathCoords[0];
-                    for (var i = 1; i <= 2; i++) {
-                        firstPath += "L " + pathCoords[i];
+
+                    //remove 'M' at beginning of path and find all subsequent coordinates by
+                    //splitting on 'L'
+                    var pathCoords = neighborhoodBoundsString.substring(1).split('L');
+                    var pathCoords2d = [];
+
+                    //transform pathCoords array into array of 2-d arrays
+                    for (var i = 0; i < pathCoords.length / 2; i++) {
+                        var bothCoords = pathCoords[i].split(',');
+                        pathCoords2d[i] = [Math.round(parseFloat(bothCoords[0])), Math.round(parseFloat(bothCoords[1]))];
+
                     }
-                    return firstPath;
+
+                    //find largest rectangle in polygon
+                    if (pathCoords2d.length > 2) {
+                        var rectangle = d3plus.geom.largestRect(pathCoords2d, {angle: [0, 90, 180, 270], nTries: 100});
+                        svg.append("rect")
+                                .attr("width", rectangle[0].width)
+                                .attr("height", rectangle[0].height)
+                                .attr("x", rectangle[0].cx - (rectangle[0].width / 2))
+                                .attr("y", rectangle[0].cy - (rectangle[0].height / 2))
+                                .attr("transform", "rotate(" + rectangle[0].angle + "," + rectangle[0].cx + "," + rectangle[0].cy + ")")
+                                .attr("id", function() {
+                                    return "rect_" + d.id;
+                                })
+                                .attr("fill", function() {
+                                    var letters = '0123456789ABCDEF'.split('');
+                                    var color = '#';
+                                    for (var i = 0; i < 6; i++ ) {
+                                        color += letters[Math.floor(Math.random() * 16)];
+                                    }
+                                    return color;
+                                });
+                    }
+
+                    return null;
                 });
+
+
+
+
+
 
     });
 
