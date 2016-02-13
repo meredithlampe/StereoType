@@ -16,6 +16,11 @@
             fill: none;
         }
 
+        .topPoly {
+            stroke: white;
+            fill: #660000;
+        }
+
 
     </style>
     <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -108,8 +113,10 @@
 
                     //find largest rectangle in polygon
                     if (pathCoords2d.length > 2) {
+
+                        //generate largest inscribed rectangle for overall polygon
                         var rectangle = d3plus.geom.largestRect(pathCoords2d, {
-                            angle: [0, 90, 180, 270], nTries: 1, tolerance: 0.02
+                            angle: [0, 90, 270], nTries: 50, tolerance: 0.02
                         });
                         svg.append("rect")
                                 .attr("width", rectangle[0].width)
@@ -120,63 +127,47 @@
                                 .attr("id", function() {
                                     return "rect_" + d.id;
                                 })
-                                .attr("fill", function() {
-                                    var letters = '0123456789ABCDEF'.split('');
-                                    var color = '#';
-                                    for (var i = 0; i < 6; i++ ) {
-                                        color += letters[Math.floor(Math.random() * 16)];
-                                    }
-                                    return color;
-                                });
+                                .attr("fill", "#9999FF")
+                                .attr("opacity", "0.5");
 
-                        //append angle as text on to rectangle
-                        svg.append("text").attr("x", rectangle[0].cx)
-                                .attr("y", rectangle[0].cy)
-                                .text(function(d) { return rectangle[0].angle; });
+//                        //append angle as text on to rectangle
+//                        svg.append("text").attr("x", rectangle[0].cx)
+//                                .attr("y", rectangle[0].cy)
+//                                .text(function(d) { return rectangle[0].angle; });
 
                         //find second rectangle--one that fits in remaining space
-                        var rectTopYCoord = rectangle[0].cy + (rectangle[0].height / 2);
-                        var rectRightXCoord = rectangle[0].cx + (rectangle[0].width / 2);
-                        var rectLowYCoord = rectangle[0].cy - (rectangle[0].height / 2);
-                        var rectLeftXCoord = rectangle[0].cx - (rectangle[0].width / 2);
+                        //longer side -> width
+                        //shorter side -> height
+                        var rectTopYCoord;
+                        var rectRightXCoord;
+                        var rectLowYCoord;
+                        var rectLeftXCoord;
 
+                        //find four corners of rectangle
+                        if (rectangle[0].angle == 90 || rectangle[0].angle == 270) {
+                            rectLowYCoord = rectangle[0].cy + (rectangle[0].width / 2);
+                            rectRightXCoord = rectangle[0].cx + (rectangle[0].height / 2);
+                            rectTopYCoord = rectangle[0].cy - (rectangle[0].width / 2);
+                            rectLeftXCoord = rectangle[0].cx - (rectangle[0].height / 2);
+                        } else {
+                            rectLowYCoord = rectangle[0].cy + (rectangle[0].height / 2);
+                            rectRightXCoord = rectangle[0].cx + (rectangle[0].width / 2);
+                            rectTopYCoord = rectangle[0].cy - (rectangle[0].height / 2);
+                            rectLeftXCoord = rectangle[0].cx - (rectangle[0].width / 2);
+                        };
 
-                        console.log("rectangle.cy: " + rectangle[0].cy);
-                        console.log("height: " + rectangle[0].height);
-                        console.log("rectTopY: " + rectTopYCoord);
+                        //mark corners of rectangle with circles -- for debugging
+                        markFourCorners(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord);
 
-                        svg.append("circle").attr("cy", rectTopYCoord)
-                                .attr("cx", rectRightXCoord)
-                                .attr("r", 2);
+                        var topPoly = generateTopPolygon(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
+                                                  pathCoords2d);
 
-                        svg.append("circle").attr("cy", rectTopYCoord)
-                                .attr("cx", rectLeftXCoord)
-                                .attr("r", 2);
+                        if (d.id == 17) {
+                            debugger;
+                        }
 
-                        svg.append("circle").attr("cy", rectLowYCoord)
-                                .attr("cx", rectRightXCoord)
-                                .attr("r", 2);
-
-                        svg.append("circle").attr("cy", rectLowYCoord)
-                                .attr("cx", rectLeftXCoord)
-                                .attr("r", 2);
-
-                        //find center of rectangle, save height / 2 and width / 2
-
+//                        var topRectangle = generateTopRectangle(topPoly, d);
                     }
-
-
-
-                    //compare corners of rectangle with coords of poly--for each corner,
-                    // compare:
-                    // if (the y coordinate is higher (less) than top corner y coord?
-                    //  save point as part of rectangle 1.
-                    //else if (x coordinate is greater than right corner x coord?
-                        //save point as part of rectangle 2.
-                    //else if (y coordinate is lower (more) than bottom corner y coord)
-                        //save point as part of rectangle 3.
-                    //else if (x coordinate is less than left corner x cord)
-                        //save point as part of rectangle 4.
 
 
 
@@ -189,6 +180,200 @@
 
 
     });
+
+    function markFourCorners(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord) {
+        svg.append("circle").attr("cy", rectTopYCoord)
+                .attr("cx", rectRightXCoord)
+                .attr("r", 2);
+
+        svg.append("circle").attr("cy", rectTopYCoord)
+                .attr("cx", rectLeftXCoord)
+                .attr("r", 2);
+
+        svg.append("circle").attr("cy", rectLowYCoord)
+                .attr("cx", rectRightXCoord)
+                .attr("r", 2);
+
+        svg.append("circle").attr("cy", rectLowYCoord)
+                .attr("cx", rectLeftXCoord)
+                .attr("r", 2);
+    }
+
+    function generateTopPolygon(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord, pathCoords2d) {
+
+        //compare corners of rectangle with coords of poly--for each corner,
+        // compare:
+
+        var topRect;
+        var topPoly = [];
+
+        topPoly[0] = [rectRightXCoord, rectTopYCoord];
+        topPoly[1] = [rectLeftXCoord, rectTopYCoord];
+
+        //determine which side to start drawing polygon from:
+        //we draw first line of top polygon fom right to left,
+        //must start drawing remainder of polygon from left side.
+
+        var countFromStart = 0;
+        var countFromEnd = pathCoords2d.length - 1;
+
+        //assume that first point of outer poly is not in top poly
+        while (pathCoords2d[countFromStart][1] >= rectTopYCoord) {
+            countFromStart++;
+        }
+        while (pathCoords2d[countFromEnd][1] >= rectTopYCoord) {
+            countFromEnd--;
+        }
+
+        if (countFromStart == 0 || countFromEnd == 0) { //first point of poly IS in topPoly
+            countFromStart = 0;
+            while (countFromStart < pathCoords2d.length &&
+            pathCoords2d[countFromStart][1] < rectTopYCoord) {
+                countFromStart++;
+            }
+            //now count from start represents first coord lower than
+            //top of rectangle
+            countFromEnd == pathCoords2d.length - 1;
+            while (countFromEnd > 0 &&
+            pathCoords2d[countFromEnd][1] < rectTopYCoord) {
+                countFromEnd--;
+            }
+
+
+            //figure out which point is closer
+            //first check distance from our point to point found by
+            //moving from the start
+
+            var distanceToPStart = Math.sqrt(
+                    Math.pow(pathCoords2d[countFromStart][0] - rectLeftXCoord, 2) +
+                    Math.pow(pathCoords2d[countFromStart][1] - rectTopYCoord, 2)
+            );
+
+            //check distance from our point to point found by
+            //moving from the end
+            var distanceToPEnd = Math.sqrt(
+                    Math.pow(pathCoords2d[countFromEnd][0] - rectLeftXCoord, 2) +
+                    Math.pow(pathCoords2d[countFromEnd][1] - rectTopYCoord, 2)
+            );
+
+            var topPolyNextIndex = 2;
+
+            if (distanceToPStart < distanceToPEnd) {
+
+                //loop from count from start to start of outer poly path
+                for (var i = countFromStart; i >= 0; i--) {
+                    topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                    topPolyNextIndex++;
+                }
+
+                //loop from end of poly path to count from end
+                for (var i = pathCoords2d.length - 1; i >= countFromEnd; i--) {
+                    topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                    topPolyNextIndex++;
+                }
+            } else { //distanceToPEnd <= distanceToPStart
+                //loop from count from end to start of outer poly path
+                for (var i = countFromEnd; i < pathCoords2d.length; i++) {
+                    topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                    topPolyNextIndex++;
+                }
+
+                //loop from beginning of poly path to count from start
+                for (var i = 0; i >= countFromStart; i++) {
+                    topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                    topPolyNextIndex++;
+                }
+            }
+
+
+        } else { //first point of poly is not in topPoly
+
+
+            //figure out which point is closer
+            //first check distance from our point to point found by
+            //moving from the start
+
+            var distanceToPStart = Math.sqrt(
+                    Math.pow(pathCoords2d[countFromStart][0] - rectLeftXCoord, 2) +
+                    Math.pow(pathCoords2d[countFromStart][1] - rectTopYCoord, 2)
+            );
+
+            //check distance from our point to point found by
+            //moving from the end
+            var distanceToPEnd = Math.sqrt(
+                    Math.pow(pathCoords2d[countFromEnd][0] - rectLeftXCoord, 2) +
+                    Math.pow(pathCoords2d[countFromEnd][1] - rectTopYCoord, 2)
+            );
+
+            var topPolyNextIndex = 2;
+
+            if (distanceToPStart < distanceToPEnd) {
+                //start at the start
+                //TODO change loop bound to countFromEnd
+                for (var i = countFromStart; i < pathCoords2d.length; i++) {
+                    if (pathCoords2d[i][1] < rectTopYCoord) {
+                        topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                        topPolyNextIndex++;
+                    }
+                }
+            } else {
+                //start at the end
+                for (var i = countFromEnd; i >= 0; i--) {
+                    if (pathCoords2d[i][1] < rectTopYCoord) {
+                        topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                        topPolyNextIndex++;
+                    }
+                }
+            }
+        }
+        //generate path for topPoly
+        var pathString = "M" + topPoly[0][0] + "," + topPoly[0][1];
+        for (var j = 1; j < topPoly.length; j++) {
+            pathString+= "L" + topPoly[j][0] + ","+ topPoly[j][1];
+        }
+        svg.append("path").attr("d", pathString)
+                .attr("class", "topPoly");
+
+        return topPoly;
+    }
+
+    function generateTopRectangle(topPoly, d) {
+        //generate top rectangle
+        if (topPoly.length > 2) {
+            var topRectangle = d3plus.geom.largestRect(topPoly, {
+                angle: [0, 90, 270], nTries: 50, tolerance: 0.02
+            });
+
+//                            neighborhoodGroup.selectAll("path")
+//                                    .data(topoGeometries)
+//                                    .enter()
+//                                    .append("path")
+//                                    .attr("d", path)
+//                                    .attr("class", "neighborhoodOutline")
+//                                    .attr("id", function(d) {
+//                                        return "n_" + d.id
+//                                    });
+
+            svg.append("rect")
+                    .attr("width", topRectangle[0].width)
+                    .attr("height", topRectangle[0].height)
+                    .attr("x", topRectangle[0].cx - (topRectangle[0].width / 2))
+                    .attr("y", topRectangle[0].cy - (topRectangle[0].height / 2))
+                    .attr("transform", "rotate(" + topRectangle[0].angle + "," + topRectangle[0].cx + "," + topRectangle[0].cy + ")")
+                    .attr("id", function() {
+                        return "topRect_" + d.id;
+                    })
+                    .attr("fill", function() {
+                        var letters = '0123456789ABCDEF'.split('');
+                        var color = '#';
+                        for (var i = 0; i < 6; i++ ) {
+                            color += letters[Math.floor(Math.random() * 16)];
+                        }
+                        return color;
+                    });
+            return topRectangle;
+        }
+    }
 
 
 </script>
