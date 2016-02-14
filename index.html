@@ -158,15 +158,17 @@
 
                         //mark corners of rectangle with circles -- for debugging
                         markFourCorners(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord);
+//
+//                        if (d.id == 38) {
+//                            debugger;
+//                        }
 
-                        var topPoly = generateTopPolygon(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
-                                                  pathCoords2d);
-
-                        if (d.id == 17) {
-                            debugger;
+                        //TODO: special case for industrial district
+                        if (d.id != 41) {
+                            var topPoly = generateTopPolygon(d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
+                                    pathCoords2d);
+//                                                    var topRectangle = generateTopRectangle(topPoly, d);
                         }
-
-//                        var topRectangle = generateTopRectangle(topPoly, d);
                     }
 
 
@@ -199,7 +201,8 @@
                 .attr("r", 2);
     }
 
-    function generateTopPolygon(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord, pathCoords2d) {
+    function generateTopPolygon(d,  rectTopYCoord,
+                                rectLowYCoord, rectLeftXCoord, rectRightXCoord, pathCoords2d) {
 
         //compare corners of rectangle with coords of poly--for each corner,
         // compare:
@@ -218,123 +221,147 @@
         var countFromEnd = pathCoords2d.length - 1;
 
         //assume that first point of outer poly is not in top poly
-        while (pathCoords2d[countFromStart][1] >= rectTopYCoord) {
+        while (countFromStart < pathCoords2d.length - 1 && pathCoords2d[countFromStart + 1][1] >= rectTopYCoord) {
             countFromStart++;
         }
-        while (pathCoords2d[countFromEnd][1] >= rectTopYCoord) {
+        while (countFromEnd > 0 && pathCoords2d[countFromEnd - 1][1] >= rectTopYCoord) {
             countFromEnd--;
         }
 
-        if (countFromStart == 0 || countFromEnd == 0) { //first point of poly IS in topPoly
-            countFromStart = 0;
-            while (countFromStart < pathCoords2d.length &&
-            pathCoords2d[countFromStart][1] < rectTopYCoord) {
-                countFromStart++;
-            }
-            //now count from start represents first coord lower than
-            //top of rectangle
-            countFromEnd == pathCoords2d.length - 1;
-            while (countFromEnd > 0 &&
-            pathCoords2d[countFromEnd][1] < rectTopYCoord) {
-                countFromEnd--;
-            }
+        if (Math.abs(countFromStart - countFromEnd) > 1) { //can't make polygon out of two points
 
 
-            //figure out which point is closer
-            //first check distance from our point to point found by
-            //moving from the start
+            if (countFromStart == 0 || countFromEnd == pathCoords2d.length - 1) { //first point of poly IS in topPoly
 
-            var distanceToPStart = Math.sqrt(
-                    Math.pow(pathCoords2d[countFromStart][0] - rectLeftXCoord, 2) +
-                    Math.pow(pathCoords2d[countFromStart][1] - rectTopYCoord, 2)
-            );
-
-            //check distance from our point to point found by
-            //moving from the end
-            var distanceToPEnd = Math.sqrt(
-                    Math.pow(pathCoords2d[countFromEnd][0] - rectLeftXCoord, 2) +
-                    Math.pow(pathCoords2d[countFromEnd][1] - rectTopYCoord, 2)
-            );
-
-            var topPolyNextIndex = 2;
-
-            if (distanceToPStart < distanceToPEnd) {
-
-                //loop from count from start to start of outer poly path
-                for (var i = countFromStart; i >= 0; i--) {
-                    topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
-                    topPolyNextIndex++;
+                countFromStart = 0;
+                while (countFromStart < pathCoords2d.length - 1 &&
+                pathCoords2d[countFromStart + 1][1] < rectTopYCoord) {
+                    countFromStart++;
                 }
 
-                //loop from end of poly path to count from end
-                for (var i = pathCoords2d.length - 1; i >= countFromEnd; i--) {
-                    topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
-                    topPolyNextIndex++;
+//                //generate first intersection point
+//                generateIntersectionPointFromStart(pathCoords2d, countFromStart, rectTopYCoord, d);
+//                generateIntersectionPointFromEnd(pathCoords2d, countFromEnd, rectTopYCoord, d);
+//
+//                //generate second intersection point
+//                generateIntersectionPointFromEnd(pathCoords2d, countFromEnd, rectTopYCoord, d, -1);
+
+                //now count from start represents first coord lower than
+                //top of rectangle
+                countFromEnd = pathCoords2d.length - 1;
+                while (countFromEnd > 0 &&
+                pathCoords2d[countFromEnd - 1][1] < rectTopYCoord) {
+                    countFromEnd--;
                 }
-            } else { //distanceToPEnd <= distanceToPStart
-                //loop from count from end to start of outer poly path
-                for (var i = countFromEnd; i < pathCoords2d.length; i++) {
-                    topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
-                    topPolyNextIndex++;
-                }
-
-                //loop from beginning of poly path to count from start
-                for (var i = 0; i >= countFromStart; i++) {
-                    topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
-                    topPolyNextIndex++;
-                }
-            }
 
 
-        } else { //first point of poly is not in topPoly
+                //figure out which point is closer
+                //first check distance from our point to point found by
+                //moving from the start
+                if (true) {
+
+                    var distanceToPStart = Math.sqrt(
+                            Math.pow(pathCoords2d[countFromStart][0] - rectLeftXCoord, 2) +
+                            Math.pow(pathCoords2d[countFromStart][1] - rectTopYCoord, 2)
+                    );
+
+                    //check distance from our point to point found by
+                    //moving from the end
+                    var distanceToPEnd = Math.sqrt(
+                            Math.pow(pathCoords2d[countFromEnd][0] - rectLeftXCoord, 2) +
+                            Math.pow(pathCoords2d[countFromEnd][1] - rectTopYCoord, 2)
+                    );
+
+                    var topPolyNextIndex = 2;
 
 
-            //figure out which point is closer
-            //first check distance from our point to point found by
-            //moving from the start
+                    if (distanceToPStart < distanceToPEnd) {
 
-            var distanceToPStart = Math.sqrt(
-                    Math.pow(pathCoords2d[countFromStart][0] - rectLeftXCoord, 2) +
-                    Math.pow(pathCoords2d[countFromStart][1] - rectTopYCoord, 2)
-            );
+                        //loop from count from start to start of outer poly path
+                        for (var i = countFromStart; i >= 0; i--) {
+                            topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                            topPolyNextIndex++;
+                        }
 
-            //check distance from our point to point found by
-            //moving from the end
-            var distanceToPEnd = Math.sqrt(
-                    Math.pow(pathCoords2d[countFromEnd][0] - rectLeftXCoord, 2) +
-                    Math.pow(pathCoords2d[countFromEnd][1] - rectTopYCoord, 2)
-            );
+                        //loop from end of poly path to count from end
+                        for (var i = pathCoords2d.length - 1; i >= countFromEnd; i--) {
+                            topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                            topPolyNextIndex++;
+                        }
+                    } else { //distanceToPEnd <= distanceToPStart
+                        //loop from count from end to start of outer poly path
+                        for (var i = countFromEnd; i < pathCoords2d.length; i++) {
+                            topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                            topPolyNextIndex++;
+                        }
 
-            var topPolyNextIndex = 2;
-
-            if (distanceToPStart < distanceToPEnd) {
-                //start at the start
-                //TODO change loop bound to countFromEnd
-                for (var i = countFromStart; i < pathCoords2d.length; i++) {
-                    if (pathCoords2d[i][1] < rectTopYCoord) {
-                        topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
-                        topPolyNextIndex++;
+                        //loop from beginning of poly path to count from start
+                        for (var i = 0; i <= countFromStart; i++) {
+                            topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                            topPolyNextIndex++;
+                        }
                     }
                 }
-            } else {
-                //start at the end
-                for (var i = countFromEnd; i >= 0; i--) {
-                    if (pathCoords2d[i][1] < rectTopYCoord) {
-                        topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
-                        topPolyNextIndex++;
+
+
+            } else { //first point of poly is not in topPoly
+
+//                generateIntersectionPointFromStart(pathCoords2d, countFromStart, rectTopYCoord, d);
+//                generateIntersectionPointFromStart(pathCoords2d, countFromEnd, rectTopYCoord, d);
+
+
+
+                //figure out which point is closer
+                //first check distance from our point to point found by
+                //moving from the start
+                if (true) {
+
+                    var distanceToPStart = Math.sqrt(
+                            Math.pow(pathCoords2d[countFromStart][0] - rectLeftXCoord, 2) +
+                            Math.pow(pathCoords2d[countFromStart][1] - rectTopYCoord, 2)
+                    );
+
+                    //check distance from our point to point found by
+                    //moving from the end
+                    var distanceToPEnd = Math.sqrt(
+                            Math.pow(pathCoords2d[countFromEnd][0] - rectLeftXCoord, 2) +
+                            Math.pow(pathCoords2d[countFromEnd][1] - rectTopYCoord, 2)
+                    );
+
+                    var topPolyNextIndex = 2;
+
+                    if (distanceToPStart < distanceToPEnd) {
+                        //start at the start
+                        //TODO change loop bound to countFromEnd
+                        for (var i = countFromStart; i < pathCoords2d.length; i++) {
+                            if (pathCoords2d[i][1] < rectTopYCoord) {
+                                topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                                topPolyNextIndex++;
+                            }
+                        }
+                    } else {
+                        //start at the end
+                        for (var i = countFromEnd; i >= 0; i--) {
+                            if (pathCoords2d[i][1] < rectTopYCoord) {
+                                topPoly[topPolyNextIndex] = [pathCoords2d[i][0], pathCoords2d[i][1]];
+                                topPolyNextIndex++;
+                            }
+                        }
                     }
                 }
             }
-        }
-        //generate path for topPoly
-        var pathString = "M" + topPoly[0][0] + "," + topPoly[0][1];
-        for (var j = 1; j < topPoly.length; j++) {
-            pathString+= "L" + topPoly[j][0] + ","+ topPoly[j][1];
-        }
-        svg.append("path").attr("d", pathString)
-                .attr("class", "topPoly");
+            //generate path for topPoly
+            var pathString = "M" + topPoly[0][0] + "," + topPoly[0][1];
+            for (var j = 1; j < topPoly.length; j++) {
+                pathString += "L" + topPoly[j][0] + "," + topPoly[j][1];
+            }
+            svg.append("path").attr("d", pathString)
+                    .attr("class", "topPoly")
+                    .attr("id", "topPoly_" + d.id);
 
-        return topPoly;
+            return topPoly;
+        }
+        return null;
     }
 
     function generateTopRectangle(topPoly, d) {
@@ -373,6 +400,44 @@
                     });
             return topRectangle;
         }
+    }
+
+    function generateIntersectionPointFromStart(pathCoords2d, countFrom, rectTopYCoord, d) {
+        var startPoint = [pathCoords2d[countFrom][0], pathCoords2d[countFrom][1]];
+        var endPoint = [pathCoords2d[countFrom + 1][0], pathCoords2d[countFrom + 1][1]];
+
+        var slope = Math.sqrt(Math.pow(startPoint[0] - endPoint[0], 2) + Math.pow(startPoint[1] - endPoint[1], 2));
+        var newX = (Math.abs(endPoint[1] - startPoint[1]) / slope) + startPoint[0];
+
+        svg.append("path")
+                .attr("d", "M" + startPoint[0] + "," + startPoint[1] + "L" + endPoint[0] + "," + endPoint[1])
+                .attr("stroke", "red");
+
+        svg.append("circle").attr("cy", rectTopYCoord)
+                .attr("cx", newX)
+                .attr("r", 2)
+                .attr("fill", "red")
+                .attr("id", "startIntersection_" + d.id);
+
+    }
+
+    function generateIntersectionPointFromEnd(pathCoords2d, countFrom, rectTopYCoord, d) {
+        var startPoint = [pathCoords2d[countFrom][0], pathCoords2d[countFrom][1]];
+        var endPoint = [pathCoords2d[countFrom - 1][0], pathCoords2d[countFrom - 1][1]];
+
+        var slope = Math.sqrt(Math.pow(startPoint[0] - endPoint[0], 2) + Math.pow(startPoint[1] - endPoint[1], 2));
+        var newX = (Math.abs(endPoint[1] - startPoint[1]) / slope) + startPoint[0];
+
+        svg.append("path")
+                .attr("d", "M" + startPoint[0] + "," + startPoint[1] + "L" + endPoint[0] + "," + endPoint[1])
+                .attr("stroke", "red");
+
+        svg.append("circle").attr("cy", rectTopYCoord)
+                .attr("cx", newX)
+                .attr("r", 2)
+                .attr("fill", "red")
+                .attr("id", "endIntersection_" + d.id);
+
     }
 
 
