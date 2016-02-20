@@ -1,0 +1,26 @@
+.neighborhoodOutline {
+    stroke: navy;
+    stroke-width: 0.5px;
+    fill: gray;
+
+}
+
+.neighborhoodInnerPath {
+    stroke-width: 3 px;
+    fill: none;
+}
+
+.topPolyRed {
+    stroke: white;
+    fill: #660000;
+}
+
+.topPolyBlue {
+    stroke: white;
+    fill: #0f3D66;
+}
+
+.rightPolyGreen {
+    stroke: #004200;
+    fill: #84ce6b;
+}
