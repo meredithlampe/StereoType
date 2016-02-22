@@ -11,8 +11,8 @@
 }
 
 .topPolyRed {
-    stroke: white;
-    fill: #660000;
+    stroke: #530605;
+    fill: #c45a5e;
 }
 
 .topPolyBlue {
@@ -23,4 +23,14 @@
 .rightPolyGreen {
     stroke: #004200;
     fill: #84ce6b;
+}
+
+.bottomPolyBlue {
+    stroke: #00006a;
+    fill: #9aa3f3;
+}
+
+.leftPoly {
+    stroke: #350452;
+    fill: #b376c4;
 }

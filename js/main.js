@@ -10,7 +10,9 @@ var scale  = 150000;
 var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
 
 var topPolyBounds = {};
-
+var rightPolyBounds = {};
+var bottomPolyBounds = {};
+var leftPolyBounds = {};
 
 var projection = d3.geo.mercator()
     .rotate(rotate)
@@ -123,19 +125,35 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                 //TODO: special case for industrial district
                 if (d.id != 41) {
 
-                    var topPoly = generateTopPolygon(d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
-                        pathCoords2d, neighborPolygon);
-//                                                    var topRectangle = generateTopRectangle(topPoly, d);
-
-                    if (d.id == 65) {
+                    if (d.id == 73) {
                         //display circles along coordinates of outer polygon in increasing size to show
                         //direction of provided points in path coordinates array
-//                            displayClockwiseIndicator(pathCoords2d);
+//                      displayClockwiseIndicator(pathCoords2d);
                         debugger;
+                    }
+
+                    var topPoly = generateTopPolygon(d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
+                        pathCoords2d, neighborPolygon);
+                    if (topPoly != null) {
+                        //var topRectangle = generateTopRectangle(topPoly, d);
                     }
 
                     var rightPoly = generateRightPolygon(topPoly, d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
                         pathCoords2d, neighborPolygon);
+                    if (rightPoly != null) {
+                        //var rightRectangle = generateInscribedRectangle(rightPoly, d);
+                    }
+
+
+                    var bottomPoly = generateBottomPolygon(rightPoly, d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
+                        pathCoords2d, neighborPolygon)
+                    if (bottomPoly != null) {
+                        var bottomRectangle = generateInscribedRectangle(bottomPoly, d);
+                    }
+
+                    var leftPoly = generateLeftPolygon(bottomPoly, d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
+                        pathCoords2d, neighborPolygon);
+
                 }
             }
 
@@ -179,10 +197,10 @@ function generateTopPolygon(d,  rectTopYCoord,
     var countFromEnd = pathCoords2d.length - 1;
 
     //assume that first point of outer poly is not in top poly
-    while (countFromStart < pathCoords2d.length - 1 && pathCoords2d[countFromStart + 1][1] >= rectTopYCoord) {
+    while (countFromStart < pathCoords2d.length - 1 && pathCoords2d[countFromStart][1] >= rectTopYCoord) {
         countFromStart++;
     }
-    while (countFromEnd > 0 && pathCoords2d[countFromEnd - 1][1] >= rectTopYCoord) {
+    while (countFromEnd > 0 && pathCoords2d[countFromEnd][1] >= rectTopYCoord) {
         countFromEnd--;
     }
 
@@ -258,6 +276,26 @@ function generateTopPolygon(d,  rectTopYCoord,
 
         var pathString = arrayToPath(topPoly);
 
+        //if (topPolyBounds.right == -1) {
+        //    topPolyBounds.right = pathCoords2d.length - 1;
+        //}
+
+        //if (topPolyBounds.left == pathCoords2d.length) {
+        //    topPolyBounds.left = 0;
+        //}
+
+        var countFromStart = svg.append("circle")
+            .attr("cy", pathCoords2d[countFromStart][1])
+            .attr("cx", pathCoords2d[countFromStart][0])
+            .attr("r", 2)
+            .attr("fill", "green");
+
+        var countFromEnd = svg.append("circle")
+            .attr("cy", pathCoords2d[countFromEnd][1])
+            .attr("cx", pathCoords2d[countFromEnd][0])
+            .attr("r", 2)
+            .attr("fill", "red");
+
         var topPolyLeftBound = svg.append("circle")
             .attr("cy", pathCoords2d[topPolyBounds.left][1])
             .attr("cx", pathCoords2d[topPolyBounds.left][0])
@@ -319,40 +357,12 @@ function generateRightPolygon(topPoly, d, rectTopYCoord, rectLowYCoord, rectLeft
                               pathCoords2d, neighborPolygon) {
 
     //TODO: handle this edge case
-    if (topPoly != null) {
-
 
         var rightPoly = [];
 
-
-        //
-        //        var countFromStart = 0;
-        //        var countFromEnd = pathCoords2d.length - 1;
-        //
-        //        //assume that first point of outer poly is not in right poly
-        //        while (countFromStart < pathCoords2d.length - 1 && pathCoords2d[countFromStart + 1][0] <= rectRightXCoordXCoord) {
-        //            countFromStart++;
-        //        }
-        //        while (countFromEnd > 0 && pathCoords2d[countFromEnd - 1][0] <= rectRightXCoord) {
-        //            countFromEnd--;
-        //
-        rightPoly[0] = [rectRightXCoord, rectLowYCoord]
+        rightPoly[0] = [rectRightXCoord, rectLowYCoord];
         rightPoly[1] = [rectRightXCoord, rectTopYCoord];
-        //rightPoly[2] = [topPoly[topPoly.length - 1][0], topPoly[topPoly.length - 1] [1]];
 
-        //                countFromStart = 0;
-        //
-        //                while (countFromStart < pathCoords2d.length - 1 &&
-        //                pathCoords2d[countFromStart + 1][0] < rectRightXCoord) {
-        //                    countFromStart++;
-        //                }
-        //
-        //                countFromEnd = pathCoords2d.length - 1;
-        //
-        //                while (countFromEnd > 0 &&
-        //                pathCoords2d[countFromEnd - 1][0] < rectRightXCoord) {
-        //                    countFromEnd--;
-        //                }
         var rightPolyNextIndex = 2;
 
         //loop from end of topPoly path to start of outer poly path
@@ -361,7 +371,14 @@ function generateRightPolygon(topPoly, d, rectTopYCoord, rectLowYCoord, rectLeft
         //beginning of topPoly, aka, topPoly lists all coords of pathCoords with index
         //offset 2, so accounting for that here
 
-        var index = topPoly.length - 3;
+        var index = topPolyBounds.right;
+
+        //loop to point at which we go beyond right side of rectangle
+        while (index < pathCoords2d.length && pathCoords2d[index][0] <= rectRightXCoord) {
+            index++;
+        }
+
+        rightPolyBounds.top = index;
 
         while (index < pathCoords2d.length && pathCoords2d[index][0] > rectRightXCoord) {
             //        for (var i = topPoly.length - 3; i < pathCoords2d.length; i++) {
@@ -381,6 +398,12 @@ function generateRightPolygon(topPoly, d, rectTopYCoord, rectLowYCoord, rectLeft
             }
         }
 
+        rightPolyBounds.bottom = index - 1;
+
+        if (rightPolyBounds.bottom == -1) {
+            rightPolyBounds.bottom = pathCoords2d.length - 1;
+        }
+
         var pathString = arrayToPath(rightPoly);
 
         var rightPolygon = svg.append("path")
@@ -389,8 +412,128 @@ function generateRightPolygon(topPoly, d, rectTopYCoord, rectLowYCoord, rectLeft
             .attr("id", "rightPoly_" + d.id);
 
         return rightPoly;
+}
 
-    }
+//TODO: factor out redundancy with generate top, generate right, etc.
+function generateBottomPolygon(rightPoly, d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
+                               pathCoords2d, neighborPolygon) {
+        var bottomPoly = [];
+
+        bottomPoly[0] = [rectLeftXCoord, rectLowYCoord];
+        bottomPoly[1] = [rectRightXCoord, rectLowYCoord];
+
+        var bottomPolyNextIndex = 2;
+
+        var index = rightPolyBounds.bottom;
+
+        //loop to point at which we go below bottom of rectangle
+        while (index < pathCoords2d.length &&  pathCoords2d[index][1] <= rectLowYCoord) {
+            index++;
+        }
+
+        bottomPolyBounds.right = index;
+
+        //TODO: can factor this out
+        while (index < pathCoords2d.length && pathCoords2d[index][1] > rectLowYCoord) {
+            bottomPoly[bottomPolyNextIndex] = [pathCoords2d[index][0], pathCoords2d[index][1]];
+            bottomPolyNextIndex++;
+            index++;
+        }
+
+        if (index == pathCoords2d.length) { //starting point of outer poly is in bottomPoly
+            index = 0; //to continue looping
+
+            //TODO: factor this
+            while (index < pathCoords2d.length && pathCoords2d[index][1] > rectLowYCoord) {
+                bottomPoly[bottomPolyNextIndex] = [pathCoords2d[index][0], pathCoords2d[index][1]];
+                bottomPolyNextIndex++;
+                index++;
+            }
+
+        }
+
+        bottomPolyBounds.left = index - 1;
+
+        if (bottomPolyBounds.left == -1) {
+            bottomPolyBounds.left = pathCoords2d.length - 1;
+        }
+
+        var pathString = arrayToPath(bottomPoly);
+
+        var bottomPolygon = svg.append("path")
+            .attr("d", pathString)
+            .attr("class", "bottomPolyBlue")
+            .attr("id", "bottomPoly_" + d.id);
+
+        return bottomPoly;
+
+
+}
+
+function generateLeftPolygon(bottomPoly, d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
+    pathCoords2d, neighborPolygon) {
+
+        var leftPoly = [];
+
+        leftPoly[0] = [rectLeftXCoord, rectTopYCoord];
+        leftPoly[1] = [rectLeftXCoord, rectLowYCoord];
+
+        var leftPolyNextIndex = 2;
+
+        //loop from end of topPoly path to start of outer poly path
+        //looping from last index used in topPoly to end of path coords array
+        //subtracting three to account for points generated by inscribed rectangle at
+        //beginning of topPoly, aka, topPoly lists all coords of pathCoords with index
+        //offset 2, so accounting for that here
+
+        var index = bottomPolyBounds.left;
+
+        //loop to point at which we go beyond left side of rectangle
+        while (index < pathCoords2d.length && pathCoords2d[index][0] >= rectLeftXCoord) {
+            index++;
+        }
+
+        leftPolyBounds.top = index;
+
+        //loop while we haven't reached left bound of top polygon
+        while (index < pathCoords2d.length && index != topPolyBounds.left) {
+            leftPoly[leftPolyNextIndex] = [pathCoords2d[index][0], pathCoords2d[index][1]];
+            leftPolyNextIndex++;
+            index++;
+
+        }
+
+        if (index == pathCoords2d.length) { //starting point of outer poly is in rightPoly
+            index = 0; //continue looping
+
+            //loop while we haven't reached left bound of top polygon
+            while (index < pathCoords2d.length && index != topPolyBounds.left) {
+                leftPoly[leftPolyNextIndex] = [pathCoords2d[index][0], pathCoords2d[index][1]];
+                leftPolyNextIndex++;
+                index++;
+
+            }
+        }
+
+        //add last point
+        leftPoly[leftPolyNextIndex] = [pathCoords2d[index][0], pathCoords2d[index][1]];
+        index++;
+
+        leftPolyBounds.top = index - 1;
+
+        if (leftPolyBounds.top == -1) {
+            leftPolyBounds.top = pathCoords2d.length - 1;
+        }
+
+        var pathString = arrayToPath(leftPoly);
+
+        var leftPolygon = svg.append("path")
+            .attr("d", pathString)
+            .attr("class", "leftPoly")
+            .attr("id", "leftPoly_" + d.id);
+
+        return leftPoly;
+
 }
 
 function generateIntersectionPointFromStart(pathCoords2d, countFrom, rectTopYCoord, d) {
@@ -451,22 +594,25 @@ function generateNeighborhoodPoly(pathCoords2d) {
     return neighborPoly;
 }
 
-function generateInscribedRectangle(pathCoords2d, d) {
+function generateInscribedRectangle(polyCoordinates, d) {
     //generate largest inscribed rectangle for overall polygon
-    var rectangle = d3plus.geom.largestRect(pathCoords2d, {
+    var rectangle = d3plus.geom.largestRect(polyCoordinates, {
         angle: [0, 90, 270], nTries: 50, tolerance: 0.02
     });
-    svg.append("rect")
-        .attr("width", rectangle[0].width)
-        .attr("height", rectangle[0].height)
-        .attr("x", rectangle[0].cx - (rectangle[0].width / 2))
-        .attr("y", rectangle[0].cy - (rectangle[0].height / 2))
-        .attr("transform", "rotate(" + rectangle[0].angle + "," + rectangle[0].cx + "," + rectangle[0].cy + ")")
-        .attr("id", function() {
-            return "rect_" + d.id;
-        })
-        .attr("fill", "#9999FF")
-        .attr("opacity", "0.5");
+
+    if (rectangle != null) {
+        svg.append("rect")
+            .attr("width", rectangle[0].width)
+            .attr("height", rectangle[0].height)
+            .attr("x", rectangle[0].cx - (rectangle[0].width / 2))
+            .attr("y", rectangle[0].cy - (rectangle[0].height / 2))
+            .attr("transform", "rotate(" + rectangle[0].angle + "," + rectangle[0].cx + "," + rectangle[0].cy + ")")
+            .attr("id", function() {
+                return "rect_" + d.id;
+            })
+            .attr("fill", "#white")
+            .attr("opacity", "0.5");
+    }
 
 //                        //append angle as text on to rectangle
 //                        svg.append("text").attr("x", rectangle[0].cx)
