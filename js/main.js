@@ -9,7 +9,7 @@ var center = [0, 47.3097];
 var scale  = 150000;
 var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
 
-var font = "Arial";
+var font = "Oswald";
 var padding = "3";
 
 var topPolyBounds = {};
@@ -729,22 +729,38 @@ function findRectangleCorners(rectangle) {
 
 function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, displayText) {
 
-    var areaSum = 0;
+    phrase = phrase.toUpperCase();
 
+    if (d.id == 66) {
+        debugger;
+    }
+
+    var viableRectangles = filterViableRectangles(neighborhoodRectangles);
+
+    //populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d);
+    populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d);
+
+}
+
+function filterViableRectangles(neighborhoodRectangles) {
     //keep track of how many rectangles are actually viable, i.e. big enough
     var nextIndexInViableRectangles = 0;
     var viableRectangles = [];
+
+    var areaSum = 0;
+
 
     //compute total area and find viable rectangles
     for (var i = 0; i < neighborhoodRectangles.length; i++) {
         if (neighborhoodRectangles[i].rect != null) {
             var rectArea = neighborhoodRectangles[i].rect[0].width * neighborhoodRectangles[i].rect[0].height;
-            if (rectArea > 70) {
+            var aspectRatio = neighborhoodRectangles[i].rect[0].width / neighborhoodRectangles[i].rect[0].height;
+            if (rectArea > 70 && aspectRatio < 20) {
                 viableRectangles[nextIndexInViableRectangles] = {
                     rect: neighborhoodRectangles[i].rect,
                     area: rectArea,
                     corners: findRectangleCorners(neighborhoodRectangles[i].rect),
-                    aspectRatio: neighborhoodRectangles[i].rect[0].width / neighborhoodRectangles[i].rect[0].height,
+                    aspectRatio: aspectRatio,
                     id: "rect_" + neighborhoodRectangles[i].num + "_" + neighborhoodRectangles[i].location
                 };
                 areaSum += rectArea;
@@ -753,11 +769,8 @@ function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, 
         }
     }
 
-    //populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d);
-    populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d);
-
+    return viableRectangles;
 }
-
 
 //pretty broken
 function populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d) {
@@ -843,12 +856,6 @@ function populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayT
 
 function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d) {
 
-    if (d.id == 33) {
-        debugger;
-    }
-
-
-
     //first letter goes in first viable rectangle
     //An angle of zero means that the longer side of the polygon
     // will be aligned with the x axis. An angle of +90 and/or -90 means that the
@@ -872,25 +879,36 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
             //if there are viable rectangles appearing before biggest (i.e. top and left), fill with one letter each
             var currIndex = 0;
             while (currIndex < indexOfMaxArea) {
+
                 //append path and letter
+
                 var currLetter = phrase.substring(currIndex, currIndex + 1);
                 appendSingleLetter(viableRectangles[currIndex], currLetter, d);
                 currIndex++;
             }
 
+            var currIndexFromEnd = viableRectangles.length - 1;
+            var countLettersOffEnd = 0;
+            while (currIndexFromEnd > indexOfMaxArea) {
+                var currLetter = phrase.charAt(phrase.length - 1 - countLettersOffEnd);
+                appendSingleLetter(viableRectangles[currIndexFromEnd], currLetter, d);
+                currIndexFromEnd--;
+                countLettersOffEnd++;
+            }
+
             //fill largest rectangle with wrapped text
             //pass phrase with first letters chopped off (depending on how many got their own rectangles) and
             //last letter chopped
-            fillRectWithText(phrase.substring(currIndex, phrase.length - 1), viableRectangles[indexOfMaxArea]);
+            fillRectWithText(phrase.substring(currIndex, phrase.length - (countLettersOffEnd)), viableRectangles[indexOfMaxArea]);
 
             //last letter goes in last viable rectangle
-            if (viableRectangles.length > 2) {
-                appendSingleLetter(viableRectangles[viableRectangles.length - 1], phrase.substring(phrase.length - 1), d);
-            }
+            //if (viableRectangles.length > 2) {
+            //    appendSingleLetter(viableRectangles[viableRectangles.length - 1], phrase.substring(phrase.length - 1), d);
+            //}
 
-        } else {
-            //use entire phrase
-
+        } else if (viableRectangles.length == 1) {
+            //use entire phrase to fill only viable rectangle
+            fillRectWithText(phrase, viableRectangles[0]);
         }
 
     }
@@ -901,6 +919,8 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
 }
 
 function fillRectWithText(phrase, rectangle) {
+
+
     //inserting spaces in between letters so that d3plus will wrap text mid-word
     var spaceAugmentedText = insertSpaces(phrase);
 
@@ -922,7 +942,7 @@ function fillRectWithText(phrase, rectangle) {
     var height = rectangle.corners.lowY - rectangle.corners.topY;
     var width = rectangle.corners.rightX - rectangle.corners.leftX;
 
-    d3plus.textwrap()
+    var text = d3plus.textwrap()
         .height(height)
         .width(width)
         .container(newText)
@@ -930,7 +950,10 @@ function fillRectWithText(phrase, rectangle) {
         .y(rectangle.corners.topY)
         //.text(newText)
         .resize(true)
+        .align("center")
         .draw();
+
+    //text.attr("letter-spacing", 3);
 }
 
 function insertSpaces(phrase) {
@@ -943,16 +966,6 @@ function insertSpaces(phrase) {
 }
 
 function appendSingleLetter(rectangle, letter, d, location) {
-
-
-    if (d.id == 33) {
-        //display circles along coordinates of outer polygon in increasing size to show
-        //direction of provided points in path coordinates array
-//                      displayClockwiseIndicator(pathCoords2d);
-        debugger;
-    }
-
-    if (rectangle.aspectRatio < 3) {
 
         var textPath;
         var letterSize;
@@ -967,7 +980,7 @@ function appendSingleLetter(rectangle, letter, d, location) {
                 + "L" + xWithPadding + "," + rectangle.corners.topY;
 
             //find appropriate letter size based on area of horizontal distance
-            letterSize = rectangle.corners.rightX - rectangle.corners.leftX;
+            letterSize = Math.min(rectangle.corners.lowY - rectangle.corners.topY, rectangle.corners.rightX - rectangle.corners.leftX);
 
         } else if (rectangle.rect[0].angle == 90 || rectangle.rect[0].angle == 270) {
             //find new y
@@ -978,7 +991,7 @@ function appendSingleLetter(rectangle, letter, d, location) {
                 + "L" + rectangle.corners.rightX + "," + yWithPadding;
 
             //find appropriate letter size based on area of horizontal distance
-            letterSize = rectangle.corners.lowY - rectangle.corners.topY;
+            letterSize = Math.min(rectangle.corners.lowY - rectangle.corners.topY, rectangle.corners.rightX - rectangle.corners.leftX);
         }
 
         svg.append("path")
@@ -992,9 +1005,8 @@ function appendSingleLetter(rectangle, letter, d, location) {
             .attr("xlink:href", "#" + rectangle.id + "_letter_path")
             .style("text-anchor", "middle")
             .text(letter)
-            .attr("font-size", letterSize)
+            .attr("font-size", letterSize + "pt")
             .attr("startOffset", "50%")
             .attr("font-family", font);
-    }
 }
 

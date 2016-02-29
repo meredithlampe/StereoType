@@ -1,9 +1,11 @@
 .neighborhoodOutline {
     stroke: navy;
     stroke-width: 0.5px;
-    fill: gray;
+    fill: white;
 
 }
+
+
 
 .neighborhoodInnerPath {
     stroke-width: 3 px;
