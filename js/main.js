@@ -99,7 +99,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             if (pathCoords2d.length > 2) {
 
                 var displayPolygons = false;
-                var displayRectangles = false;
+                var displayRectangles = true;
                 var displayBounds = false;
                 var displayText = true;
 
@@ -735,14 +735,14 @@ function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, 
         debugger;
     }
 
-    var viableRectangles = filterViableRectangles(neighborhoodRectangles);
+    var viableRectangles = filterViableRectangles(neighborhoodRectangles, d);
 
     //populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d);
     populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d);
 
 }
 
-function filterViableRectangles(neighborhoodRectangles) {
+function filterViableRectangles(neighborhoodRectangles, d) {
     //keep track of how many rectangles are actually viable, i.e. big enough
     var nextIndexInViableRectangles = 0;
     var viableRectangles = [];
@@ -755,6 +755,9 @@ function filterViableRectangles(neighborhoodRectangles) {
         if (neighborhoodRectangles[i].rect != null) {
             var rectArea = neighborhoodRectangles[i].rect[0].width * neighborhoodRectangles[i].rect[0].height;
             var aspectRatio = neighborhoodRectangles[i].rect[0].width / neighborhoodRectangles[i].rect[0].height;
+            if (i == 2) {
+                console.log("aspectRatio for rect " + d.id + ": " + aspectRatio);
+            }
             if (rectArea > 70 && aspectRatio < 20) {
                 viableRectangles[nextIndexInViableRectangles] = {
                     rect: neighborhoodRectangles[i].rect,
@@ -899,7 +902,10 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
             //fill largest rectangle with wrapped text
             //pass phrase with first letters chopped off (depending on how many got their own rectangles) and
             //last letter chopped
-            fillRectWithText(phrase.substring(currIndex, phrase.length - (countLettersOffEnd)), viableRectangles[indexOfMaxArea]);
+            //fillRectWithText(phrase.substring(currIndex, phrase.length - (countLettersOffEnd)), viableRectangles[indexOfMaxArea]);
+            fillRectTextManual(phrase.substring(currIndex, phrase.length - (countLettersOffEnd)), viableRectangles[indexOfMaxArea], displayText, d);
+            //debugger;
+
 
             //last letter goes in last viable rectangle
             //if (viableRectangles.length > 2) {
@@ -908,8 +914,11 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
 
         } else if (viableRectangles.length == 1) {
             //use entire phrase to fill only viable rectangle
-            fillRectWithText(phrase, viableRectangles[0]);
+            //fillRectWithText(phrase, viableRectangles[0]);
+            fillRectTextManual(phrase, viableRectangles[0], displayText, d);
+            //debugger;
         }
+
 
     }
 
@@ -918,6 +927,7 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
 
 }
 
+//fill rectangle using svg wrapping from d3Plus
 function fillRectWithText(phrase, rectangle) {
 
 
@@ -954,6 +964,71 @@ function fillRectWithText(phrase, rectangle) {
         .draw();
 
     //text.attr("letter-spacing", 3);
+}
+
+function fillRectTextManual(phrase, rectangle, displayText, d) {
+    //debugger;
+
+    //maybe need this?
+    var verticalDistance = rectangle.corners.lowY - rectangle.corners.topY;
+    var horizontalDistance = rectangle.corners.rightX - rectangle.corners.leftX;
+
+    var numLevels = Math.round(rectangle.aspectRatio) + 1;
+    var phrasePieces = [];
+    var indexInPhrase = 0; //next available letter
+
+    for (var i = 0; i < numLevels; i++) {
+        var piece = "";
+        var bound = phrase.length / numLevels;
+
+        while ((indexInPhrase < ((i + 1) * bound)) && (indexInPhrase < phrase.length)) {
+            piece += phrase.charAt(indexInPhrase);
+            indexInPhrase++;
+        }
+
+        phrasePieces[i] = piece;
+    }
+
+    for (var j = 0; j < phrasePieces.length; j++) {
+        console.log(phrasePieces[j]);
+
+    }
+    console.log();
+    var rectCoords = findRectangleCorners(rectangle.rect);
+
+    if (verticalDistance > horizontalDistance) { //taller
+        //split rectangle into four portions and find lower edge of each for text path
+        for (var k = 1; k <= numLevels; k++) {
+
+            //find x coord to start path
+            var startPathX = rectCoords.leftX;
+            var startPathY = rectCoords.topY + (k * (verticalDistance / numLevels));
+
+            var endPathX = rectCoords.rightX;
+            var endPathY = startPathY;
+
+            var pathString = "M" + startPathX + "," + startPathY + "L" + endPathX + "," + endPathY;
+            svg.append("path")
+                .attr("id", "innerPath_" + d.id + "_" + k)
+                .attr("d", pathString)
+                .style("fill", "none")
+                .style('stroke', "black");
+
+            if (displayText) {
+                svg.append("text")
+                    .append("textPath")
+                    .attr("xlink:href", "#" + "innerPath_" + d.id + "_" + k)
+                    .style("text-anchor", "middle")
+                    .text(phrasePieces[k - 1])
+                    .attr("font-size", "3pt")
+                    .attr("startOffset", "50%");
+            }
+        }
+    } else { //wider
+
+    }
+
+
 }
 
 function insertSpaces(phrase) {
