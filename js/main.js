@@ -731,10 +731,6 @@ function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, 
 
     phrase = phrase.toUpperCase();
 
-    if (d.id == 66) {
-        debugger;
-    }
-
     var viableRectangles = filterViableRectangles(neighborhoodRectangles, d);
 
     //populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d);
@@ -996,39 +992,56 @@ function fillRectTextManual(phrase, rectangle, displayText, d) {
     console.log();
     var rectCoords = findRectangleCorners(rectangle.rect);
 
-    if (verticalDistance > horizontalDistance) { //taller
-        //split rectangle into four portions and find lower edge of each for text path
-        for (var k = 1; k <= numLevels; k++) {
-
-            //find x coord to start path
-            var startPathX = rectCoords.leftX;
-            var startPathY = rectCoords.topY + (k * (verticalDistance / numLevels));
-
-            var endPathX = rectCoords.rightX;
-            var endPathY = startPathY;
-
-            var pathString = "M" + startPathX + "," + startPathY + "L" + endPathX + "," + endPathY;
-            svg.append("path")
-                .attr("id", "innerPath_" + d.id + "_" + k)
-                .attr("d", pathString)
-                .style("fill", "none")
-                .style('stroke', "black");
-
-            if (displayText) {
-                svg.append("text")
-                    .append("textPath")
-                    .attr("xlink:href", "#" + "innerPath_" + d.id + "_" + k)
-                    .style("text-anchor", "middle")
-                    .text(phrasePieces[k - 1])
-                    .attr("font-size", "3pt")
-                    .attr("startOffset", "50%");
-            }
-        }
-    } else { //wider
-
+    if (d.id == 39) {
+        debugger;
     }
 
 
+    if (verticalDistance > horizontalDistance) { //taller
+        //split rectangle into four portions and find lower edge of each for text path
+
+        //x coords don't change
+        var startPathX = rectCoords.leftX;
+        var endPathX = rectCoords.rightX;
+        var verticalText = false;
+
+        for (var k = 1; k <= numLevels; k++) {
+
+            //current phrase piece
+            var currPhrase = phrasePieces[k - 1];
+
+            //find y coords
+            var startPathY = rectCoords.topY + (k * (verticalDistance / numLevels));
+            var endPathY = startPathY;
+
+            //find area of slice:
+            var areaOfSlice = (verticalDistance / numLevels) * horizontalDistance;
+
+            var textSize = findTextSize(areaOfSlice, currPhrase);
+
+            appendPathAndText(startPathX, startPathY, endPathX, endPathY,
+                currPhrase, d, k, displayText, verticalText);
+        }
+    } else { //wider: make vertical slices
+        //y coords don't change
+        var startPathY = rectCoords.topY;
+        var endPathY = rectCoords.lowY;
+        var verticalText = true;
+
+        for (var k = 1; k <= numLevels; k++) {
+            //find x coords
+            var startPathX = rectCoords.leftX + ((k - 1) * (horizontalDistance / numLevels));
+            var endPathX = startPathX;
+            appendPathAndText(startPathX, startPathY, endPathX, endPathY,
+                phrasePieces[k -1], d, k, displayText, verticalText);
+        }
+    }
+
+
+}
+
+function findTextSize(areaOfSlice, phrase) {
+    
 }
 
 function insertSpaces(phrase) {
@@ -1038,6 +1051,43 @@ function insertSpaces(phrase) {
     }
     spaceAgumentedPhrase += phrase.charAt(phrase.length - 1);
     return spaceAgumentedPhrase;
+}
+
+function appendPathAndText(startPathX, startPathY, endPathX, endPathY,
+                           phrase, d, k, displayText, verticalText) {
+
+    var pathString = "M" + startPathX + "," + startPathY + "L" + endPathX + "," + endPathY;
+    svg.append("path")
+        .attr("id", "innerPath_" + d.id + "_" + k)
+        .attr("d", pathString)
+        .style("fill", "none")
+        .style('stroke', "black");
+
+
+    if (displayText) {
+        if (!verticalText) {
+            svg.append("text")
+                .append("textPath")
+                .attr("xlink:href", "#" + "innerPath_" + d.id + "_" + k)
+                .style("text-anchor", "middle")
+                .text(phrase)
+                .attr("font-size", "3pt")
+                .attr("startOffset", "50%");
+        } else { //vertical text
+        //<text x="200" y="100" transform="rotate(180 200,100)">Hello!</text>
+
+            //var rotateString = "rotate(90 " + startPathX + ", " + startPathY + ")";
+
+            svg.append("text")
+                .append("textPath")
+                .attr("xlink:href", "#" + "innerPath_" + d.id + "_" + k)
+                .style("text-anchor", "middle")
+                .text(phrase)
+                .attr("font-size", "3pt")
+                .attr("startOffset", "50%");
+                //.attr("transform", rotateString);
+        }
+    }
 }
 
 function appendSingleLetter(rectangle, letter, d, location) {
