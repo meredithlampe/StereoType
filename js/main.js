@@ -10,7 +10,7 @@ var scale  = 150000;
 var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
 
 var font = "Oswald";
-var padding = "3";
+var padding = "2";
 
 var topPolyBounds = {};
 var rightPolyBounds = {};
@@ -99,7 +99,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             if (pathCoords2d.length > 2) {
 
                 var displayPolygons = false;
-                var displayRectangles = true;
+                var displayRectangles = false;
                 var displayBounds = false;
                 var displayText = true;
 
@@ -751,9 +751,6 @@ function filterViableRectangles(neighborhoodRectangles, d) {
         if (neighborhoodRectangles[i].rect != null) {
             var rectArea = neighborhoodRectangles[i].rect[0].width * neighborhoodRectangles[i].rect[0].height;
             var aspectRatio = neighborhoodRectangles[i].rect[0].width / neighborhoodRectangles[i].rect[0].height;
-            if (i == 2) {
-                console.log("aspectRatio for rect " + d.id + ": " + aspectRatio);
-            }
             if (rectArea > 70 && aspectRatio < 20) {
                 viableRectangles[nextIndexInViableRectangles] = {
                     rect: neighborhoodRectangles[i].rect,
@@ -877,29 +874,45 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
 
             //if there are viable rectangles appearing before biggest (i.e. top and left), fill with one letter each
             var currIndex = 0;
-            while (currIndex < indexOfMaxArea) {
+            var currRectIndex = 0;
+            while (currRectIndex < indexOfMaxArea) {
 
-                //append path and letter
+                //get current rectangle
+                var currRect = viableRectangles[currIndex];
 
-                var currLetter = phrase.substring(currIndex, currIndex + 1);
-                appendSingleLetter(viableRectangles[currIndex], currLetter, d);
-                currIndex++;
+                //if currRect is actually viable
+                if (currRect.aspectRatio < 4) {
+                    //append path and letter
+                    var currLetter = phrase.substring(currIndex, currIndex + 1);
+                    appendSingleLetter(currRect, currLetter, d);
+                    currIndex++;
+                }
+                currRectIndex++;
             }
 
             var currIndexFromEnd = viableRectangles.length - 1;
             var countLettersOffEnd = 0;
+
             while (currIndexFromEnd > indexOfMaxArea) {
-                var currLetter = phrase.charAt(phrase.length - 1 - countLettersOffEnd);
-                appendSingleLetter(viableRectangles[currIndexFromEnd], currLetter, d);
+
+                var currRect = viableRectangles[currIndexFromEnd];
+
+                if (currRect.aspectRatio < 4) {
+                    //append path and letter
+                    var currLetter = phrase.charAt(phrase.length - 1 - countLettersOffEnd);
+                    appendSingleLetter(currRect, currLetter, d);
+                    countLettersOffEnd++;
+                }
                 currIndexFromEnd--;
-                countLettersOffEnd++;
             }
 
             //fill largest rectangle with wrapped text
             //pass phrase with first letters chopped off (depending on how many got their own rectangles) and
             //last letter chopped
             //fillRectWithText(phrase.substring(currIndex, phrase.length - (countLettersOffEnd)), viableRectangles[indexOfMaxArea]);
-            fillRectTextManual(phrase.substring(currIndex, phrase.length - (countLettersOffEnd)), viableRectangles[indexOfMaxArea], displayText, d);
+            fillRectTextManual(phrase.substring(currIndex,
+                phrase.length - (countLettersOffEnd)), viableRectangles[indexOfMaxArea],
+                displayText, displayBounds, d);
             //debugger;
 
 
@@ -911,7 +924,7 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
         } else if (viableRectangles.length == 1) {
             //use entire phrase to fill only viable rectangle
             //fillRectWithText(phrase, viableRectangles[0]);
-            fillRectTextManual(phrase, viableRectangles[0], displayText, d);
+            fillRectTextManual(phrase, viableRectangles[0], displayText, displayBounds, d);
             //debugger;
         }
 
@@ -962,7 +975,7 @@ function fillRectWithText(phrase, rectangle) {
     //text.attr("letter-spacing", 3);
 }
 
-function fillRectTextManual(phrase, rectangle, displayText, d) {
+function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
     //debugger;
 
     //maybe need this?
@@ -984,17 +997,7 @@ function fillRectTextManual(phrase, rectangle, displayText, d) {
 
         phrasePieces[i] = piece;
     }
-
-    for (var j = 0; j < phrasePieces.length; j++) {
-        console.log(phrasePieces[j]);
-
-    }
-    console.log();
     var rectCoords = findRectangleCorners(rectangle.rect);
-
-    if (d.id == 39) {
-        debugger;
-    }
 
 
     if (verticalDistance > horizontalDistance) { //taller
@@ -1005,6 +1008,9 @@ function fillRectTextManual(phrase, rectangle, displayText, d) {
         var endPathX = rectCoords.rightX;
         var verticalText = false;
 
+        var widthOfSlice = horizontalDistance;
+        var heightOfSlice = verticalDistance / numLevels;
+
         for (var k = 1; k <= numLevels; k++) {
 
             //current phrase piece
@@ -1014,13 +1020,21 @@ function fillRectTextManual(phrase, rectangle, displayText, d) {
             var startPathY = rectCoords.topY + (k * (verticalDistance / numLevels));
             var endPathY = startPathY;
 
-            //find area of slice:
-            var areaOfSlice = (verticalDistance / numLevels) * horizontalDistance;
+            //to add padding on the bottom of the rectangle
+            if (k == numLevels) {
+                startPathY -= padding;
+                endPathY -= padding;
+                heightOfSlice -= padding;
+            }
 
-            var textSize = findTextSize(areaOfSlice, currPhrase);
+            ////find area of slice:
+            //var areaOfSlice = (verticalDistance / numLevels) * horizontalDistance;
+            //
+            //var textSize = findTextSize(areaOfSlice, currPhrase);
 
             appendPathAndText(startPathX, startPathY, endPathX, endPathY,
-                currPhrase, d, k, displayText, verticalText);
+                currPhrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
+                heightOfSlice);
         }
     } else { //wider: make vertical slices
         //y coords don't change
@@ -1028,20 +1042,43 @@ function fillRectTextManual(phrase, rectangle, displayText, d) {
         var endPathY = rectCoords.lowY;
         var verticalText = true;
 
-        for (var k = 1; k <= numLevels; k++) {
+        var widthOfSlice = verticalDistance;
+        var heightOfSlice = horizontalDistance / numLevels;
+
+        for (var k = numLevels; k >= 1; k--) {
+
+            //current phrase piece
+            var currPhrase = phrasePieces[numLevels - k];
+
             //find x coords
             var startPathX = rectCoords.leftX + ((k - 1) * (horizontalDistance / numLevels));
             var endPathX = startPathX;
+
+            if (k == 1) {
+                startPathX += padding * 2;
+                endPathX += padding * 2;
+                heightOfSlice -= padding * 2;
+            }
+
             appendPathAndText(startPathX, startPathY, endPathX, endPathY,
-                phrasePieces[k -1], d, k, displayText, verticalText);
+                currPhrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
+                heightOfSlice);
         }
     }
 
 
 }
 
+
+//not in use
 function findTextSize(areaOfSlice, phrase) {
-    
+
+    //append text to phantom svg
+    var phatomSvg = d3.select("body").append("svg");
+    var text = svg.append("text")
+        .text(phrase);
+
+
 }
 
 function insertSpaces(phrase) {
@@ -1054,39 +1091,66 @@ function insertSpaces(phrase) {
 }
 
 function appendPathAndText(startPathX, startPathY, endPathX, endPathY,
-                           phrase, d, k, displayText, verticalText) {
+                           phrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
+                            heightOfSlice) {
+
+    var pathStroke = displayBounds ? "black" : "none";
 
     var pathString = "M" + startPathX + "," + startPathY + "L" + endPathX + "," + endPathY;
     svg.append("path")
         .attr("id", "innerPath_" + d.id + "_" + k)
         .attr("d", pathString)
         .style("fill", "none")
-        .style('stroke', "black");
+        .style('stroke', pathStroke);
 
+    var textSize = 1;
+
+    var phantomSvg = d3.select("body").append("svg");
+    var text = svg.append("text")
+        .text(phrase)
+        .attr("font-size", textSize + "pt");
+    var bbox = text.node().getBBox();
 
     if (displayText) {
-        if (!verticalText) {
-            svg.append("text")
-                .append("textPath")
-                .attr("xlink:href", "#" + "innerPath_" + d.id + "_" + k)
-                .style("text-anchor", "middle")
-                .text(phrase)
-                .attr("font-size", "3pt")
-                .attr("startOffset", "50%");
-        } else { //vertical text
-        //<text x="200" y="100" transform="rotate(180 200,100)">Hello!</text>
 
-            //var rotateString = "rotate(90 " + startPathX + ", " + startPathY + ")";
+        var widthTransform = bbox.width;
+        var heightTransform = bbox.height;
 
-            svg.append("text")
-                .append("textPath")
-                .attr("xlink:href", "#" + "innerPath_" + d.id + "_" + k)
-                .style("text-anchor", "middle")
+        var eBrake = true;
+
+        while (widthTransform < widthOfSlice && heightTransform < heightOfSlice && eBrake) {
+
+            textSize++;
+
+            text = phantomSvg.append("text")
                 .text(phrase)
-                .attr("font-size", "3pt")
-                .attr("startOffset", "50%");
-                //.attr("transform", rotateString);
+                .attr("font-size", textSize + "pt");
+
+            //var textNode = document.getElementById("t1");
+            bbox = text.node().getBBox();
+            widthTransform = bbox.width;
+            heightTransform = bbox.height;
+
+            if (textSize > 25) {
+                eBrake = false;
+            }
+
         }
+
+        //use length of bbox, amt of characters on line and length of rectangle to
+        //determine spacing in between rectangles
+        //var extraSpace = widthOfSlice - widthTransform;
+        //var spacePerChar = extraSpace / phrase.length;
+        //.attr("letter-spacing", spacePerChar + "pt")
+
+        var text = svg.append("text")
+            .append("textPath")
+            .attr("xlink:href", "#" + "innerPath_" + d.id + "_" + k)
+            .style("text-anchor", "middle")
+             .attr("startOffset", "50%")
+            .text(phrase)
+            .attr("font-size", textSize + "pt")
+            .attr("font-family", font);
     }
 }
 
@@ -1104,9 +1168,6 @@ function appendSingleLetter(rectangle, letter, d, location) {
             textPath = "M" + xWithPadding + "," + rectangle.corners.lowY
                 + "L" + xWithPadding + "," + rectangle.corners.topY;
 
-            //find appropriate letter size based on area of horizontal distance
-            letterSize = Math.min(rectangle.corners.lowY - rectangle.corners.topY, rectangle.corners.rightX - rectangle.corners.leftX);
-
         } else if (rectangle.rect[0].angle == 90 || rectangle.rect[0].angle == 270) {
             //find new y
             var yWithPadding = rectangle.corners.lowY - padding;
@@ -1115,9 +1176,11 @@ function appendSingleLetter(rectangle, letter, d, location) {
             textPath = "M" + rectangle.corners.leftX + "," + yWithPadding
                 + "L" + rectangle.corners.rightX + "," + yWithPadding;
 
-            //find appropriate letter size based on area of horizontal distance
-            letterSize = Math.min(rectangle.corners.lowY - rectangle.corners.topY, rectangle.corners.rightX - rectangle.corners.leftX);
         }
+
+
+        //find appropriate letter size based on area of horizontal distance
+        letterSize = Math.min(rectangle.corners.lowY - rectangle.corners.topY, rectangle.corners.rightX - rectangle.corners.leftX) * 0.75;
 
         svg.append("path")
             .attr("id", rectangle.id + "_letter_path")
