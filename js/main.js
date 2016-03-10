@@ -99,9 +99,10 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             if (pathCoords2d.length > 2) {
 
                 var displayPolygons = false;
-                var displayRectangles = false;
+                var displayRectangles = true;
                 var displayBounds = false;
                 var displayText = true;
+                var processAll = false;
 
                 var centerRectangle = generateInscribedRectangle(pathCoords2d, d, displayRectangles, "center");
 
@@ -113,72 +114,85 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                 var rectLowYCoord;
                 var rectLeftXCoord;
 
-                //find four corners of rectangle
-                if (centerRectangle[0].angle == 90 || centerRectangle[0].angle == 270) {
-                    rectLowYCoord = centerRectangle[0].cy + (centerRectangle[0].width / 2);
-                    rectRightXCoord = centerRectangle[0].cx + (centerRectangle[0].height / 2);
-                    rectTopYCoord = centerRectangle[0].cy - (centerRectangle[0].width / 2);
-                    rectLeftXCoord = centerRectangle[0].cx - (centerRectangle[0].height / 2);
-                } else {
-                    rectLowYCoord = centerRectangle[0].cy + (centerRectangle[0].height / 2);
-                    rectRightXCoord = centerRectangle[0].cx + (centerRectangle[0].width / 2);
-                    rectTopYCoord = centerRectangle[0].cy - (centerRectangle[0].height / 2);
-                    rectLeftXCoord = centerRectangle[0].cx - (centerRectangle[0].width / 2);
-                };
+                //clockwise order, starting from top: topY, rightX, lowY, leftX
+                var coords = findRectangleCorners(centerRectangle);
+
+                ////find four corners of rectangle
+                //if (centerRectangle[0].angle == 90 || centerRectangle[0].angle == 270) {
+                //    rectLowYCoord = centerRectangle[0].cy + (centerRectangle[0].width / 2);
+                //    rectRightXCoord = centerRectangle[0].cx + (centerRectangle[0].height / 2);
+                //    rectTopYCoord = centerRectangle[0].cy - (centerRectangle[0].width / 2);
+                //    rectLeftXCoord = centerRectangle[0].cx - (centerRectangle[0].height / 2);
+                //} else {
+                //    rectLowYCoord = centerRectangle[0].cy + (centerRectangle[0].height / 2);
+                //    rectRightXCoord = centerRectangle[0].cx + (centerRectangle[0].width / 2);
+                //    rectTopYCoord = centerRectangle[0].cy - (centerRectangle[0].height / 2);
+                //    rectLeftXCoord = centerRectangle[0].cx - (centerRectangle[0].width / 2);
+                //};
+                //
+                //coords[0] = rectTopYCoord;
+                //coords[1] = rectRightXCoord;
+                //coords[2] = rectLowYCoord;
+                //coords[3] = rectLeftXCoord;
 
                 //mark corners of rectangle with circles -- for debugging
 //                        markFourCorners(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord);
 
-
-                //generate neighborhood polygon object--one that has all coordinates, along with whether
-                //or not the coordinates are listed in clockwise or counterclockwise order.
-                var neighborPolygon = generateNeighborhoodPoly(pathCoords2d);
-
-                var neighborhoodRectangles = [];
-
                 //TODO: special case for industrial district
+                //if (d.id == 19) {
                 if (d.id != 41) {
 
-                    var topPoly = generateTopPolygon(d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
-                        pathCoords2d, neighborPolygon, displayPolygons);
-                    var topRectangle;
-                    if (topPoly != null) {
-                        topRectangle = generateTopRectangle(topPoly, d, displayRectangles);
+                    var neighborhood = generateSidePolygons(coords, displayPolygons, displayRectangles, pathCoords2d,
+                        d, centerRectangle, true, "");
+
+                    //generate next level of polygons
+
+                    if (processAll) {
+
+                        //generate mini polygons in top segment
+                        if (neighborhood.polygons[0] != null && neighborhood.rectangles[0] != null) {
+                            var topRectCoords = findRectangleCorners(neighborhood.rectangles[0].rect);
+                            var topNeighborhood = generateSidePolygons(topRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[0], d, neighborhood.rectangles[0],
+                                true, "mini");
+                        }
+
+                        if (neighborhood.polygons[1] != null && neighborhood.rectangles[1] != null) {
+                            var leftRectCoords = findRectangleCorners(neighborhood.rectangles[1].rect);
+                            var leftNeighborhood = generateSidePolygons(leftRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[1], d, neighborhood.rectangles[1],
+                                true, "mini");
+                        }
+
+                        //skpping center rectangle
+
+                        if (neighborhood.polygons[3] != null && neighborhood.rectangles[3] != null) {
+                            var rightRectCoords = findRectangleCorners(neighborhood.rectangles[3].rect);
+                            var righttNeighborhood = generateSidePolygons(rightRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[3], d, neighborhood.rectangles[3],
+                                true, "mini");
+                        }
+                        //
+                        //if (neighborhood.polygons[4] != null && neighborhood.rectangles[4] != null) {
+                        //    var bottomRectCoords = findRectangleCorners(neighborhood.rectangles[4].rect);
+                        //    var bottomNeighborhood = generateSidePolygons(bottomRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[4], d, neighborhood.rectangles[4],
+                        //        true, "mini");
+                        //}
+
+                        //if (rightPoly != null) {
+                        //    var rightNeighborPolygon = generateNeighborhoodPoly(rightPoly);
+                        //    var rightRectCoords = findRectangleCorners(rightRectangle);
+                        //    var miniRightPoly = generateRightPolygon(d, rightRectCoords.topY, rightRectCoords.lowY, rightRectCoords.leftX, rightRectCoords.rightX,
+                        //        rightPoly, rightNeighborPolygon, displayPolygons, "mini");
+                        //    if (miniRightPoly != null) {
+                        //        var miniRightRect = generateInscribedRectangle(miniRightPoly, d, displayRectangles, "right_mini")
+                        //    }
+                        //
+                        //}
                     }
 
+                    var lengthWord = d.properties.name.length;
 
-                    //testing alg 1
 
-
-                    var rightPoly = generateRightPolygon(topPoly, d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
-                        pathCoords2d, neighborPolygon, displayPolygons);
-                    var rightRectangle;
-                    if (rightPoly != null) {
-                        rightRectangle = generateInscribedRectangle(rightPoly, d, displayRectangles, "right");
-                    }
-
-                    var bottomPoly = generateBottomPolygon(rightPoly, d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
-                        pathCoords2d, neighborPolygon, displayPolygons);
-                    var bottomRectangle;
-                    if (bottomPoly != null) {
-                        bottomRectangle = generateInscribedRectangle(bottomPoly, d, displayRectangles, "bottom");
-                    }
-
-                    var leftPoly = generateLeftPolygon(bottomPoly, d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
-                        pathCoords2d, neighborPolygon, displayPolygons);
-                    var leftRectangle;
-                    if (leftPoly != null) {
-                        leftRectangle = generateInscribedRectangle(leftPoly, d, displayRectangles, "left");
-                    }
-
-                    neighborhoodRectangles[0] = generateInscribedRectObject(topRectangle, "top", d);
-                    neighborhoodRectangles[1] = generateInscribedRectObject(leftRectangle, "left", d);
-                    neighborhoodRectangles[2] = generateInscribedRectObject(centerRectangle, "center", d);
-                    neighborhoodRectangles[3] = generateInscribedRectObject(rightRectangle, "right", d);
-                    neighborhoodRectangles[4] = generateInscribedRectObject(bottomRectangle, "bottom", d);
-
-                    fillNeighborhoodText(neighborhoodRectangles, d.properties.name, d, displayBounds, displayText);
-
+                    //fillNeighborhoodText(neighborhood.rectangles, d.properties.name.substring(0, Math.round(lengthWord *.75)), d, displayBounds, displayText);
+                    fillNeighborhoodText(neighborhood.rectangles, d.properties.name, d, displayBounds, displayText);
 
 
                 }
@@ -191,6 +205,63 @@ d3.json("json/neighborhoods.json", function(error, topology) {
 
 
 });
+
+function generateSidePolygons(coords, displayPolygons, displayRectangles, pathCoords2d, d,
+                              centerRectangle, processAllFlag, tag) {
+
+    //generate neighborhood polygon object--one that has all coordinates, along with whether
+    //or not the coordinates are listed in clockwise or counterclockwise order.
+    var neighborPolygon = generateNeighborhoodPoly(pathCoords2d);
+
+    var neighborhood  = {};
+    neighborhood.polygons = [];
+    neighborhood.rectangles = [];
+
+    //debugger;
+
+    var topPoly = generateTopPolygon(d, coords.topY, coords.lowY, coords.leftX, coords.rightX,
+        pathCoords2d, neighborPolygon, displayPolygons, "");
+    var topRectangle;
+    if (topPoly != null) {
+        topRectangle = generateTopRectangle(topPoly, d, displayRectangles, tag + "_top");
+    }
+    if (processAllFlag) {
+        var rightPoly = generateRightPolygon(topPoly, d, coords.topY, coords.lowY, coords.leftX, coords.rightX,
+            pathCoords2d, neighborPolygon, displayPolygons);
+        var rightRectangle;
+        if (rightPoly != null) {
+            rightRectangle = generateInscribedRectangle(rightPoly, d, displayRectangles, tag + "_right");
+        }
+
+        var bottomPoly = generateBottomPolygon(rightPoly, d, coords.topY, coords.lowY, coords.leftX, coords.rightX,
+            pathCoords2d, neighborPolygon, displayPolygons);
+        var bottomRectangle;
+        if (bottomPoly != null) {
+            bottomRectangle = generateInscribedRectangle(bottomPoly, d, displayRectangles, tag + "_bottom");
+        }
+
+        var leftPoly = generateLeftPolygon(bottomPoly, d, coords.topY, coords.lowY, coords.leftX, coords.rightX,
+            pathCoords2d, neighborPolygon, displayPolygons);
+        var leftRectangle;
+        if (leftPoly != null) {
+            leftRectangle = generateInscribedRectangle(leftPoly, d, displayRectangles, tag + "_left");
+        }
+
+        neighborhood.polygons[0] = topPoly;
+        neighborhood.polygons[1] = leftPoly;
+        neighborhood.polygons[2] = null; //because center doesn't have poly, but alignment maintained
+        neighborhood.polygons[3] = rightPoly;
+        neighborhood.polygons[4] = leftPoly;
+
+        neighborhood.rectangles[0] = generateInscribedRectObject(topRectangle, "top", d);
+        neighborhood.rectangles[1] = generateInscribedRectObject(leftRectangle, "left", d);
+        neighborhood.rectangles[2] = generateInscribedRectObject(centerRectangle, "center", d);
+        neighborhood.rectangles[3] = generateInscribedRectObject(rightRectangle, "right", d);
+        neighborhood.rectangles[4] = generateInscribedRectObject(bottomRectangle, "bottom", d);
+
+        return neighborhood;
+    }
+}
 
 function generateInscribedRectObject(rectangle, location, d) {
     return {
@@ -219,7 +290,8 @@ function markFourCorners(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRight
 }
 
 function generateTopPolygon(d,  rectTopYCoord,
-                            rectLowYCoord, rectLeftXCoord, rectRightXCoord, pathCoords2d, neighborPolygon, displayFlag) {
+                            rectLowYCoord, rectLeftXCoord, rectRightXCoord, pathCoords2d,
+                            neighborPolygon, displayFlag, tag) {
 
     //compare corners of rectangle with coords of poly--for each corner,
     // compare:
@@ -344,7 +416,7 @@ function generateTopPolygon(d,  rectTopYCoord,
         if (displayFlag) {
             var topPolygon = svg.append("path").attr("d", pathString)
                 .attr("class", "topPolyRed")
-                .attr("id", "topPoly_" + d.id);
+                .attr("id", "topPoly_" + tag + "_" + d.id);
         }
 
         return topPoly;
@@ -352,7 +424,7 @@ function generateTopPolygon(d,  rectTopYCoord,
     return null;
 }
 
-function generateTopRectangle(topPoly, d, displayFlag) {
+function generateTopRectangle(topPoly, d, displayFlag, tag) {
     //generate top rectangle
     if (topPoly.length > 2) {
         var topRectangle = d3plus.geom.largestRect(topPoly, {
@@ -378,7 +450,7 @@ function generateTopRectangle(topPoly, d, displayFlag) {
                 .attr("y", topRectangle[0].cy - (topRectangle[0].height / 2))
                 .attr("transform", "rotate(" + topRectangle[0].angle + "," + topRectangle[0].cx + "," + topRectangle[0].cy + ")")
                 .attr("id", function () {
-                    return "rect_" + d.id + "_" + "top";
+                    return "rect_" + tag + "_" + d.id + "_" + "top";
                 })
                 .attr("fill", function () {
                     var letters = '0123456789ABCDEF'.split('');
@@ -604,24 +676,25 @@ function generateIntersectionPointFromStart(pathCoords2d, countFrom, rectTopYCoo
 
 }
 
-function generateIntersectionPointFromEnd(pathCoords2d, countFrom, rectTopYCoord, d) {
-    var startPoint = [pathCoords2d[countFrom][0], pathCoords2d[countFrom][1]];
-    var endPoint = [pathCoords2d[countFrom - 1][0], pathCoords2d[countFrom - 1][1]];
-
-    var slope = Math.sqrt(Math.pow(startPoint[0] - endPoint[0], 2) + Math.pow(startPoint[1] - endPoint[1], 2));
-    var newX = (Math.abs(endPoint[1] - startPoint[1]) / slope) + startPoint[0];
-
-    svg.append("path")
-        .attr("d", "M" + startPoint[0] + "," + startPoint[1] + "L" + endPoint[0] + "," + endPoint[1])
-        .attr("stroke", "red");
-
-    svg.append("circle").attr("cy", rectTopYCoord)
-        .attr("cx", newX)
-        .attr("r", 2)
-        .attr("fill", "red")
-        .attr("id", "endIntersection_" + d.id);
-
-}
+//function generateIntersectionPointFromEnd(pathCoords2d, countFrom, rectTopYCoord, d) {
+//
+//    var startPoint = [pathCoords2d[countFrom][0], pathCoords2d[countFrom][1]];
+//    var endPoint = [pathCoords2d[countFrom - 1][0], pathCoords2d[countFrom - 1][1]];
+//
+//    var slope = Math.sqrt(Math.pow(startPoint[0] - endPoint[0], 2) + Math.pow(startPoint[1] - endPoint[1], 2));
+//    var newX = (Math.abs(endPoint[1] - startPoint[1]) / slope) + startPoint[0];
+//
+//    svg.append("path")
+//        .attr("d", "M" + startPoint[0] + "," + startPoint[1] + "L" + endPoint[0] + "," + endPoint[1])
+//        .attr("stroke", "red");
+//
+//    svg.append("circle").attr("cy", rectTopYCoord)
+//        .attr("cx", newX)
+//        .attr("r", 2)
+//        .attr("fill", "red")
+//        .attr("id", "endIntersection_" + d.id);
+//
+//}
 
 function generateNeighborhoodPoly(pathCoords2d) {
 
@@ -1158,6 +1231,8 @@ function appendSingleLetter(rectangle, letter, d, location) {
 
         var textPath;
         var letterSize;
+        var rectWidth;
+        var rectHeight;
 
         if (rectangle.rect[0].angle == 0) { //longer side of rectangle is aligned with x axis(?)
 
@@ -1168,6 +1243,9 @@ function appendSingleLetter(rectangle, letter, d, location) {
             textPath = "M" + xWithPadding + "," + rectangle.corners.lowY
                 + "L" + xWithPadding + "," + rectangle.corners.topY;
 
+            rectWidth = rectangle.rect[0].width;
+            rectHeight = rectangle.rect[0].height;
+
         } else if (rectangle.rect[0].angle == 90 || rectangle.rect[0].angle == 270) {
             //find new y
             var yWithPadding = rectangle.corners.lowY - padding;
@@ -1176,11 +1254,45 @@ function appendSingleLetter(rectangle, letter, d, location) {
             textPath = "M" + rectangle.corners.leftX + "," + yWithPadding
                 + "L" + rectangle.corners.rightX + "," + yWithPadding;
 
+            rectWidth = rectangle.rect[0].height;
+            rectHeight = rectangle.rect[0].width;
+
+        }
+
+        var textSize = 1;
+
+        var phantomSvg = d3.select("body").append("svg");
+        var text = svg.append("text")
+            .text(letter)
+            .attr("font-size", textSize + "pt");
+        var bbox = text.node().getBBox();
+
+        var widthTransform = bbox.width;
+        var heightTransform = bbox.height;
+
+        var eBrake = true;
+
+        while (widthTransform < rectWidth && heightTransform < rectHeight && eBrake) {
+
+            textSize++;
+
+            text = phantomSvg.append("text")
+                .text(letter)
+                .attr("font-size", textSize + "pt");
+
+            //var textNode = document.getElementById("t1");
+            bbox = text.node().getBBox();
+            widthTransform = bbox.width;
+            heightTransform = bbox.height;
+
+            if (textSize > 25) {
+                eBrake = false;
+            }
         }
 
 
         //find appropriate letter size based on area of horizontal distance
-        letterSize = Math.min(rectangle.corners.lowY - rectangle.corners.topY, rectangle.corners.rightX - rectangle.corners.leftX) * 0.75;
+        //letterSize = Math.min(rectangle.corners.lowY - rectangle.corners.topY, rectangle.corners.rightX - rectangle.corners.leftX);
 
         svg.append("path")
             .attr("id", rectangle.id + "_letter_path")
@@ -1193,7 +1305,7 @@ function appendSingleLetter(rectangle, letter, d, location) {
             .attr("xlink:href", "#" + rectangle.id + "_letter_path")
             .style("text-anchor", "middle")
             .text(letter)
-            .attr("font-size", letterSize + "pt")
+            .attr("font-size", textSize + "pt")
             .attr("startOffset", "50%")
             .attr("font-family", font);
 }
