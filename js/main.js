@@ -17,6 +17,10 @@ var rightPolyBounds = {};
 var bottomPolyBounds = {};
 var leftPolyBounds = {};
 
+
+//store database of rectangles for neighborhood
+var rectDatabase = {};
+
 var projection = d3.geo.mercator()
     .rotate(rotate)
     .scale(scale)
@@ -98,11 +102,11 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             //find largest rectangle in polygon
             if (pathCoords2d.length > 2) {
 
-                var displayPolygons = false;
-                var displayRectangles = false;
+                var displayPolygons = true;
+                var displayRectangles = true;
                 var displayBounds = false;
-                var displayText = true;
-                var processAll = false;
+                var displayText = false;
+                var processAll = true;
 
                 var centerRectangle = generateInscribedRectangle(pathCoords2d, d, displayRectangles, "center");
 
@@ -161,16 +165,17 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                     var lengthWord = d.properties.name.length;
                     var nameWithoutSpaces = d.properties.name.replace(" ", "");
 
+                    rectDatabase[d.properties.name] = {};
+                    rectDatabase[d.properties.name].id = d.id;
+
 
                     //fillNeighborhoodText(neighborhood.rectangles, d.properties.name.substring(0, Math.round(lengthWord *.75)), d, displayBounds, displayText);
-                    fillNeighborhoodText(neighborhood.rectangles, nameWithoutSpaces + nameWithoutSpaces, d, displayBounds, displayText);
+                    fillNeighborhoodText(neighborhood.rectangles, nameWithoutSpaces + nameWithoutSpaces, d, displayBounds, displayText, rectDatabase);
 
 
                 }
             }
-
-
-
+            debugger;
             return null;
         });
 
@@ -784,11 +789,13 @@ function findRectangleCorners(rectangle) {
     return rectCoords;
 }
 
-function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, displayText) {
+function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, displayText, rectDatabase) {
 
     phrase = phrase.toUpperCase();
 
     var viableRectangles = filterViableRectangles(neighborhoodRectangles, d);
+
+    rectDatabase[d.properties.name].rectangles = viableRectangles;
 
     //populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d);
     populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d);
