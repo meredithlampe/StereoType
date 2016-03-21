@@ -99,47 +99,17 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             if (pathCoords2d.length > 2) {
 
                 var displayPolygons = false;
-                var displayRectangles = true;
+                var displayRectangles = false;
                 var displayBounds = false;
                 var displayText = true;
                 var processAll = false;
 
                 var centerRectangle = generateInscribedRectangle(pathCoords2d, d, displayRectangles, "center");
 
-                //find second rectangle--one that fits in remaining space
-                //longer side -> width
-                //shorter side -> height
-                var rectTopYCoord;
-                var rectRightXCoord;
-                var rectLowYCoord;
-                var rectLeftXCoord;
-
                 //clockwise order, starting from top: topY, rightX, lowY, leftX
                 var coords = findRectangleCorners(centerRectangle);
 
-                ////find four corners of rectangle
-                //if (centerRectangle[0].angle == 90 || centerRectangle[0].angle == 270) {
-                //    rectLowYCoord = centerRectangle[0].cy + (centerRectangle[0].width / 2);
-                //    rectRightXCoord = centerRectangle[0].cx + (centerRectangle[0].height / 2);
-                //    rectTopYCoord = centerRectangle[0].cy - (centerRectangle[0].width / 2);
-                //    rectLeftXCoord = centerRectangle[0].cx - (centerRectangle[0].height / 2);
-                //} else {
-                //    rectLowYCoord = centerRectangle[0].cy + (centerRectangle[0].height / 2);
-                //    rectRightXCoord = centerRectangle[0].cx + (centerRectangle[0].width / 2);
-                //    rectTopYCoord = centerRectangle[0].cy - (centerRectangle[0].height / 2);
-                //    rectLeftXCoord = centerRectangle[0].cx - (centerRectangle[0].width / 2);
-                //};
-                //
-                //coords[0] = rectTopYCoord;
-                //coords[1] = rectRightXCoord;
-                //coords[2] = rectLowYCoord;
-                //coords[3] = rectLeftXCoord;
-
-                //mark corners of rectangle with circles -- for debugging
-//                        markFourCorners(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord);
-
                 //TODO: special case for industrial district
-                //if (d.id == 19) {
                 if (d.id != 41) {
 
                     var neighborhood = generateSidePolygons(coords, displayPolygons, displayRectangles, pathCoords2d,
@@ -189,10 +159,11 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                     }
 
                     var lengthWord = d.properties.name.length;
+                    var nameWithoutSpaces = d.properties.name.replace(" ", "");
 
 
                     //fillNeighborhoodText(neighborhood.rectangles, d.properties.name.substring(0, Math.round(lengthWord *.75)), d, displayBounds, displayText);
-                    fillNeighborhoodText(neighborhood.rectangles, d.properties.name, d, displayBounds, displayText);
+                    fillNeighborhoodText(neighborhood.rectangles, nameWithoutSpaces + nameWithoutSpaces, d, displayBounds, displayText);
 
 
                 }
@@ -744,6 +715,19 @@ function generateInscribedRectangle(polyCoordinates, d, displayFlag, location) {
 
     return rectangle;
 }
+function calculateNumLevels(aspectRatio, phrase) {
+
+    //as aspectRatio increases, num levels increases
+    var numLevels = Math.ceil(aspectRatio + 1);
+
+    if (phrase.length > 15) {
+        //as phrase length increases, num levels increases
+        numLevels *= Math.round(phrase.length / 15);
+    }
+
+    return numLevels;
+
+}
 
 function displayClockwiseIndicator(pathCoords2d) {
     var radius = 0.1;
@@ -935,6 +919,7 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
 
             var maxArea = viableRectangles[0].area;
             var indexOfMaxArea = 0;
+            var aspectRatioBiggestRect = viableRectangles[0].aspectRatio;
 
             //find biggest rectangle, use for majority of text
             for (var i = 1; i < viableRectangles.length; i++) {
@@ -942,6 +927,7 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
                 if (currArea > maxArea) {
                     indexOfMaxArea = i;
                     maxArea = currArea;
+                    aspectRatioBiggestRect = viableRectangles[i].aspectRatio;
                 }
             }
 
@@ -955,9 +941,10 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
 
                 //if currRect is actually viable
                 if (currRect.aspectRatio < 4) {
+
                     //append path and letter
                     var currLetter = phrase.substring(currIndex, currIndex + 1);
-                    appendSingleLetter(currRect, currLetter, d);
+                    appendSingleLetter(currRect, currLetter, d, aspectRatioBiggestRect);
                     currIndex++;
                 }
                 currRectIndex++;
@@ -1055,7 +1042,7 @@ function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
     var verticalDistance = rectangle.corners.lowY - rectangle.corners.topY;
     var horizontalDistance = rectangle.corners.rightX - rectangle.corners.leftX;
 
-    var numLevels = Math.round(rectangle.aspectRatio) + 1;
+    var numLevels = calculateNumLevels(rectangle.aspectRatio, phrase); //Math.round(rectangle.aspectRatio) + 1
     var phrasePieces = [];
     var indexInPhrase = 0; //next available letter
 
@@ -1222,42 +1209,53 @@ function appendPathAndText(startPathX, startPathY, endPathX, endPathY,
             .style("text-anchor", "middle")
              .attr("startOffset", "50%")
             .text(phrase)
-            .attr("font-size", textSize + "pt")
+            .attr("font-size", (textSize * 1.25) + "pt")
             .attr("font-family", font);
     }
 }
 
-function appendSingleLetter(rectangle, letter, d, location) {
+function appendSingleLetter(rectangle, letter, d, aspectRatioBiggestRect) {
 
         var textPath;
         var letterSize;
         var rectWidth;
         var rectHeight;
+        var upperLeftCornerX;
+        var upperLeftCornerY;
 
         if (rectangle.rect[0].angle == 0) { //longer side of rectangle is aligned with x axis(?)
 
             //find new X
-            var xWithPadding = rectangle.corners.rightX - padding;
+            //var xWithPadding = rectangle.corners.rightX - padding;
+
+            upperLeftCornerX = rectangle.corners.rightX;
+            upperLeftCornerY = rectangle.corners.topY;
+
 
             //use right side of rectangle for bottom of path
-            textPath = "M" + xWithPadding + "," + rectangle.corners.lowY
-                + "L" + xWithPadding + "," + rectangle.corners.topY;
+            //textPath = "M" + rectangle.corners.rightX + "," + rectangle.corners.lowY
+            //    + "L" + rectangle.corners.rightX + "," + rectangle.corners.topY;
 
-            rectWidth = rectangle.rect[0].width;
-            rectHeight = rectangle.rect[0].height;
+            //use top of rectangle for bottom of path (letter falls on its right side)
+            textPath = "M" + rectangle.corners.leftX + "," + rectangle.corners.topY
+                 + "L" + rectangle.corners.leftX + "," + rectangle.corners.lowY;
 
         } else if (rectangle.rect[0].angle == 90 || rectangle.rect[0].angle == 270) {
             //find new y
-            var yWithPadding = rectangle.corners.lowY - padding;
+            //var yWithPadding = rectangle.corners.lowY - padding;
+            var y = rectangle.corners.lowY;
+
+            upperLeftCornerX = rectangle.corners.leftX;
+            upperLeftCornerY = rectangle.corners.topY;
 
             //use bottom of rectangle for bottom of path
-            textPath = "M" + rectangle.corners.leftX + "," + yWithPadding
-                + "L" + rectangle.corners.rightX + "," + yWithPadding;
-
-            rectWidth = rectangle.rect[0].height;
-            rectHeight = rectangle.rect[0].width;
+            textPath = "M" + rectangle.corners.leftX + "," + y
+                + "L" + rectangle.corners.rightX + "," + y;
 
         }
+
+        rectWidth = rectangle.rect[0].height;
+        rectHeight = rectangle.rect[0].width;
 
         var textSize = 1;
 
@@ -1274,7 +1272,7 @@ function appendSingleLetter(rectangle, letter, d, location) {
 
         while (widthTransform < rectWidth && heightTransform < rectHeight && eBrake) {
 
-            textSize++;
+            textSize += 0.5;
 
             text = phantomSvg.append("text")
                 .text(letter)
@@ -1285,10 +1283,18 @@ function appendSingleLetter(rectangle, letter, d, location) {
             widthTransform = bbox.width;
             heightTransform = bbox.height;
 
-            if (textSize > 25) {
+            if (textSize > 50) {
                 eBrake = false;
             }
         }
+    //
+    //var rectangle = svg.append("rect")
+    //    .attr("x", upperLeftCornerX)
+    //    .attr("y", upperLeftCornerY)
+    //    .attr("width", widthTransform)
+    //    .attr("height", heightTransform)
+    //    .attr("fill", "red")
+    //    .attr("id", "bounding_text_rect_" + d.id);
 
 
         //find appropriate letter size based on area of horizontal distance
@@ -1305,7 +1311,7 @@ function appendSingleLetter(rectangle, letter, d, location) {
             .attr("xlink:href", "#" + rectangle.id + "_letter_path")
             .style("text-anchor", "middle")
             .text(letter)
-            .attr("font-size", textSize + "pt")
+            .attr("font-size", (textSize * 1.2) + "pt")
             .attr("startOffset", "50%")
             .attr("font-family", font);
 }
