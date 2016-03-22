@@ -113,75 +113,60 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                 if (d.id != 41) {
 
                     var rectanglesForText;
-                    var filterFlag;
 
-                    if (d.id != 36) { //change to if not in JSON rectDatabase
-                        var centerRectangle = generateInscribedRectangle(pathCoords2d, d, displayRectangles, "center");
+                    var centerRectangle = generateInscribedRectangle(pathCoords2d, d, displayRectangles, "center");
 
-                        //clockwise order, starting from top: topY, rightX, lowY, leftX
-                        var coords = findRectangleCorners(centerRectangle);
+                    //clockwise order, starting from top: topY, rightX, lowY, leftX
+                    var coords = findRectangleCorners(centerRectangle);
 
-                        var neighborhood = generateSidePolygons(coords, displayPolygons, displayRectangles, pathCoords2d,
-                            d, centerRectangle, true, "");
+                    var neighborhood = generateSidePolygons(coords, displayPolygons, displayRectangles, pathCoords2d,
+                        d, centerRectangle, true, "");
 
-                        rectanglesForText = neighborhood.rectangles;
-                        filterFlag = true;
+                    rectanglesForText = neighborhood.rectangles;
 
-                        //generate next level of polygons
+                    //generate next level of polygons
 
-                        if (processAll) {
+                    if (processAll) {
 
-                            //generate mini polygons in top segment
-                            if (neighborhood.polygons[0] != null && neighborhood.rectangles[0] != null) {
-                                var topRectCoords = findRectangleCorners(neighborhood.rectangles[0].rect);
-                                var topNeighborhood = generateSidePolygons(topRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[0], d, neighborhood.rectangles[0],
-                                    true, "mini");
-                            }
-
-                            if (neighborhood.polygons[1] != null && neighborhood.rectangles[1] != null) {
-                                var leftRectCoords = findRectangleCorners(neighborhood.rectangles[1].rect);
-                                var leftNeighborhood = generateSidePolygons(leftRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[1], d, neighborhood.rectangles[1],
-                                    true, "mini");
-                            }
-
-                            //skpping center rectangle
-
-                            if (neighborhood.polygons[3] != null && neighborhood.rectangles[3] != null) {
-                                var rightRectCoords = findRectangleCorners(neighborhood.rectangles[3].rect);
-                                var righttNeighborhood = generateSidePolygons(rightRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[3], d, neighborhood.rectangles[3],
-                                    true, "mini");
-                            }
-                            //
-                            //if (neighborhood.polygons[4] != null && neighborhood.rectangles[4] != null) {
-                            //    var bottomRectCoords = findRectangleCorners(neighborhood.rectangles[4].rect);
-                            //    var bottomNeighborhood = generateSidePolygons(bottomRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[4], d, neighborhood.rectangles[4],
-                            //        true, "mini");
-                            //}
-
-                            //if (rightPoly != null) {
-                            //    var rightNeighborPolygon = generateNeighborhoodPoly(rightPoly);
-                            //    var rightRectCoords = findRectangleCorners(rightRectangle);
-                            //    var miniRightPoly = generateRightPolygon(d, rightRectCoords.topY, rightRectCoords.lowY, rightRectCoords.leftX, rightRectCoords.rightX,
-                            //        rightPoly, rightNeighborPolygon, displayPolygons, "mini");
-                            //    if (miniRightPoly != null) {
-                            //        var miniRightRect = generateInscribedRectangle(miniRightPoly, d, displayRectangles, "right_mini")
-                            //    }
-                            //
-                            //}
+                        //generate mini polygons in top segment
+                        if (neighborhood.polygons[0] != null && neighborhood.rectangles[0] != null) {
+                            var topRectCoords = findRectangleCorners(neighborhood.rectangles[0].rect);
+                            var topNeighborhood = generateSidePolygons(topRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[0], d, neighborhood.rectangles[0],
+                                true, "mini");
                         }
 
+                        if (neighborhood.polygons[1] != null && neighborhood.rectangles[1] != null) {
+                            var leftRectCoords = findRectangleCorners(neighborhood.rectangles[1].rect);
+                            var leftNeighborhood = generateSidePolygons(leftRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[1], d, neighborhood.rectangles[1],
+                                true, "mini");
+                        }
 
-                        //if (d.id == 36) {
-                        //    rectDatabase[d.properties.name] = {};
-                        //    rectDatabase[d.properties.name].id = d.id;
+                        //skpping center rectangle
+
+                        if (neighborhood.polygons[3] != null && neighborhood.rectangles[3] != null) {
+                            var rightRectCoords = findRectangleCorners(neighborhood.rectangles[3].rect);
+                            var righttNeighborhood = generateSidePolygons(rightRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[3], d, neighborhood.rectangles[3],
+                                true, "mini");
+                        }
+                        //
+                        //if (neighborhood.polygons[4] != null && neighborhood.rectangles[4] != null) {
+                        //    var bottomRectCoords = findRectangleCorners(neighborhood.rectangles[4].rect);
+                        //    var bottomNeighborhood = generateSidePolygons(bottomRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[4], d, neighborhood.rectangles[4],
+                        //        true, "mini");
                         //}
-                    } else { // get rectangles from JSON rectangleDatabase
-                        rectanglesForText = rectDatabase[d.properties.name].rectangles;
-                        filterFlag = false;
-                        for (var i = 0; i < rectanglesForText.length; i++) {
-                            appendRectangle(rectanglesForText[i].rect, displayRectangles, d, "unknown");
-                        }
+
+                        //if (rightPoly != null) {
+                        //    var rightNeighborPolygon = generateNeighborhoodPoly(rightPoly);
+                        //    var rightRectCoords = findRectangleCorners(rightRectangle);
+                        //    var miniRightPoly = generateRightPolygon(d, rightRectCoords.topY, rightRectCoords.lowY, rightRectCoords.leftX, rightRectCoords.rightX,
+                        //        rightPoly, rightNeighborPolygon, displayPolygons, "mini");
+                        //    if (miniRightPoly != null) {
+                        //        var miniRightRect = generateInscribedRectangle(miniRightPoly, d, displayRectangles, "right_mini")
+                        //    }
+                        //
+                        //}
                     }
+
                     var text = nameWithoutSpaces;
 
                     if (d.id % 2 == 0) {
@@ -191,7 +176,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
 
 
                     //fillNeighborhoodText(neighborhood.rectangles, d.properties.name.substring(0, Math.round(lengthWord *.75)), d, displayBounds, displayText);
-                    fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase, filterFlag);
+                    fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase);
 
 
                 }
@@ -220,28 +205,28 @@ function generateSidePolygons(coords, displayPolygons, displayRectangles, pathCo
         pathCoords2d, neighborPolygon, displayPolygons, "");
     var topRectangle;
     if (topPoly != null) {
-        topRectangle = generateTopRectangle(topPoly, d, displayRectangles, tag + "_top");
+        topRectangle = generateInscribedRectangle(topPoly, d, displayRectangles, tag + "top");
     }
     if (processAllFlag) {
         var rightPoly = generateRightPolygon(topPoly, d, coords.topY, coords.lowY, coords.leftX, coords.rightX,
             pathCoords2d, neighborPolygon, displayPolygons);
         var rightRectangle;
         if (rightPoly != null) {
-            rightRectangle = generateInscribedRectangle(rightPoly, d, displayRectangles, tag + "_right");
+            rightRectangle = generateInscribedRectangle(rightPoly, d, displayRectangles, tag + "right");
         }
 
         var bottomPoly = generateBottomPolygon(rightPoly, d, coords.topY, coords.lowY, coords.leftX, coords.rightX,
             pathCoords2d, neighborPolygon, displayPolygons);
         var bottomRectangle;
         if (bottomPoly != null) {
-            bottomRectangle = generateInscribedRectangle(bottomPoly, d, displayRectangles, tag + "_bottom");
+            bottomRectangle = generateInscribedRectangle(bottomPoly, d, displayRectangles, tag + "bottom");
         }
 
         var leftPoly = generateLeftPolygon(bottomPoly, d, coords.topY, coords.lowY, coords.leftX, coords.rightX,
             pathCoords2d, neighborPolygon, displayPolygons);
         var leftRectangle;
         if (leftPoly != null) {
-            leftRectangle = generateInscribedRectangle(leftPoly, d, displayRectangles, tag + "_left");
+            leftRectangle = generateInscribedRectangle(leftPoly, d, displayRectangles, tag + "left");
         }
 
         neighborhood.polygons[0] = topPoly;
@@ -421,46 +406,6 @@ function generateTopPolygon(d,  rectTopYCoord,
     return null;
 }
 
-function generateTopRectangle(topPoly, d, displayFlag, tag) {
-    //generate top rectangle
-    if (topPoly.length > 2) {
-        var topRectangle = d3plus.geom.largestRect(topPoly, {
-            angle: [0, 90, 270], nTries: 50, tolerance: 0.02
-        });
-
-//                            neighborhoodGroup.selectAll("path")
-//                                    .data(topoGeometries)
-//                                    .enter()
-//                                    .append("path")
-//                                    .attr("d", path)
-//                                    .attr("class", "neighborhoodOutline")
-//                                    .attr("id", function(d) {
-//                                        return "n_" + d.id
-//                                    });
-
-        if (displayFlag) {
-
-            svg.append("rect")
-                .attr("width", topRectangle[0].width)
-                .attr("height", topRectangle[0].height)
-                .attr("x", topRectangle[0].cx - (topRectangle[0].width / 2))
-                .attr("y", topRectangle[0].cy - (topRectangle[0].height / 2))
-                .attr("transform", "rotate(" + topRectangle[0].angle + "," + topRectangle[0].cx + "," + topRectangle[0].cy + ")")
-                .attr("id", function () {
-                    return "rect_" + tag + "_" + d.id + "_" + "top";
-                })
-                .attr("fill", function () {
-                    var letters = '0123456789ABCDEF'.split('');
-                    var color = '#';
-                    for (var i = 0; i < 6; i++) {
-                        color += letters[Math.floor(Math.random() * 16)];
-                    }
-                    return color;
-                });
-        }
-        return topRectangle;
-    }
-}
 
 function generateRightPolygon(topPoly, d, rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord,
                               pathCoords2d, neighborPolygon, displayFlag) {
@@ -654,45 +599,6 @@ function generateLeftPolygon(bottomPoly, d, rectTopYCoord, rectLowYCoord, rectLe
 
 }
 
-function generateIntersectionPointFromStart(pathCoords2d, countFrom, rectTopYCoord, d) {
-    var startPoint = [pathCoords2d[countFrom][0], pathCoords2d[countFrom][1]];
-    var endPoint = [pathCoords2d[countFrom + 1][0], pathCoords2d[countFrom + 1][1]];
-
-    var slope = Math.sqrt(Math.pow(startPoint[0] - endPoint[0], 2) + Math.pow(startPoint[1] - endPoint[1], 2));
-    var newX = (Math.abs(endPoint[1] - startPoint[1]) / slope) + startPoint[0];
-
-    svg.append("path")
-        .attr("d", "M" + startPoint[0] + "," + startPoint[1] + "L" + endPoint[0] + "," + endPoint[1])
-        .attr("stroke", "red");
-
-    svg.append("circle").attr("cy", rectTopYCoord)
-        .attr("cx", newX)
-        .attr("r", 2)
-        .attr("fill", "red")
-        .attr("id", "startIntersection_" + d.id);
-
-}
-
-//function generateIntersectionPointFromEnd(pathCoords2d, countFrom, rectTopYCoord, d) {
-//
-//    var startPoint = [pathCoords2d[countFrom][0], pathCoords2d[countFrom][1]];
-//    var endPoint = [pathCoords2d[countFrom - 1][0], pathCoords2d[countFrom - 1][1]];
-//
-//    var slope = Math.sqrt(Math.pow(startPoint[0] - endPoint[0], 2) + Math.pow(startPoint[1] - endPoint[1], 2));
-//    var newX = (Math.abs(endPoint[1] - startPoint[1]) / slope) + startPoint[0];
-//
-//    svg.append("path")
-//        .attr("d", "M" + startPoint[0] + "," + startPoint[1] + "L" + endPoint[0] + "," + endPoint[1])
-//        .attr("stroke", "red");
-//
-//    svg.append("circle").attr("cy", rectTopYCoord)
-//        .attr("cx", newX)
-//        .attr("r", 2)
-//        .attr("fill", "red")
-//        .attr("id", "endIntersection_" + d.id);
-//
-//}
-
 function generateNeighborhoodPoly(pathCoords2d) {
 
     var sum = 0;
@@ -715,10 +621,35 @@ function generateNeighborhoodPoly(pathCoords2d) {
 
 //location parameter is: top, left, right, bottom relative to center inscribed rectangle
 function generateInscribedRectangle(polyCoordinates, d, displayFlag, location) {
-    //generate largest inscribed rectangle for overall polygon
-    var rectangle = d3plus.geom.largestRect(polyCoordinates, {
-        angle: [0, 90, 270], nTries: 50, tolerance: 0.02
-    });
+
+    var rectangle;
+
+    //look up rectangle with given neighborhood and location.
+    //if exists, use rect from database
+
+    var savedNeighborhood = rectDatabase[d.properties.name];
+    if (savedNeighborhood != null) {
+    //if (false) {
+        var savedRect = rectDatabase[d.properties.name][location];
+        //use rect from database (may be null--should be ok)
+        rectangle = savedRect;
+        console.log("using saved rectangle from database for neighborhood: " + d.properties.name);
+    } else {
+        //generate largest inscribed rectangle for overall polygon
+        rectangle = d3plus.geom.largestRect(polyCoordinates, {
+            angle: [0, 90, 270], nTries: 50, tolerance: 0.02
+        });
+    }
+
+    //if (d.id == 28) {
+    //    if (location === "center") {
+    //        rectDatabase[d.properties.name] = {};
+    //    }
+    //    rectDatabase[d.properties.name][location] = rectangle;
+    //    //console.log("\"" + location + "\": " + JSON.stringify(rectangle));
+    //    console.log(JSON.stringify(rectDatabase));
+    //    //debugger;
+    //}
 
     if (rectangle != null && displayFlag) {
         svg.append("rect")
@@ -827,20 +758,33 @@ function findRectangleCorners(rectangle) {
     return rectCoords;
 }
 
-function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, displayText, rectDatabase, filterFlag) {
+function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, displayText, rectDatabase) {
 
     phrase = phrase.toUpperCase();
     var viableRectangles;
+    viableRectangles = filterViableRectangles(neighborhoodRectangles, d);
 
-    if (filterFlag) { // rectangles were generated. find viable ones.
-        viableRectangles = filterViableRectangles(neighborhoodRectangles, d);
-    } else { //rectangles coming from database. don't bother filtering.
-        viableRectangles = neighborhoodRectangles;
+    if (rectDatabase[d.properties.name] != null &&
+                rectDatabase[d.properties.name].manual != null) {
+        //fill text in rectangles based on
+        //instructions delineated in rectangle database
+        populateTextAlg2(viableRectangles, phrase, displayBounds, displayText, d);
+    } else {
+        //populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d);
+        populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d);
     }
+}
 
-    //populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d);
-    populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d);
+//apply padding dictated in global padding variable
+function applyPadding(rectangle) {
+    rectangle.corners.leftX += (padding / 2.0);
+    rectangle.corners.rightX -= (padding / 2.0);
+    rectangle.corners.lowY -= (padding / 2.0);
+    rectangle.corners.topY += (padding / 2.0);
 
+    rectangle.area = (rectangle.corners.lowY - rectangle.corners.topY)
+                            * (rectangle.corners.rightX - rectangle.corners.leftX);
+    return rectangle;
 }
 
 function filterViableRectangles(neighborhoodRectangles, d) {
@@ -979,6 +923,9 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
                 }
             }
 
+            //apply padding to center rectangle
+            viableRectangles[indexOfMaxArea] = applyPadding(viableRectangles[indexOfMaxArea]);
+
             //if there are viable rectangles appearing before biggest (i.e. top and left), fill with one letter each
             var currIndex = 0;
             var currRectIndex = 0;
@@ -1044,6 +991,27 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
 
 }
 
+function populateTextAlg2(viableRectangles, phrase, displayBounds, displayText, d) {
+    //use multiple rectangles to fill text
+    if (displayText) {
+
+        //take them as they come: if rectangle wants one char, give it one char
+        for (var i = 0; i < viableRectangles.length; i++) {
+
+            var indexStart = Math.floor(viableRectangles[i].rect[3][0] * phrase.length);
+            var indexEnd = Math.floor(viableRectangles[i].rect[3][1] * phrase.length);
+
+            var phraseChunk = phrase.substring(indexStart, indexEnd);
+
+            viableRectangles[i] = applyPadding(viableRectangles[i]);
+
+            fillRectTextManual(phraseChunk, viableRectangles[i], displayText,
+                            displayBounds, d);
+
+        }
+    }
+}
+
 //fill rectangle using svg wrapping from d3Plus
 function fillRectWithText(phrase, rectangle) {
 
@@ -1085,11 +1053,22 @@ function fillRectWithText(phrase, rectangle) {
 
 function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
 
-    //maybe need this?
+    if (d.id == 28) {
+        debugger;
+    }
+
     var verticalDistance = rectangle.corners.lowY - rectangle.corners.topY;
     var horizontalDistance = rectangle.corners.rightX - rectangle.corners.leftX;
 
-    var numLevels = calculateNumLevels(rectangle.aspectRatio, phrase); //Math.round(rectangle.aspectRatio) + 1
+    var numLevels;
+
+    if (rectangle.rect[4] === "horizontalText") { //force rectangle to use horizontal slicing
+        //find num levels
+        numLevels = calculateNumLevels(1 / rectangle.aspectRatio, phrase);
+    } else {
+        numLevels = calculateNumLevels(rectangle.aspectRatio, phrase); //Math.round(rectangle.aspectRatio) + 1
+    }
+
     var phrasePieces = [];
     var indexInPhrase = 0; //next available letter
 
@@ -1106,8 +1085,7 @@ function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
     }
     var rectCoords = findRectangleCorners(rectangle.rect);
 
-
-    if (verticalDistance > horizontalDistance) { //taller
+    if (verticalDistance > horizontalDistance || rectangle.rect[4] == "horizontalText") { //taller
         //split rectangle into four portions and find lower edge of each for text path
 
         //x coords don't change
@@ -1127,21 +1105,9 @@ function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
             var startPathY = rectCoords.topY + (k * (verticalDistance / numLevels));
             var endPathY = startPathY;
 
-            //to add padding on the bottom of the rectangle
-            if (k == numLevels) {
-                startPathY -= padding;
-                endPathY -= padding;
-                heightOfSlice -= padding;
-            }
-
-            ////find area of slice:
-            //var areaOfSlice = (verticalDistance / numLevels) * horizontalDistance;
-            //
-            //var textSize = findTextSize(areaOfSlice, currPhrase);
-
             appendPathAndText(startPathX, startPathY, endPathX, endPathY,
                 currPhrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
-                heightOfSlice);
+                heightOfSlice, rectangle.id);
         }
     } else { //wider: make vertical slices
         //y coords don't change
@@ -1161,15 +1127,9 @@ function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
             var startPathX = rectCoords.leftX + ((k - 1) * (horizontalDistance / numLevels));
             var endPathX = startPathX;
 
-            if (k == 1) {
-                startPathX += padding * 2;
-                endPathX += padding * 2;
-                heightOfSlice -= padding * 2;
-            }
-
             appendPathAndText(startPathX, startPathY, endPathX, endPathY,
                 currPhrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
-                heightOfSlice);
+                heightOfSlice, rectangle.id);
         }
     }
 
@@ -1199,13 +1159,13 @@ function insertSpaces(phrase) {
 
 function appendPathAndText(startPathX, startPathY, endPathX, endPathY,
                            phrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
-                            heightOfSlice) {
+                            heightOfSlice, rectangleId) {
 
     var pathStroke = displayBounds ? "black" : "none";
 
     var pathString = "M" + startPathX + "," + startPathY + "L" + endPathX + "," + endPathY;
     svg.append("path")
-        .attr("id", "innerPath_" + d.id + "_" + k)
+        .attr("id", "innerPath_" + rectangleId + "_" + k)
         .attr("d", pathString)
         .style("fill", "none")
         .style('stroke', pathStroke);
@@ -1252,7 +1212,7 @@ function appendPathAndText(startPathX, startPathY, endPathX, endPathY,
 
         var text = svg.append("text")
             .append("textPath")
-            .attr("xlink:href", "#" + "innerPath_" + d.id + "_" + k)
+            .attr("xlink:href", "#" + "innerPath_" + rectangleId + "_" + k)
             .style("text-anchor", "middle")
              .attr("startOffset", "50%")
             .text(phrase)
