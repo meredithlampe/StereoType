@@ -18,8 +18,6 @@ var bottomPolyBounds = {};
 var leftPolyBounds = {};
 
 
-//store database of rectangles for neighborhood
-var rectDatabase = {};
 
 var projection = d3.geo.mercator()
     .rotate(rotate)
@@ -102,80 +100,103 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             //find largest rectangle in polygon
             if (pathCoords2d.length > 2) {
 
-                var displayPolygons = true;
+                var displayPolygons = false;
                 var displayRectangles = true;
                 var displayBounds = false;
-                var displayText = false;
-                var processAll = true;
+                var displayText = true;
+                var processAll = false;
 
-                var centerRectangle = generateInscribedRectangle(pathCoords2d, d, displayRectangles, "center");
-
-                //clockwise order, starting from top: topY, rightX, lowY, leftX
-                var coords = findRectangleCorners(centerRectangle);
+                var lengthWord = d.properties.name.length;
+                var nameWithoutSpaces = d.properties.name.replace(" ", "");
 
                 //TODO: special case for industrial district
                 if (d.id != 41) {
 
-                    var neighborhood = generateSidePolygons(coords, displayPolygons, displayRectangles, pathCoords2d,
-                        d, centerRectangle, true, "");
+                    var rectanglesForText;
+                    var filterFlag;
 
-                    //generate next level of polygons
+                    if (d.id != 36) { //change to if not in JSON rectDatabase
+                        var centerRectangle = generateInscribedRectangle(pathCoords2d, d, displayRectangles, "center");
 
-                    if (processAll) {
+                        //clockwise order, starting from top: topY, rightX, lowY, leftX
+                        var coords = findRectangleCorners(centerRectangle);
 
-                        //generate mini polygons in top segment
-                        if (neighborhood.polygons[0] != null && neighborhood.rectangles[0] != null) {
-                            var topRectCoords = findRectangleCorners(neighborhood.rectangles[0].rect);
-                            var topNeighborhood = generateSidePolygons(topRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[0], d, neighborhood.rectangles[0],
-                                true, "mini");
+                        var neighborhood = generateSidePolygons(coords, displayPolygons, displayRectangles, pathCoords2d,
+                            d, centerRectangle, true, "");
+
+                        rectanglesForText = neighborhood.rectangles;
+                        filterFlag = true;
+
+                        //generate next level of polygons
+
+                        if (processAll) {
+
+                            //generate mini polygons in top segment
+                            if (neighborhood.polygons[0] != null && neighborhood.rectangles[0] != null) {
+                                var topRectCoords = findRectangleCorners(neighborhood.rectangles[0].rect);
+                                var topNeighborhood = generateSidePolygons(topRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[0], d, neighborhood.rectangles[0],
+                                    true, "mini");
+                            }
+
+                            if (neighborhood.polygons[1] != null && neighborhood.rectangles[1] != null) {
+                                var leftRectCoords = findRectangleCorners(neighborhood.rectangles[1].rect);
+                                var leftNeighborhood = generateSidePolygons(leftRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[1], d, neighborhood.rectangles[1],
+                                    true, "mini");
+                            }
+
+                            //skpping center rectangle
+
+                            if (neighborhood.polygons[3] != null && neighborhood.rectangles[3] != null) {
+                                var rightRectCoords = findRectangleCorners(neighborhood.rectangles[3].rect);
+                                var righttNeighborhood = generateSidePolygons(rightRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[3], d, neighborhood.rectangles[3],
+                                    true, "mini");
+                            }
+                            //
+                            //if (neighborhood.polygons[4] != null && neighborhood.rectangles[4] != null) {
+                            //    var bottomRectCoords = findRectangleCorners(neighborhood.rectangles[4].rect);
+                            //    var bottomNeighborhood = generateSidePolygons(bottomRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[4], d, neighborhood.rectangles[4],
+                            //        true, "mini");
+                            //}
+
+                            //if (rightPoly != null) {
+                            //    var rightNeighborPolygon = generateNeighborhoodPoly(rightPoly);
+                            //    var rightRectCoords = findRectangleCorners(rightRectangle);
+                            //    var miniRightPoly = generateRightPolygon(d, rightRectCoords.topY, rightRectCoords.lowY, rightRectCoords.leftX, rightRectCoords.rightX,
+                            //        rightPoly, rightNeighborPolygon, displayPolygons, "mini");
+                            //    if (miniRightPoly != null) {
+                            //        var miniRightRect = generateInscribedRectangle(miniRightPoly, d, displayRectangles, "right_mini")
+                            //    }
+                            //
+                            //}
                         }
 
-                        if (neighborhood.polygons[1] != null && neighborhood.rectangles[1] != null) {
-                            var leftRectCoords = findRectangleCorners(neighborhood.rectangles[1].rect);
-                            var leftNeighborhood = generateSidePolygons(leftRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[1], d, neighborhood.rectangles[1],
-                                true, "mini");
-                        }
 
-                        //skpping center rectangle
-
-                        if (neighborhood.polygons[3] != null && neighborhood.rectangles[3] != null) {
-                            var rightRectCoords = findRectangleCorners(neighborhood.rectangles[3].rect);
-                            var righttNeighborhood = generateSidePolygons(rightRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[3], d, neighborhood.rectangles[3],
-                                true, "mini");
-                        }
-                        //
-                        //if (neighborhood.polygons[4] != null && neighborhood.rectangles[4] != null) {
-                        //    var bottomRectCoords = findRectangleCorners(neighborhood.rectangles[4].rect);
-                        //    var bottomNeighborhood = generateSidePolygons(bottomRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[4], d, neighborhood.rectangles[4],
-                        //        true, "mini");
+                        //if (d.id == 36) {
+                        //    rectDatabase[d.properties.name] = {};
+                        //    rectDatabase[d.properties.name].id = d.id;
                         //}
+                    } else { // get rectangles from JSON rectangleDatabase
+                        rectanglesForText = rectDatabase[d.properties.name].rectangles;
+                        filterFlag = false;
+                        for (var i = 0; i < rectanglesForText.length; i++) {
+                            appendRectangle(rectanglesForText[i].rect, displayRectangles, d, "unknown");
+                        }
+                    }
+                    var text = nameWithoutSpaces;
 
-                        //if (rightPoly != null) {
-                        //    var rightNeighborPolygon = generateNeighborhoodPoly(rightPoly);
-                        //    var rightRectCoords = findRectangleCorners(rightRectangle);
-                        //    var miniRightPoly = generateRightPolygon(d, rightRectCoords.topY, rightRectCoords.lowY, rightRectCoords.leftX, rightRectCoords.rightX,
-                        //        rightPoly, rightNeighborPolygon, displayPolygons, "mini");
-                        //    if (miniRightPoly != null) {
-                        //        var miniRightRect = generateInscribedRectangle(miniRightPoly, d, displayRectangles, "right_mini")
-                        //    }
-                        //
-                        //}
+                    if (d.id % 2 == 0) {
+                        text = nameWithoutSpaces + nameWithoutSpaces;
                     }
 
-                    var lengthWord = d.properties.name.length;
-                    var nameWithoutSpaces = d.properties.name.replace(" ", "");
-
-                    rectDatabase[d.properties.name] = {};
-                    rectDatabase[d.properties.name].id = d.id;
 
 
                     //fillNeighborhoodText(neighborhood.rectangles, d.properties.name.substring(0, Math.round(lengthWord *.75)), d, displayBounds, displayText);
-                    fillNeighborhoodText(neighborhood.rectangles, nameWithoutSpaces + nameWithoutSpaces, d, displayBounds, displayText, rectDatabase);
+                    fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase, filterFlag);
 
 
                 }
             }
-            debugger;
+            //debugger;
             return null;
         });
 
@@ -720,6 +741,23 @@ function generateInscribedRectangle(polyCoordinates, d, displayFlag, location) {
 
     return rectangle;
 }
+
+function appendRectangle(rectangle, displayFlag, d, location) {
+    if (rectangle != null && displayFlag) {
+        svg.append("rect")
+            .attr("width", rectangle[0].width)
+            .attr("height", rectangle[0].height)
+            .attr("x", rectangle[0].cx - (rectangle[0].width / 2))
+            .attr("y", rectangle[0].cy - (rectangle[0].height / 2))
+            .attr("transform", "rotate(" + rectangle[0].angle + "," + rectangle[0].cx + "," + rectangle[0].cy + ")")
+            .attr("id", function() {
+                return "rect_" + d.id + "_" + location;
+            })
+            .attr("fill", "#white")
+            .attr("opacity", "0.5");
+    }
+}
+
 function calculateNumLevels(aspectRatio, phrase) {
 
     //as aspectRatio increases, num levels increases
@@ -771,7 +809,7 @@ function arrayToPath(polyArray) {
 function findRectangleCorners(rectangle) {
 
     //return obj with four corners
-    var rectCoords = [];
+    var rectCoords = {};
 
     //find four corners of rectangle
     if (rectangle[0].angle == 90 || rectangle[0].angle == 270) {
@@ -789,13 +827,16 @@ function findRectangleCorners(rectangle) {
     return rectCoords;
 }
 
-function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, displayText, rectDatabase) {
+function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, displayText, rectDatabase, filterFlag) {
 
     phrase = phrase.toUpperCase();
+    var viableRectangles;
 
-    var viableRectangles = filterViableRectangles(neighborhoodRectangles, d);
-
-    rectDatabase[d.properties.name].rectangles = viableRectangles;
+    if (filterFlag) { // rectangles were generated. find viable ones.
+        viableRectangles = filterViableRectangles(neighborhoodRectangles, d);
+    } else { //rectangles coming from database. don't bother filtering.
+        viableRectangles = neighborhoodRectangles;
+    }
 
     //populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d);
     populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d);
@@ -1043,7 +1084,6 @@ function fillRectWithText(phrase, rectangle) {
 }
 
 function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
-    //debugger;
 
     //maybe need this?
     var verticalDistance = rectangle.corners.lowY - rectangle.corners.topY;
@@ -1229,6 +1269,10 @@ function appendSingleLetter(rectangle, letter, d, aspectRatioBiggestRect) {
         var rectHeight;
         var upperLeftCornerX;
         var upperLeftCornerY;
+
+    if (true) {
+        //debugger;
+    }
 
         if (rectangle.rect[0].angle == 0) { //longer side of rectangle is aligned with x axis(?)
 
