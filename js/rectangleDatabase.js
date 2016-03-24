@@ -1,6 +1,21 @@
 /**
  * Created by meredith on 3/21/16.
+ * Notes:
+ * manual flag means that each rectangle in neighborhood will be filled
+ * with text. Amt of text given to each rectangle (portion of phrase) is
+ * determined by portions indicated in index 3 of each rectangle in an array
+ * with [startPortion, endPortion]. Phrase split and given in order that
+ * rectangles are listed here. Can use "horizontalText" flag in index 4 of
+ * rectangle array to force text to appear horizontally aligned.
+ *
+ * If manual flag is not set, all rectangles will recieve one character
+ * besides starting rectangle, which will receive the rest of the phrase.
+ * Letters will be given in order: top, left, (rest of phrase in center), right,
+ * bottom.
  */
+
+
+
 var rectDatabase = {
     "North Beach": {
         "center": [
@@ -248,5 +263,78 @@ var rectDatabase = {
         //
         //    ]
         //]
+    },
+    "Cedar Park":{
+        "top":[
+            {
+                "cx":573.4704547593865,
+                "cy":35.67116891225106,
+                "width":19.654529466720398,
+                "height":7.766349166092639,
+                "angle":0
+            },
+            152.64393853380716,
+            [
+
+            ],
+            [0, 1/4],
+            "horizontalText"
+        ],
+        "center":[
+            {
+                "cx":576.5906345476906,
+                "cy":66.72284799721078,
+                "width":53.650808702317654,
+                "height":25.81679009381344,
+                "angle":90
+            },
+            1385.0916666310743,
+            [
+
+            ],
+            [1/4, 5/6]
+        ],
+        //"right":[
+        //    {
+        //        "cx":591.341246409354,
+        //        "cy":76.48890570047661,
+        //        "width":33.47739577903798,
+        //        "height":3.6697203931085545,
+        //        "angle":90
+        //    },
+        //    122.85268199850191,
+        //    [
+        //
+        //    ]
+        //],
+        "bottom":[
+            {
+                "cx":574.6869124519872,
+                "cy":97.77452708217038,
+                "width":22.161167574686225,
+                "height":7.741782979473256,
+                "angle":0
+            },
+            171.56694993496043,
+            [
+
+            ],
+            [5/6, 1],
+            "horizontalText"
+        ],
+        //"left":[
+        //    {
+        //        "cx":558.9019071726455,
+        //        "cy":90.04807056182472,
+        //        "width":8.996765602063387,
+        //        "height":5.997843734708925,
+        //        "angle":90
+        //    },
+        //    53.961194198980664,
+        //    [
+        //
+        //    ]
+        //],
+        "manual": true
     }
 };

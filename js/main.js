@@ -101,7 +101,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             if (pathCoords2d.length > 2) {
 
                 var displayPolygons = false;
-                var displayRectangles = true;
+                var displayRectangles = false;
                 var displayBounds = false;
                 var displayText = true;
                 var processAll = false;
@@ -628,7 +628,7 @@ function generateInscribedRectangle(polyCoordinates, d, displayFlag, location) {
     //if exists, use rect from database
 
     var savedNeighborhood = rectDatabase[d.properties.name];
-    if (savedNeighborhood != null) {
+    if (savedNeighborhood != null && d.id != -1) {
     //if (false) {
         var savedRect = rectDatabase[d.properties.name][location];
         //use rect from database (may be null--should be ok)
@@ -640,8 +640,8 @@ function generateInscribedRectangle(polyCoordinates, d, displayFlag, location) {
             angle: [0, 90, 270], nTries: 50, tolerance: 0.02
         });
     }
-
-    //if (d.id == 60) {
+    //
+    //if (d.id == 70) {
     //    if (location === "center") {
     //        rectDatabase[d.properties.name] = {};
     //    }
