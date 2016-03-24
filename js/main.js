@@ -641,7 +641,7 @@ function generateInscribedRectangle(polyCoordinates, d, displayFlag, location) {
         });
     }
 
-    //if (d.id == 28) {
+    //if (d.id == 60) {
     //    if (location === "center") {
     //        rectDatabase[d.properties.name] = {};
     //    }
@@ -689,10 +689,10 @@ function appendRectangle(rectangle, displayFlag, d, location) {
     }
 }
 
-function calculateNumLevels(aspectRatio, phrase) {
+function calculateNumLevels(aspectRatio, phrase, addtlLevel) {
 
     //as aspectRatio increases, num levels increases
-    var numLevels = Math.ceil(aspectRatio + 1);
+    var numLevels = Math.ceil(aspectRatio + addtlLevel);
 
     if (phrase.length > 15) {
         //as phrase length increases, num levels increases
@@ -762,6 +762,8 @@ function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, 
 
     phrase = phrase.toUpperCase();
     var viableRectangles;
+
+
     viableRectangles = filterViableRectangles(neighborhoodRectangles, d);
 
     if (rectDatabase[d.properties.name] != null &&
@@ -1053,10 +1055,6 @@ function fillRectWithText(phrase, rectangle) {
 
 function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
 
-    if (d.id == 28) {
-        debugger;
-    }
-
     var verticalDistance = rectangle.corners.lowY - rectangle.corners.topY;
     var horizontalDistance = rectangle.corners.rightX - rectangle.corners.leftX;
 
@@ -1064,9 +1062,9 @@ function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
 
     if (rectangle.rect[4] === "horizontalText") { //force rectangle to use horizontal slicing
         //find num levels
-        numLevels = calculateNumLevels(1 / rectangle.aspectRatio, phrase);
+        numLevels = calculateNumLevels(1 / rectangle.aspectRatio, phrase, 0);
     } else {
-        numLevels = calculateNumLevels(rectangle.aspectRatio, phrase); //Math.round(rectangle.aspectRatio) + 1
+        numLevels = calculateNumLevels(rectangle.aspectRatio, phrase, 1); //Math.round(rectangle.aspectRatio) + 1
     }
 
     var phrasePieces = [];
