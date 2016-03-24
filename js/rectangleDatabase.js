@@ -4,9 +4,13 @@
  * manual flag means that each rectangle in neighborhood will be filled
  * with text. Amt of text given to each rectangle (portion of phrase) is
  * determined by portions indicated in index 3 of each rectangle in an array
- * with [startPortion, endPortion]. Phrase split and given in order that
- * rectangles are listed here. Can use "horizontalText" flag in index 4 of
+ * with [startPortion, endPortion]. Phrase split and given in order: top, left,
+ * center, right, bottom.
+ * Can use "horizontalText" flag in index 4 of
  * rectangle array to force text to appear horizontally aligned.
+ * Can use "singleChar" flag in index 4 of
+ * rectangle array to use only one char (taken off from
+ * subsequent portion).
  *
  * If manual flag is not set, all rectangles will recieve one character
  * besides starting rectangle, which will receive the rest of the phrase.
@@ -72,9 +76,9 @@ var rectDatabase = {
     "Broadview":{
         "center":[
             {
-                "cx":374.9496439200593,
+                "cx":373.9496439200593,
                 "cy":78.03100159573297,
-                "width":96.24507697836722,
+                "width":94.24507697836722,
                 "height":44.308603956122305,
                 "angle":270
             },
@@ -166,9 +170,9 @@ var rectDatabase = {
         //],
         "center":[
             {
-                "cx":444.1964264762661,
+                "cx":445.1964264762661,
                 "cy":116.18834090475139,
-                "width":34.81718266924468,
+                "width":37.81718266924468,
                 "height":26.81718266924468,
                 "angle":0
             },
@@ -268,58 +272,75 @@ var rectDatabase = {
         "top":[
             {
                 "cx":573.4704547593865,
-                "cy":35.67116891225106,
+                "cy":39.67116891225106,
                 "width":19.654529466720398,
-                "height":7.766349166092639,
+                "height":15.766349166092639,
                 "angle":0
             },
             152.64393853380716,
             [
 
             ],
-            [0, 1/4],
+            [0, 1/5],
             "horizontalText"
         ],
-        "center":[
+        "left":[
             {
-                "cx":576.5906345476906,
-                "cy":66.72284799721078,
-                "width":53.650808702317654,
-                "height":25.81679009381344,
+                "cx":585.9906345476906,
+                "cy":42.72284799721078,
+                "width":8.650808702317654,
+                "height":6.81679009381344,
                 "angle":90
             },
             1385.0916666310743,
             [
 
             ],
-            [1/4, 5/6]
+            [],
+            "singleChar"
         ],
-        //"right":[
-        //    {
-        //        "cx":591.341246409354,
-        //        "cy":76.48890570047661,
-        //        "width":33.47739577903798,
-        //        "height":3.6697203931085545,
-        //        "angle":90
-        //    },
-        //    122.85268199850191,
-        //    [
-        //
-        //    ]
-        //],
-        "bottom":[
+        "center":[
             {
-                "cx":574.6869124519872,
-                "cy":97.77452708217038,
-                "width":22.161167574686225,
-                "height":7.741782979473256,
+                "cx":577.5906345476906,
+                "cy":61.72284799721078,
+                "width":28.650808702317654,
+                "height":27.81679009381344,
+                "angle":90
+            },
+            1385.0916666310743,
+            [
+
+            ],
+            [1/5, 3/5]
+        ],
+        "right":[
+            {
+                "cx":575.6869124519872,
+                "cy":82.77452708217038,
+                "width":32.161167574686225,
+                "height":14.741782979473256,
                 "angle":0
             },
             171.56694993496043,
             [
 
             ],
-            [5/6, 1],
+            [3/5, 4/5],
+            "horizontalText"
+        ],
+        "bottom":[
+            {
+                "cx":571.6869124519872,
+                "cy":95.77452708217038,
+                "width":32.161167574686225,
+                "height":11.741782979473256,
+                "angle":0
+            },
+            171.56694993496043,
+            [
+
+            ],
+            [4/5, 1],
             "horizontalText"
         ],
         //"left":[
@@ -335,6 +356,122 @@ var rectDatabase = {
         //
         //    ]
         //],
+        "manual": true
+    },
+    "Northgate":{
+        "top":[
+            {
+                "cx":487.0909004048299,
+                "cy":122.9690223678315,
+                "width":42.81976930333554,
+                "height":13.54651286889036,
+                "angle":0
+            },
+            515.9597093938736,
+            [
+
+            ],
+            [0, 1/3],
+            "horizontalText"
+
+        ],
+        "center":[
+            {
+                "cx":475.0909004048299,
+                "cy":136.9690223678315,
+                "width":21.81976930333554,
+                "height":13.54651286889036,
+                "angle":0
+            },
+            515.9597093938736,
+            [
+
+            ],
+            [1/3, 2/3],
+            "horizontalText"
+        ],
+        "right":[
+            {
+                "cx":490.0909004048299,
+                "cy":133.9690223678315,
+                "width":7.81976930333554,
+                "height":8.54651286889036,
+                "angle":0
+            },
+            515.9597093938736,
+            [
+
+            ],
+            [],
+            "singleChar"
+        ],
+        "bottom":[
+            {
+                "cx":473.0909004048299,
+                "cy":146.9690223678315,
+                "width":20.81976930333554,
+                "height":7.54651286889036,
+                "angle":0
+            },
+            515.9597093938736,
+            [
+
+            ],
+            [2/3, 1],
+            "horizontalText"
+        ],
+        //"top":[
+        //    {
+        //        "cx":478.3785543159902,
+        //        "cy":116.97165883146758,
+        //        "width":18.68107951170152,
+        //        "height":3.5629799264160176,
+        //        "angle":0
+        //    },
+        //    66.56031130397405,
+        //    [
+        //
+        //    ]
+        //],
+        //"right":[
+        //    {
+        //        "cx":497.86385418985026,
+        //        "cy":124.68142782722862,
+        //        "width":24.595587677584973,
+        //        "height":9.50593463641321,
+        //        "angle":0
+        //    },
+        //    233.80404880729293,
+        //    [
+        //
+        //    ]
+        //],
+        //"bottom":[
+        //    {
+        //        "cx":474.75055198342386,
+        //        "cy":148.98559787933482,
+        //        "width":14.673473516344707,
+        //        "height":4.192421004669916,
+        //        "angle":0
+        //    },
+        //    61.517378581391284,
+        //    [
+        //
+        //    ]
+        //],
+        //"left":[
+        //    {
+        //        "cx":465.66435364083736,
+        //        "cy":135.23324951034513,
+        //        "width":23.389499707531602,
+        //        "height":2.246269245176075,
+        //        "angle":90
+        //    },
+        //    52.53911385308304,
+        //    [
+        //
+        //    ]
+        //]
         "manual": true
     }
 };

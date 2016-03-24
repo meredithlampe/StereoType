@@ -10,7 +10,7 @@ var scale  = 150000;
 var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
 
 var font = "Oswald";
-var padding = "2";
+var padding = "1";
 
 var topPolyBounds = {};
 var rightPolyBounds = {};
@@ -101,7 +101,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             if (pathCoords2d.length > 2) {
 
                 var displayPolygons = false;
-                var displayRectangles = false;
+                var displayRectangles = true;
                 var displayBounds = false;
                 var displayText = true;
                 var processAll = false;
@@ -640,8 +640,8 @@ function generateInscribedRectangle(polyCoordinates, d, displayFlag, location) {
             angle: [0, 90, 270], nTries: 50, tolerance: 0.02
         });
     }
-    //
-    //if (d.id == 70) {
+
+    //if (d.id == 22) {
     //    if (location === "center") {
     //        rectDatabase[d.properties.name] = {};
     //    }
@@ -693,6 +693,10 @@ function calculateNumLevels(aspectRatio, phrase, addtlLevel) {
 
     //as aspectRatio increases, num levels increases
     var numLevels = Math.ceil(aspectRatio + addtlLevel);
+
+    if (phrase.length < 8 && numLevels > 2) {
+        numLevels -= 1;
+    }
 
     if (phrase.length > 15) {
         //as phrase length increases, num levels increases
@@ -802,7 +806,7 @@ function filterViableRectangles(neighborhoodRectangles, d) {
         if (neighborhoodRectangles[i].rect != null) {
             var rectArea = neighborhoodRectangles[i].rect[0].width * neighborhoodRectangles[i].rect[0].height;
             var aspectRatio = neighborhoodRectangles[i].rect[0].width / neighborhoodRectangles[i].rect[0].height;
-            if (rectArea > 70 && aspectRatio < 20) {
+            if (rectArea > 40 && aspectRatio < 20) {
                 viableRectangles[nextIndexInViableRectangles] = {
                     rect: neighborhoodRectangles[i].rect,
                     area: rectArea,
@@ -894,6 +898,7 @@ function populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayT
                     .style("text-anchor", "middle")
                     .text(levelString)
                     .attr("font-size", viableRectangles[i].rect[0].width / 5)
+                    .attr("startOffset", "50%")
                     .attr("startOffset", "50%");
             }
 
@@ -941,7 +946,7 @@ function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, 
 
                     //append path and letter
                     var currLetter = phrase.substring(currIndex, currIndex + 1);
-                    appendSingleLetter(currRect, currLetter, d, aspectRatioBiggestRect);
+                    appendSingleLetter(currRect, currLetter, d);
                     currIndex++;
                 }
                 currRectIndex++;
@@ -997,18 +1002,36 @@ function populateTextAlg2(viableRectangles, phrase, displayBounds, displayText, 
     //use multiple rectangles to fill text
     if (displayText) {
 
+        if (d.id == 22) {
+            debugger;
+        }
+
+        var nextAvailableIndex = 0;
+
         //take them as they come: if rectangle wants one char, give it one char
         for (var i = 0; i < viableRectangles.length; i++) {
 
-            var indexStart = Math.floor(viableRectangles[i].rect[3][0] * phrase.length);
-            var indexEnd = Math.floor(viableRectangles[i].rect[3][1] * phrase.length);
+            var phraseChunk;
 
-            var phraseChunk = phrase.substring(indexStart, indexEnd);
+            if (viableRectangles[i].rect[4] === "singleChar") {
+                phraseChunk = phrase.charAt(nextAvailableIndex);
+                nextAvailableIndex++;
+                appendSingleLetter(viableRectangles[i], phraseChunk, d);
+            } else {
 
-            viableRectangles[i] = applyPadding(viableRectangles[i]);
+                //var indexStart = Math.floor(viableRectangles[i].rect[3][0] * phrase.length);
+                var indexStart = nextAvailableIndex;
+                var indexEnd = Math.floor(viableRectangles[i].rect[3][1] * phrase.length);
 
-            fillRectTextManual(phraseChunk, viableRectangles[i], displayText,
-                            displayBounds, d);
+                phraseChunk = phrase.substring(indexStart, indexEnd);
+
+                viableRectangles[i] = applyPadding(viableRectangles[i]);
+
+                nextAvailableIndex = indexEnd;
+
+                fillRectTextManual(phraseChunk, viableRectangles[i], displayText,
+                    displayBounds, d);
+            }
 
         }
     }
@@ -1214,12 +1237,12 @@ function appendPathAndText(startPathX, startPathY, endPathX, endPathY,
             .style("text-anchor", "middle")
              .attr("startOffset", "50%")
             .text(phrase)
-            .attr("font-size", (textSize * 1.25) + "pt")
+            .attr("font-size", (textSize * 1.2) + "pt")
             .attr("font-family", font);
     }
 }
 
-function appendSingleLetter(rectangle, letter, d, aspectRatioBiggestRect) {
+function appendSingleLetter(rectangle, letter, d) {
 
         var textPath;
         var letterSize;
