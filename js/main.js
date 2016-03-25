@@ -101,7 +101,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             if (pathCoords2d.length > 2) {
 
                 var displayPolygons = false;
-                var displayRectangles = false;
+                var displayRectangles = true;
                 var displayBounds = false;
                 var displayText = true;
                 var processAll = false;
@@ -641,7 +641,7 @@ function generateInscribedRectangle(polyCoordinates, d, displayFlag, location) {
         });
     }
 
-    //if (d.id == 51) {
+    //if (d.id == 1) {
     //    if (location === "center") {
     //        rectDatabase[d.properties.name] = {};
     //    }
@@ -693,24 +693,27 @@ function calculateNumLevels(aspectRatio, phrase, addtlLevel, forcedHorizontal) {
 
     var numLevels;
 
-    if (forcedHorizontal) { //split chars assuming long and flat shape
-        numLevels = 1;
-        if (aspectRatio > .6 && phrase.length > 4) {
-            numLevels++;
-        }
-    } else {
+
+    //if (forcedHorizontal) { //split chars assuming long and flat shape
+    //    numLevels = 1;
+    //    if (aspectRatio > .6 && phrase.length > 4) {
+    //        numLevels++;
+    //    }
+    //} else {
         //as aspectRatio increases, num levels increases
         numLevels = Math.ceil(aspectRatio + addtlLevel);
 
         if (phrase.length < 8 && numLevels > 2) {
             numLevels -= 1;
         }
+    //}
 
-        if (phrase.length > 15) {
-            //as phrase length increases, num levels increases
-            numLevels *= Math.round(phrase.length / 15);
-        }
-
+    if (phrase.length > 15) {
+        //as phrase length increases, num levels increases
+        numLevels *= Math.round(phrase.length / 15);
+    }
+    if (phrase.length < 5 && aspectRatio < .6) {
+        numLevels = 1;
     }
 
     return numLevels;
@@ -1027,9 +1030,20 @@ function populateTextAlg2(viableRectangles, phrase, displayBounds, displayText, 
 
                 //var indexStart = Math.floor(viableRectangles[i].rect[3][0] * phrase.length);
                 var indexStart = nextAvailableIndex;
+
                 var indexEnd = Math.floor(viableRectangles[i].rect[3][1] * phrase.length);
 
-                phraseChunk = phrase.substring(indexStart, indexEnd);
+                //special case: last letter as standalone: take from preceding rectangle
+                if (i == viableRectangles.length - 2 &&
+                    viableRectangles[i + 1].rect[4] == "singleChar") {
+                    indexEnd--;
+                }
+
+                if (indexStart <= indexEnd) {
+                    phraseChunk = phrase.substring(indexStart, indexEnd);
+                } else {
+                    phraseChunk = " ";
+                }
 
                 viableRectangles[i] = applyPadding(viableRectangles[i]);
 
@@ -1091,7 +1105,7 @@ function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
 
     if (rectangle.rect[4] === "horizontalText") { //force rectangle to use horizontal slicing
         //find num levels
-        numLevels = calculateNumLevels(1 / rectangle.aspectRatio, phrase, 0, true);
+        numLevels = calculateNumLevels(1 / rectangle.aspectRatio, phrase, 1, true);
     } else {
         numLevels = calculateNumLevels(rectangle.aspectRatio, phrase, 1, false); //Math.round(rectangle.aspectRatio) + 1
     }
