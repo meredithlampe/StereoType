@@ -105,7 +105,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                 var displayRectangles = true;
                 var displayBounds = false;
                 var displayText = true;
-                var processAll = false;
+                var processAll = false; //does another recursive round of polyogn generation
 
                 var lengthWord = d.properties.name.length;
                 var nameWithoutSpaces = d.properties.name.replace(" ", "");
@@ -173,8 +173,6 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                     if (true) {
                         text = nameWithoutSpaces + nameWithoutSpaces;
                     }
-
-
 
                     //fillNeighborhoodText(neighborhood.rectangles, d.properties.name.substring(0, Math.round(lengthWord *.75)), d, displayBounds, displayText);
                     fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase);
@@ -634,7 +632,6 @@ function generateInscribedRectangle(polyCoordinates, d, displayFlag, location) {
         var savedRect = rectDatabase[d.properties.name][location];
         //use rect from database (may be null--should be ok)
         rectangle = savedRect;
-        console.log("using saved rectangle from database for neighborhood: " + d.properties.name);
     } else {
         //generate largest inscribed rectangle for overall polygon
         rectangle = d3plus.geom.largestRect(polyCoordinates, {
@@ -707,9 +704,13 @@ function calculateNumLevels(aspectRatio, phrase, addtlLevel, forcedHorizontal) {
         if (phrase.length < 8 && numLevels > 2) {
             numLevels -= 1;
         }
+
+        if (phrase.length < 3 && numLevels > 1) {
+            numLevels -= 1;
+        }
     //}
 
-    if (phrase.length > 15) {
+    if (phrase.length > 7) {
         //as phrase length increases, num levels increases
         numLevels *= Math.round(phrase.length / 15);
         if (numLevels < 3) {
@@ -781,20 +782,24 @@ function findRectangleCorners(rectangle) {
 
 function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, displayText, rectDatabase) {
 
-    phrase = phrase.toUpperCase();
-    var viableRectangles;
+    if (phrase != null && neighborhoodRectangles != null) {
 
+        phrase = phrase.toUpperCase();
+        var viableRectangles;
 
-    viableRectangles = filterViableRectangles(neighborhoodRectangles, d);
+        viableRectangles = filterViableRectangles(neighborhoodRectangles, d);
 
-    if (rectDatabase[d.properties.name] != null &&
+        if (viableRectangles != null) {
+            if (rectDatabase[d.properties.name] != null &&
                 rectDatabase[d.properties.name].manual != null) {
-        //fill text in rectangles based on
-        //instructions delineated in rectangle database
-        populateTextAlg2(viableRectangles, phrase, displayBounds, displayText, d);
-    } else {
-        //populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d);
-        populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d);
+                //fill text in rectangles based on
+                //instructions delineated in rectangle database
+                populateTextAlg2(viableRectangles, phrase, displayBounds, displayText, d);
+            } else {
+                //populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d);
+                populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d);
+            }
+        }
     }
 }
 
@@ -923,6 +928,7 @@ function populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayT
     }
 }
 
+//pre: phrase != null && viableRectangles != null
 function populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d) {
 
     //first letter goes in first viable rectangle
@@ -1109,7 +1115,7 @@ function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
 
     if (rectangle.rect[4] === "horizontalText") { //force rectangle to use horizontal slicing
         //find num levels
-        numLevels = calculateNumLevels(1 / rectangle.aspectRatio, phrase, 1, true);
+        numLevels = calculateNumLevels(1 / rectangle.aspectRatio, phrase, 0, true);
     } else {
         numLevels = calculateNumLevels(rectangle.aspectRatio, phrase, 1, false); //Math.round(rectangle.aspectRatio) + 1
     }
