@@ -10,6 +10,7 @@ var scale  = 150000;
 var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
 
 var font = "Oswald";
+//var font = "Impact";
 var padding = "1";
 
 var topPolyBounds = {};
@@ -641,15 +642,15 @@ function generateInscribedRectangle(polyCoordinates, d, displayFlag, location) {
         });
     }
 
-    //if (d.id == 1) {
-    //    if (location === "center") {
-    //        rectDatabase[d.properties.name] = {};
-    //    }
-    //    rectDatabase[d.properties.name][location] = rectangle;
-    //    //console.log("\"" + location + "\": " + JSON.stringify(rectangle));
-    //    console.log(JSON.stringify(rectDatabase));
-    //    //debugger;
-    //}
+    if (d.id == -1) {
+        if (location === "center") {
+            rectDatabase[d.properties.name] = {};
+        }
+        rectDatabase[d.properties.name][location] = rectangle;
+        //console.log("\"" + location + "\": " + JSON.stringify(rectangle));
+        console.log(JSON.stringify(rectDatabase));
+        //debugger;
+    }
 
     if (rectangle != null && displayFlag) {
         svg.append("rect")
@@ -711,6 +712,9 @@ function calculateNumLevels(aspectRatio, phrase, addtlLevel, forcedHorizontal) {
     if (phrase.length > 15) {
         //as phrase length increases, num levels increases
         numLevels *= Math.round(phrase.length / 15);
+        if (numLevels < 3) {
+            numLevels++;
+        }
     }
     if (phrase.length < 5 && aspectRatio < .6) {
         numLevels = 1;
