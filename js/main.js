@@ -1110,10 +1110,6 @@ function fillRectTextManual(phrase, rectangle, displayText, displayBounds, d) {
 
     var numLevels;
 
-    if (d.id == 72) {
-        debugger;
-    }
-
     if (rectangle.rect[4] === "horizontalText") { //force rectangle to use horizontal slicing
         //find num levels
         numLevels = calculateNumLevels(rectangle.aspectRatio, phrase, 1, true, orientation);
