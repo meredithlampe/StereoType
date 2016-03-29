@@ -28,7 +28,7 @@ var AREA_CUTOFF = 40;
 
 //display various steps in text append process
 var displayPolygons = false;
-var displayRectangles = true;
+var displayRectangles = false;
 var displayBounds = false;
 var displayText = true;
 var processAll = false; //does another recursive round of polyogn generation
