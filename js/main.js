@@ -26,6 +26,9 @@ var leftPolyBounds = {};
 //text-filling algorithm
 var AREA_CUTOFF = 40;
 
+//use rectangle mods made in database
+var USE_RECTANGLE_DATABASE = false;
+
 //display various steps in text append process
 var displayPolygons = false;
 var displayRectangles = false;
@@ -621,7 +624,7 @@ function generateInscribedRectangle(polyCoordinates, d, displayFlag, location) {
     //if exists, use rect from database
 
     var savedNeighborhood = rectDatabase[d.properties.name];
-    if (savedNeighborhood != null && d.id != -1) {
+    if (savedNeighborhood != null && d.id != -1 && USE_RECTANGLE_DATABASE) {
     //if (false) {
         var savedRect = rectDatabase[d.properties.name][location];
         //use rect from database (may be null--should be ok)
@@ -783,7 +786,8 @@ function fillNeighborhoodText(neighborhoodRectangles, phrase, d, displayBounds, 
 
         if (viableRectangles != null) {
             if (rectDatabase[d.properties.name] != null &&
-                rectDatabase[d.properties.name].manual != null) {
+                rectDatabase[d.properties.name].manual != null &&
+                USE_RECTANGLE_DATABASE) {
                 //fill text in rectangles based on
                 //instructions delineated in rectangle database
                 populateTextAlg2(viableRectangles, phrase, displayBounds, displayText, d);
