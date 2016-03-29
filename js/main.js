@@ -31,7 +31,7 @@ var USE_RECTANGLE_DATABASE = true;
 
 //display various steps in text append process
 var displayPolygons = false;
-var displayRectangles = true;
+var displayRectangles = false;
 var displayOnlyCenterRectangle = false;
 var displayBounds = false;
 var displayText = true;
