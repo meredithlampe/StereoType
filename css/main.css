@@ -5,7 +5,14 @@
 
 }
 
+#mapContainer {
+    position: relative;
+    margin: auto;
+}
 
+#mapSVG {
+    width: 100%;
+}
 
 .neighborhoodInnerPath {
     stroke-width: 3 px;

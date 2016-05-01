@@ -2,6 +2,7 @@
  * Created by meredith on 2/20/16.
  */
 
+
 var width = 900;
 var height = 600;
 var rotate = [122, 0, 0];
@@ -14,7 +15,7 @@ var font = "Oswald";
 //var font = "Impact";
 
 //padding to be given between text and inscribed rectangle
-var padding = "1";
+var padding = "2";
 
 //keep track of area of each polygon already processed
 var topPolyBounds = {};
@@ -37,19 +38,53 @@ var displayBounds = false;
 var displayText = true;
 var processAll = false; //does another recursive round of polyogn generation
 
+//get width of parent
+var parentWidth = d3.select(".jumbotron").attr("width");
+
+var svg = d3.select(".jumbotron")
+  .attr("id", "mapContainer")
+    .append("svg")
+  .attr("id", "mapSVG")
+    .attr("width", parentWidth)
+    .attr("height", height * 2);
+
+
+
+////create loader
+var opts = {
+  lines: 9 // The number of lines to draw
+  , length: 37 // The length of each line
+  , width: 23 // The line thickness
+  , radius: 69 // The radius of the inner circle
+  , scale: 1 // Scales overall size of the spinner
+  , corners: 1 // Corner roundness (0..1)
+  , color: '#000' // #rgb or #rrggbb or array of colors
+  , opacity: 0.25 // Opacity of the lines
+  , rotate: 0 // The rotation offset
+  , direction: 1 // 1: clockwise, -1: counterclockwise
+  , speed: 1 // Rounds per second
+  , trail: 60 // Afterglow percentage
+  , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+  , zIndex: 2e9 // The z-index (defaults to 2000000000)
+  , className: 'spinner' // The CSS class to assign to the spinner
+  , top: '50%' // Top position relative to parent
+  , left: '50%' // Left position relative to parent
+  , shadow: false // Whether to render a shadow
+  , hwaccel: false // Whether to use hardware acceleration
+  , position: 'absolute' // Element positioning
+}
+var target = document.getElementById('mapContainer')
+var spinner = new Spinner(opts).spin(target);
 
 var projection = d3.geo.mercator()
-    .rotate(rotate)
-    .scale(scale)
-    .translate(offset)
-    .precision(.5);
-
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height * 2);
+  .rotate(rotate)
+  .scale(scale)
+  .translate(offset)
+  .precision(.5);
 
 var path = d3.geo.path()
     .projection(projection);
+
 
 var neighborhoodGroup = svg.append("g")
     .attr('id', 'neighborhoodGroup');
@@ -121,8 +156,10 @@ d3.json("json/neighborhoods.json", function(error, topology) {
 
                         //eliminate spaces from phrase
                         var nameWithoutSpaces = d.properties.name.replace(" ", "");
-                        var text = nameWithoutSpaces + nameWithoutSpaces;
+                        //var text = nameWithoutSpaces + nameWithoutSpaces;
                         //var text = nameWithoutSpaces;
+                        //var text = nameWithoutSpaces;
+                        var text = nameWithoutSpaces + nameWithoutSpaces + nameWithoutSpaces;
 
                         var rectanglesForText;
 
@@ -182,6 +219,8 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                         //fillNeighborhoodText(neighborhood.rectangles, d.properties.name.substring(0, Math.round(lengthWord *.75)), d, displayBounds, displayText);
                         fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase);
                     }
+                //stop spinner--we're done!
+                spinner.stop();
                 return null;
             });
 
