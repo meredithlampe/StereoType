@@ -404,5 +404,14 @@ var PolygonGenerator = {
         }
 
         return neighborPoly;
+    },
+
+    twoToOneDimensional: function(twoDArray) {
+        var result = [];
+        for (var i = 0; i < twoDArray.length; i++) {
+            result[2 * i] = twoDArray[i][0];
+            result[(2 * i) + 1] = twoDArray[i][1];
+        }
+        return result;
     }
 };

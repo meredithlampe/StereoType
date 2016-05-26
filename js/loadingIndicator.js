@@ -25,9 +25,11 @@ var LoadingIndicator = {
     , hwaccel: false // Whether to use hardware acceleration
     , position: 'absolute' // Element positioning
   },
-  target: document.getElementById('mapContainer'),
-  spinner: new Spinner(opts).spin(target)
+  spinner: new Spinner(this.opts),
+  spin: function(target) { //take container to place spinner inside of
+    this.spinner.spin(target);
+  },
   stop: function() {
-    spinner.stop();
+    this.spinner.stop();
   }
-}
+};

@@ -433,5 +433,23 @@ var TextUtil = {
         }
 
 
+    },
+
+    slicePhrase: function(numPieces, phrase) {
+        var newbie = [];
+        var pieceLength = phrase.length / numPieces;
+        for (var i = 0; i < numPieces; i++) {
+            newbie[i] = phrase.substring(i * pieceLength, (i + 1) * pieceLength);
+        }
+
+        //pick up extras. put them in last slot.
+        if (numPieces * pieceLength < phrase.length) {
+            var leftovers = phrase.length - numPieces * pieceLength;
+            for (var i = numPieces * pieceLength; i < phrase.length; i++) {
+                newbie[numPieces - 1] += phrase.charAt(i);
+            }
+        }
+
+        return newbie;
     }
 };

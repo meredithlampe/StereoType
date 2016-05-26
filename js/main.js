@@ -33,12 +33,12 @@ var AREA_CUTOFF = 40;
 var USE_RECTANGLE_DATABASE = false;
 
 //display various steps in text append process
-var displayPolygons = false;
-var displayRectangles = true;
+var displayPolygons = true;
+var displayRectangles = false;
 var displayOnlyCenterRectangle = false;
-var displayBounds = false;
+var displayBounds = true;
 var displayText = false;
-var processAll = true; //does another recursive round of polyogn generation
+var processAll = false; //does another recursive round of polyogn generation
 
 //get width of parent
 var parentWidth = d3.select(".jumbotron").attr("width");
@@ -126,64 +126,22 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                         var text = nameWithoutSpaces + nameWithoutSpaces + nameWithoutSpaces;
 
                         var rectanglesForText;
-                        var centerRectangle = RectangleGenerator.generateInscribedRectangle(pathCoords2d, d, displayRectangles || displayOnlyCenterRectangle, "center");
+                        //var neighborhood = inscribedRectangleAlg(pathCoords2d, d);
+                        var neighborhood = horizontalSliceAlg(svg, pathCoords2d, d);
 
-                        //clockwise order, starting from top: topY, rightX, lowY, leftX
-                        var coords = RectangleGenerator.findRectangleCorners(centerRectangle);
-
-                        var neighborhood = PolygonGenerator.generateSidePolygons(coords, displayPolygons, displayRectangles, pathCoords2d,
-                            d, centerRectangle, true, "");
-
-                        rectanglesForText = neighborhood.rectangles;
+                        //Necessary for inscribedRectAlg
+                        //rectanglesForText = neighborhood.rectangles;
 
                         //generate next level of polygons
 
                         if (processAll) {
-
-                            //generate mini polygons in top segment
-                            if (neighborhood.polygons[0] != null && neighborhood.rectangles[0] != null &&
-                                neighborhood.rectangles[0].rect != null) {
-                                var topRectCoords = RectangleGenerator.findRectangleCorners(neighborhood.rectangles[0].rect);
-                                var topNeighborhood = PolygonGenerator.generateSidePolygons(topRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[0], d, neighborhood.rectangles[0],
-                                    true, "mini");
-                            }
-
-                            if (neighborhood.polygons[1] != null && neighborhood.rectangles[1] != null &&
-                                neighborhood.rectangles[1].rect != null) {
-                                var leftRectCoords = RectangleGenerator.findRectangleCorners(neighborhood.rectangles[1].rect);
-                                var leftNeighborhood = PolygonGenerator.generateSidePolygons(leftRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[1], d, neighborhood.rectangles[1],
-                                    true, "mini");
-                            }
-
-                            //skpping center rectangle
-
-                            if (neighborhood.polygons[3] != null && neighborhood.rectangles[3] != null &&
-                                neighborhood.rectangles[3].rect != null) {
-                                var rightRectCoords = RectangleGenerator.findRectangleCorners(neighborhood.rectangles[3].rect);
-                                var rightNeighborhood = PolygonGenerator.generateSidePolygons(rightRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[3], d, neighborhood.rectangles[3],
-                                    true, "mini");
-                            }
-                            //
-                            //if (neighborhood.polygons[4] != null && neighborhood.rectangles[4] != null) {
-                            //    var bottomRectCoords = RectangleGenerator.findRectangleCorners(neighborhood.rectangles[4].rect);
-                            //    var bottomNeighborhood = PolygonGenerator.generateSidePolygons(bottomRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[4], d, neighborhood.rectangles[4],
-                            //        true, "mini");
-                            //}
-
-                            //if (rightPoly != null) {
-                            //    var rightNeighborPolygon = PolygonGenerator.generateNeighborhoodPoly(rightPoly);
-                            //    var rightRectCoords = RectangleGenerator.findRectangleCorners(rightRectangle);
-                            //    var miniRightPoly = PolygonGenerator.generateRightPolygon(d, rightRectCoords.topY, rightRectCoords.lowY, rightRectCoords.leftX, rightRectCoords.rightX,
-                            //        rightPoly, rightNeighborPolygon, displayPolygons, "mini");
-                            //    if (miniRightPoly != null) {
-                            //        var miniRightRect = generateInscribedRectangle(miniRightPoly, d, displayRectangles, "right_mini")
-                            //    }
-                            //
-                            //}
+                            processMiniPolygons(neighborhood, rectanglesForText);
                         }
 
                         //TextUtil.fillNeighborhoodText(neighborhood.rectangles, d.properties.name.substring(0, Math.round(lengthWord *.75)), d, displayBounds, displayText);
-                        TextUtil.fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase);
+
+                        //LATEST VERSION OF INSCRIBED RECTANGLE TEXT POPULATION
+                        //TextUtil.fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase);
                     }
                 //stop spinner--we're done!
                 loadingIndicator.stop();
@@ -192,7 +150,48 @@ d3.json("json/neighborhoods.json", function(error, topology) {
 
 });
 
+function processMiniPolygons(neighborhood, rectanglesForText) {
+    //generate mini polygons in top segment
+    if (neighborhood.polygons[0] != null && neighborhood.rectangles[0] != null &&
+        neighborhood.rectangles[0].rect != null) {
+        var topRectCoords = RectangleGenerator.findRectangleCorners(neighborhood.rectangles[0].rect);
+        var topNeighborhood = PolygonGenerator.generateSidePolygons(topRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[0], d, neighborhood.rectangles[0],
+            true, "mini");
+    }
 
+    if (neighborhood.polygons[1] != null && neighborhood.rectangles[1] != null &&
+        neighborhood.rectangles[1].rect != null) {
+        var leftRectCoords = RectangleGenerator.findRectangleCorners(neighborhood.rectangles[1].rect);
+        var leftNeighborhood = PolygonGenerator.generateSidePolygons(leftRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[1], d, neighborhood.rectangles[1],
+            true, "mini");
+    }
+
+    //skipping center rectangle
+
+    if (neighborhood.polygons[3] != null && neighborhood.rectangles[3] != null &&
+        neighborhood.rectangles[3].rect != null) {
+        var rightRectCoords = RectangleGenerator.findRectangleCorners(neighborhood.rectangles[3].rect);
+        var rightNeighborhood = PolygonGenerator.generateSidePolygons(rightRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[3], d, neighborhood.rectangles[3],
+            true, "mini");
+    }
+    //
+    //if (neighborhood.polygons[4] != null && neighborhood.rectangles[4] != null) {
+    //    var bottomRectCoords = RectangleGenerator.findRectangleCorners(neighborhood.rectangles[4].rect);
+    //    var bottomNeighborhood = PolygonGenerator.generateSidePolygons(bottomRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[4], d, neighborhood.rectangles[4],
+    //        true, "mini");
+    //}
+
+    //if (rightPoly != null) {
+    //    var rightNeighborPolygon = PolygonGenerator.generateNeighborhoodPoly(rightPoly);
+    //    var rightRectCoords = RectangleGenerator.findRectangleCorners(rightRectangle);
+    //    var miniRightPoly = PolygonGenerator.generateRightPolygon(d, rightRectCoords.topY, rightRectCoords.lowY, rightRectCoords.leftX, rightRectCoords.rightX,
+    //        rightPoly, rightNeighborPolygon, displayPolygons, "mini");
+    //    if (miniRightPoly != null) {
+    //        var miniRightRect = generateInscribedRectangle(miniRightPoly, d, displayRectangles, "right_mini")
+    //    }
+    //
+    //}
+}
 
 function appendRectangle(rectangle, displayFlag, d, location) {
     if (rectangle != null && displayFlag) {
@@ -208,6 +207,51 @@ function appendRectangle(rectangle, displayFlag, d, location) {
             .attr("fill", "#white")
             .attr("opacity", "0.5");
     }
+}
+
+//slice neighborhood horizontally, then vertically
+//according to length of phrase to get grid over neighborhood.
+//Use inscribed rectangles to fill each grid slot with a letter
+function horizontalSliceAlg(svg, pathCoords2d, d) {
+
+    //get height and width of polygon
+    var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords2d);
+    var heightOfPoly = dimensions.max - dimensions.min;
+    var widthOfPoly = dimensions.right - dimensions.left;
+
+    //here our aspect ratio will always be height over width
+    var roughAspectRatio = Math.max(heightOfPoly, widthOfPoly) / Math.min(heightOfPoly, widthOfPoly);
+    var roughNumLevels = TextUtil.calculateNumLevels(roughAspectRatio, d.properties.name, 0, false);
+
+    var phrasePieces = TextUtil.slicePhrase(roughNumLevels, d.properties.name);
+
+    //for (var i = 0; i < phrasePieces.length; i++) {
+    //    DebugTool.showInCenterOfPoly(pathCoords2d, phrasePieces[i], i * 10);
+    //}
+
+    if (roughNumLevels != phrasePieces.length) {
+        console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name);
+    }
+
+    //get horizontal slices that are viable
+    var slices = NeighborhoodParser.divide(pathCoords2d, roughNumLevels, dimensions, svg);
+
+    for (var i = 0; i < phrasePieces.length; i++) {
+        //for each level, divide horizontal space into chunks for each letter
+
+    }
+}
+
+function inscribedRectangleAlg(pathCoords2d, d) {
+    var centerRectangle = RectangleGenerator.generateInscribedRectangle(pathCoords2d, d, displayRectangles || displayOnlyCenterRectangle, "center");
+
+    //clockwise order, starting from top: topY, rightX, lowY, leftX
+    var coords = RectangleGenerator.findRectangleCorners(centerRectangle);
+
+    var neighborhood = PolygonGenerator.generateSidePolygons(coords, displayPolygons, displayRectangles, pathCoords2d,
+        d, centerRectangle, true, "");
+
+    return neighborhood;
 }
 
 function appendPathAndText(startPathX, startPathY, endPathX, endPathY,
