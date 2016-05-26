@@ -33,7 +33,7 @@ var RectangleGenerator = {
 
 
         //should factor this out into view
-        if (rectangle != null && displayFlag) {
+        if (rectangle != null && rectangle[0] != null && displayFlag) {
             svg.append("rect")
                 .attr("width", rectangle[0].width)
                 .attr("height", rectangle[0].height)

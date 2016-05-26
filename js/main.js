@@ -30,15 +30,15 @@ var leftPolyBounds = {};
 var AREA_CUTOFF = 40;
 
 //use rectangle mods made in database
-var USE_RECTANGLE_DATABASE = true;
+var USE_RECTANGLE_DATABASE = false;
 
 //display various steps in text append process
 var displayPolygons = false;
-var displayRectangles = false;
+var displayRectangles = true;
 var displayOnlyCenterRectangle = false;
 var displayBounds = false;
-var displayText = true;
-var processAll = false; //does another recursive round of polyogn generation
+var displayText = false;
+var processAll = true; //does another recursive round of polyogn generation
 
 //get width of parent
 var parentWidth = d3.select(".jumbotron").attr("width");
@@ -141,13 +141,15 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                         if (processAll) {
 
                             //generate mini polygons in top segment
-                            if (neighborhood.polygons[0] != null && neighborhood.rectangles[0] != null) {
+                            if (neighborhood.polygons[0] != null && neighborhood.rectangles[0] != null &&
+                                neighborhood.rectangles[0].rect != null) {
                                 var topRectCoords = RectangleGenerator.findRectangleCorners(neighborhood.rectangles[0].rect);
                                 var topNeighborhood = PolygonGenerator.generateSidePolygons(topRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[0], d, neighborhood.rectangles[0],
                                     true, "mini");
                             }
 
-                            if (neighborhood.polygons[1] != null && neighborhood.rectangles[1] != null) {
+                            if (neighborhood.polygons[1] != null && neighborhood.rectangles[1] != null &&
+                                neighborhood.rectangles[1].rect != null) {
                                 var leftRectCoords = RectangleGenerator.findRectangleCorners(neighborhood.rectangles[1].rect);
                                 var leftNeighborhood = PolygonGenerator.generateSidePolygons(leftRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[1], d, neighborhood.rectangles[1],
                                     true, "mini");
@@ -155,9 +157,10 @@ d3.json("json/neighborhoods.json", function(error, topology) {
 
                             //skpping center rectangle
 
-                            if (neighborhood.polygons[3] != null && neighborhood.rectangles[3] != null) {
+                            if (neighborhood.polygons[3] != null && neighborhood.rectangles[3] != null &&
+                                neighborhood.rectangles[3].rect != null) {
                                 var rightRectCoords = RectangleGenerator.findRectangleCorners(neighborhood.rectangles[3].rect);
-                                var righttNeighborhood = PolygonGenerator.generateSidePolygons(rightRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[3], d, neighborhood.rectangles[3],
+                                var rightNeighborhood = PolygonGenerator.generateSidePolygons(rightRectCoords, displayPolygons, displayRectangles, neighborhood.polygons[3], d, neighborhood.rectangles[3],
                                     true, "mini");
                             }
                             //
