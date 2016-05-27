@@ -113,10 +113,9 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             .attr("d", function (d) {
 
                     //get current neighborhood shape
-                    var pathCoords2d = NeighborhoodParser.get2dPathArray(this);
+                    var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
 
-                    //find largest rectangle in polygon
-                    if (pathCoords2d.length > 2) { //coordinates are enough to actually make a shape
+                    if (pathCoords3d != null) { //coordinates are enough to actually make a shape
 
                         //eliminate spaces from phrase
                         var nameWithoutSpaces = d.properties.name.replace(" ", "");
@@ -125,9 +124,8 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                         //var text = nameWithoutSpaces;
                         var text = nameWithoutSpaces + nameWithoutSpaces + nameWithoutSpaces;
 
-                        var rectanglesForText;
                         //var neighborhood = inscribedRectangleAlg(pathCoords2d, d);
-                        var neighborhood = horizontalSliceAlg(svg, pathCoords2d, d);
+                        var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d);
 
                         //Necessary for inscribedRectAlg
                         //rectanglesForText = neighborhood.rectangles;
@@ -212,10 +210,10 @@ function appendRectangle(rectangle, displayFlag, d, location) {
 //slice neighborhood horizontally, then vertically
 //according to length of phrase to get grid over neighborhood.
 //Use inscribed rectangles to fill each grid slot with a letter
-function horizontalSliceAlg(svg, pathCoords2d, d) {
+function horizontalSliceAlg(svg, pathCoords3d, d) {
 
     //get height and width of polygon
-    var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords2d);
+    var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords3d);
     var heightOfPoly = dimensions.max - dimensions.min;
     var widthOfPoly = dimensions.right - dimensions.left;
 
@@ -228,15 +226,14 @@ function horizontalSliceAlg(svg, pathCoords2d, d) {
     if (roughNumLevels != phrasePieces.length) {
         console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name);
     }
-    debugger;
     //get horizontal slices that are viable
-    var slices = NeighborhoodParser.divide(pathCoords2d, roughNumLevels, dimensions, svg, d);
+
+    if (d.properties.name == "Industrial District") {
+        debugger;
+    }
+    var slices = NeighborhoodParser.divide(pathCoords3d, roughNumLevels, dimensions, svg, d);
     //console.log(slices);
     if (slices != null) {
-
-        if (d.id == 66) {
-            debugger;
-        }
 
         //loop through the slices
         for (var i = 0; i < slices.length; i++) {
@@ -247,7 +244,7 @@ function horizontalSliceAlg(svg, pathCoords2d, d) {
             //loop through variables within a slice
             //paint entire slice the same color
             for (var j = 0; j < slices[i].length; j++) {
-                
+
                 neighborhoodGroup.append("path")
                     .attr("d", function() {
                         var twoDPath = NeighborhoodParser.oneDToTwoD(currSlice[j]);

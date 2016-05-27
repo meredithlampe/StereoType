@@ -3,7 +3,7 @@
  */
 var DebugTool = {
 
-    colors: ["red", "orange", "yellow", "green", "blue", "purple"],
+    colors: ["#DCDCDD", "#C5C3C6", "#46494C", "#4C5C68", "#1985A1", "#114B5F"],
 
     markFourCorners: function(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord) {
         svg.append("circle").attr("cy", rectTopYCoord)
