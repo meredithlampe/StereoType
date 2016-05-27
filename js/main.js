@@ -36,7 +36,7 @@ var USE_RECTANGLE_DATABASE = false;
 var displayPolygons = true;
 var displayRectangles = false;
 var displayOnlyCenterRectangle = false;
-var displayBounds = true;
+var displayBounds = false;
 var displayText = false;
 var processAll = false; //does another recursive round of polyogn generation
 
@@ -225,21 +225,47 @@ function horizontalSliceAlg(svg, pathCoords2d, d) {
 
     var phrasePieces = TextUtil.slicePhrase(roughNumLevels, d.properties.name);
 
-    //for (var i = 0; i < phrasePieces.length; i++) {
-    //    DebugTool.showInCenterOfPoly(pathCoords2d, phrasePieces[i], i * 10);
-    //}
-
     if (roughNumLevels != phrasePieces.length) {
         console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name);
     }
-
+    debugger;
     //get horizontal slices that are viable
-    var slices = NeighborhoodParser.divide(pathCoords2d, roughNumLevels, dimensions, svg);
+    var slices = NeighborhoodParser.divide(pathCoords2d, roughNumLevels, dimensions, svg, d);
+    //console.log(slices);
+    if (slices != null) {
 
-    for (var i = 0; i < phrasePieces.length; i++) {
-        //for each level, divide horizontal space into chunks for each letter
+        if (d.id == 66) {
+            debugger;
+        }
 
+        //loop through the slices
+        for (var i = 0; i < slices.length; i++) {
+
+            //get color for this slice
+            var color = DebugTool.colors[i];
+            var currSlice = slices[i];
+            //loop through variables within a slice
+            //paint entire slice the same color
+            for (var j = 0; j < slices[i].length; j++) {
+                
+                neighborhoodGroup.append("path")
+                    .attr("d", function() {
+                        var twoDPath = NeighborhoodParser.oneDToTwoD(currSlice[j]);
+                        console.log("twoDPath: " + twoDPath);
+                        var pathString = NeighborhoodParser.arrayToPath(twoDPath);
+                        console.log(pathString);
+                        return pathString;
+                    })
+                    .attr("fill", color);
+            }
+        }
+
+    } else {
+        console.log("slices null for neighborhood: " + d.properties.name);
     }
+
+
+
 }
 
 function inscribedRectangleAlg(pathCoords2d, d) {

@@ -18,9 +18,18 @@ var NeighborhoodParser = {
       pathCoords2d[i] = [parseFloat(bothCoords[0]), parseFloat(bothCoords[1])];
 
     }
-
     return pathCoords2d;
   },
+
+    //returns new 2d coord array from 1d coord array
+    //usually to make the stuff that comes out of PolyK play nice with d3
+    oneDToTwoD: function(oneDArray) {
+        var twoDArray = [];
+        for (var i = 0; i < oneDArray.length / 2; i++) {
+            twoDArray[i] = [oneDArray[2 * i], oneDArray[2 * i + 1]];
+        }
+        return twoDArray;
+    },
 
   /*converts given 2d array of form:
    [
@@ -67,45 +76,102 @@ var NeighborhoodParser = {
     return results;
   },
 
-    divide: function(pathCoords2d, num, dimensions, svg) {
+    divide: function(pathCoords2d, num, dimensions, svg, d) {
         //slice
         var heightOfSlice = (dimensions.max - dimensions.min) / num;
 
-        //start with easy case
+        //format polygon for polySlice
+        var pathCoords1d = PolygonGenerator.twoToOneDimensional(pathCoords2d);
+        var unfilledPolys = [pathCoords1d];
+
+        //3d array of polys in each level:
+        /*
+                [
+                    [
+                        [poly1],
+                        [poly2],
+                         ...
+                         [poly n] in level 1
+                     ],
+                     [
+                        [poly1],
+                        [poly2],
+                        ...
+                        [poly n] in level 2
+                    ],
+                    ...
+                    ...
+                    [
+                        [poly1],
+                        [poly2],
+                        ...
+                        [poly n] in level n
+                    ]
+                ]
+         */
+        var slices = [];
+
         for (var j = 0; j < num; j++) {
 
             //find top and bottom boundaries of slice
             var maxY = (j + 1) * heightOfSlice + dimensions.min;
             var minY =j * heightOfSlice + dimensions.min;
 
-            if (displayBounds) {
-                //show boundaries of levels
-                var pathArrayTop = [[dimensions.right, maxY],[dimensions.left, maxY]];
-                var pathArrayBottom = [[dimensions.left, minY], [dimensions.right, minY]];
+            //find slicing line...
+            //nudge endpoints of line to outside of the polygon, or else PolyK complains
+            //doesn't matter where the x coords are anyway--taking horizontal slice.
+            var pathArrayTop = [[dimensions.right + 10, maxY],[dimensions.left - 10, maxY]];
 
-                console.log(PolyK.ContainsPoint(pathCoords2d, pathArrayTop[0][0], pathArrayTop[0][1]));
-                console.log(PolyK.ContainsPoint(pathCoords2d, pathArrayBottom[0][0], pathArrayBottom[0][1]));
+            //Loop through all of the remaining polygons
+            //and slice them
+            var polysInSlice = [];
+            var polysOutOfSlice = [];
 
-                //format polygon for polySlice
-                var pathCoords1d = PolygonGenerator.twoToOneDimensional(pathCoords2d);
+            for (var g = 0; g < unfilledPolys.length; g++) {
+                try {
+                    var polysAfterTopSlice = PolyK.Slice(unfilledPolys[g], pathArrayTop[0][0], pathArrayTop[0][1],
+                        pathArrayTop[1][0], pathArrayTop[1][1]);
 
-                var polysInSlice = PolyK.Slice(pathCoords1d, pathArrayTop[0][0], pathArrayTop[0][1],
-                            pathArrayTop[1][0], pathArrayTop[1][1]);
-                console.log();
+                    //for all polys after split, sort them according to what side of split they're on
+                    for (var i = 0; i < polysAfterTopSlice.length; i++) {
+                        var testPoly = polysAfterTopSlice[i];
+                        var countPointsInLevel = 0;
+                        var countPointsOutOfLevel = 0;
+                        for (var k = 0; k < testPoly.length / 2; k++) {
+                            if (testPoly[(2 * k) + 1] > maxY || testPoly[(2 * k) + 1] < minY) {
+                                //point out of level
+                                countPointsOutOfLevel++;
+                            } else {
+                                countPointsInLevel++;
+                            }
+                        }
+                        //sort according to whether poly has more points in current slice,
+                        //or belongs in remainder
+                        if (countPointsInLevel > countPointsOutOfLevel) {
+                            //poly belongs in current level
+                            polysInSlice[polysInSlice.length] = testPoly;
+                        } else {
+                            polysOutOfSlice[polysOutOfSlice.length] = testPoly;
+                        }
+                    }
 
-                //var pathStringTop = NeighborhoodParser.arrayToPath(pathArrayTop);
-                //var pathStringBottom = NeighborhoodParser.arrayToPath(pathArrayBottom);
-                //
-                //svg.append("path")
-                //    .attr("d", pathStringTop)
-                //    .style("fill", "none")
-                //    .style('stroke', DebugTool.colors[j]);
-                //
-                //svg.append("path")
-                //    .attr("d", pathStringBottom)
-                //    .style("fill", "none")
-                //    .style('stroke', DebugTool.colors[j]);
+                } catch (e) {
+                    console.log("exception exception Hayyyyy: " + e);
+                    return null;
+                }
             }
+
+            slices[slices.length] = polysInSlice;
+
+            //put all leftover polys in unfilled poly
+            unfilledPolys = polysOutOfSlice;
+
+
+            if (unfilledPolys == null && j < num - 1) {
+                debugger;
+            }
+
+        }
 
             //to keep track of vertical line segments in this chunk
             //var lineSegments = [];
@@ -144,7 +210,7 @@ var NeighborhoodParser = {
             //        .style("fill", "none")
             //        .style('stroke', pathStroke);
             //}
-        }
+        return slices;
 
     }
 
