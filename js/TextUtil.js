@@ -451,5 +451,170 @@ var TextUtil = {
         }
 
         return newbie;
+    },
+
+    formatInscription: function(dimensions, phrase) {
+
+        //var idealLineLength = 12;
+        //var charAspectRatio = 0.4451827;
+        //
+        ////calculate height of idea line
+        //var idealLineAspectRatio = idealLineLength * charAspectRatio; //really not sure about this one
+        //var idealLineWidth = dimensions.right - dimensions.left;
+        //var idealLineHeight = idealLineWidth / idealLineAspectRatio;
+        //var rectHeight = dimensions.max - dimensions.min;
+        //var lineCount = Math.floor(rectHeight / idealLineHeight);
+        //var idealCharPerLine = Math.min(60, Math.max(Math.round(phrase.length / lineCount), 1));
+        //
+        ////segment text into two lines
+        //var preText;
+        //var postText;
+        //var finalText;
+        //var preDiff;
+        //var postDiff;
+        //var charIndex = 0;
+        //var lineText = [];
+        //
+        //var counter = 0;
+        //
+        ////while we still have words left, build the next line
+        //while (charIndex < phrase.length) {
+        //    var postText = "";
+        //
+        //    // build two strings (preText and postText) word by word, with one
+        //    // string always one word behind the other, until
+        //    // the length of one string is less than the ideal number of characters
+        //    // per line, while the length of the other is greater than that ideal
+        //    while (postText.length < idealCharPerLine) {
+        //        preText = postText;
+        //        postText += phrase.charAt(charIndex) + "";
+        //        charIndex++;
+        //        if (charIndex >= phrase.length) {
+        //            break;
+        //        }
+        //    }
+        //
+        //    //calculate the difference between the two strings and the
+        //    //ideal number of chars per line
+        //    preDiff = idealCharPerLine - preText.length;
+        //    postDiff = postText.length - idealCharPerLine;
+        //
+        //    // if the smaller string is closer to the length of the ideal than
+        //    // the longer string, and doesn’t contain just a single space, then
+        //    // use that one for the line
+        //    if ((preDiff < postDiff) && (preText.length > 2)) {
+        //        finalText = preText;
+        //        charIndex--;
+        //    } else { //otherwise, use the longer string for the line
+        //        finalText = postText;
+        //    }
+        //    //kind weird...why taking sub here?
+        //    lineText[lineText.length] = finalText.substring(0, finalText.length - 1);
+        //
+        //}
+        //
+        //debugger;
+
+
+
+    },
+
+    appendPathAndText: function(startPathX, startPathY, endPathX, endPathY,
+        phrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
+        heightOfSlice, rectangleId) {
+
+        var pathStroke = displayBounds ? "black" : "none";
+
+        var pathString = "M" + startPathX + "," + startPathY + "L" + endPathX + "," + endPathY;
+        svg.append("path")
+            .attr("id", "innerPath_" + rectangleId + "_" + k)
+            .attr("d", pathString)
+            .style("fill", "none")
+            .style('stroke', pathStroke);
+
+        var textSize = 1;
+
+        var phantomSvg = d3.select("body").append("svg");
+        var text = svg.append("text")
+            .text(phrase)
+            .attr("font-size", textSize + "pt");
+        var bbox = text.node().getBBox();
+
+        if (displayText) {
+
+            var widthTransform = bbox.width;
+            var heightTransform = bbox.height;
+
+            var eBrake = true;
+
+            while (widthTransform < widthOfSlice && heightTransform < heightOfSlice && eBrake) {
+
+                textSize++;
+
+                text = phantomSvg.append("text")
+                    .text(phrase)
+                    .attr("font-size", textSize + "pt");
+
+                //var textNode = document.getElementById("t1");
+                bbox = text.node().getBBox();
+                widthTransform = bbox.width;
+                heightTransform = bbox.height;
+
+                if (textSize > 25) {
+                    eBrake = false;
+                }
+
+            }
+
+            //use length of bbox, amt of characters on line and length of rectangle to
+            //determine spacing in between rectangles
+            //var extraSpace = widthOfSlice - widthTransform;
+            //var spacePerChar = extraSpace / phrase.length;
+            //.attr("letter-spacing", spacePerChar + "pt")
+
+            var text = svg.append("text")
+                .append("textPath")
+                .attr("xlink:href", "#" + "innerPath_" + rectangleId + "_" + k)
+                .style("text-anchor", "middle")
+                .attr("startOffset", "50%")
+                .text(phrase)
+                .attr("font-size", (textSize * 1.2) + "pt")
+                .attr("font-family", font);
+        }
+    },
+
+    appendCharacterIntoRectangle: function(char, rectangle, svg, d, tag) {
+
+        var startPathX,
+            startPathY,
+            endPathX,
+            endPathY,
+            verticalText,
+            widthOfSlice,
+            heightOfSlice,
+            rectangleId;
+
+        if (rectangle[0].angle == 0 || rectangle[0].angle == 180) {
+            startPathX = rectangle[0].cx - (rectangle[0].width / 2);
+            startPathY = rectangle[0].cy + (rectangle[0].height / 2);
+            endPathX = startPathX + rectangle[0].width;
+            widthOfSlice = rectangle[0].width;
+            heightOfSlice = rectangle[0].height;
+        } else { //rectangle angle == 90 || 270
+            startPathX = rectangle[0].cx - (rectangle[0].height / 2);
+            startPathY = rectangle[0].cy + (rectangle[0].width / 2);
+            endPathX = startPathX + rectangle[0].height;
+            widthOfSlice = rectangle[0].height;
+            heightOfSlice = rectangle[0].width;
+        }
+
+        endPathY = startPathY;
+        verticalText = false;
+        rectangleId = d.properties.name + "_inner";
+
+        TextUtil.appendPathAndText(startPathX, startPathY, endPathX, endPathY, char, d, tag, displayText,
+        displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId);
     }
+
+
 };

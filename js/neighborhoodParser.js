@@ -97,8 +97,8 @@ var NeighborhoodParser = {
     return results;
   },
 
-    divide: function(pathCoords3d, num, dimensions, svg, d) {
-        //slice
+    divide: function(pathCoords3d, num, dimensions, svg, d, horizontalSliceFlag) {
+        //slice (height is width if doing vertical slice)
         var heightOfSlice = (dimensions.max - dimensions.min) / num;
 
         if (d.type != "MultiPolygon") {
@@ -135,17 +135,22 @@ var NeighborhoodParser = {
 
             //going to num - 1 because on the last iteration we don't
             //actually need to slice
-            for (var j = 0; j < num -1; j++) {
+            for (var j = 0; j < num - 1; j++) {
 
                 //find top and bottom boundaries of slice
-                var maxY = (j + 1) * heightOfSlice + dimensions.min;
-                var minY =j * heightOfSlice + dimensions.min;
-                var midY = (maxY - minY) / 2 + minY;
+                var maxVal = (j + 1) * heightOfSlice + dimensions.min; //for vertical slices, rightmost in slice
+                var minVal = j * heightOfSlice + dimensions.min; //for vertical slices, leftmost in slice
+                var midVal = (maxVal - minVal) / 2 + minVal;
 
                 //find slicing line...
                 //nudge endpoints of line to outside of the polygon, or else PolyK complains
-                //doesn't matter where the x coords are anyway--taking horizontal slice.
-                var pathArrayTop = [[dimensions.right + 10, maxY],[dimensions.left - 10, maxY]];
+                var pathArrayTop;
+                if (horizontalSliceFlag) {
+                    pathArrayTop = [[dimensions.right + 10, maxVal],[dimensions.left - 10, maxVal]];
+                } else { //have to flip x and y if vertical slices.
+                    pathArrayTop = [[maxVal, dimensions.right + 10], [maxVal, dimensions.left - 10]];
+                }
+
 
                 //Loop through all of the remaining polygons
                 //and slice them
@@ -154,39 +159,18 @@ var NeighborhoodParser = {
 
                 for (var g = 0; g < unfilledPolys.length; g++) {
                     try {
+
                         var polysAfterTopSlice = PolyK.Slice(unfilledPolys[g], pathArrayTop[0][0], pathArrayTop[0][1],
                             pathArrayTop[1][0], pathArrayTop[1][1]);
 
                         //for all polys after split, sort them according to what side of split they're on
                         for (var i = 0; i < polysAfterTopSlice.length; i++) {
                             var testPoly = polysAfterTopSlice[i];
-
-
-                            //var countPointsInLevel = 0;
-                            //var countPointsOutOfLevel = 0;
-
-                            //loop through all points and place them in this slice or out
-                            //for (var k = 0; k < testPoly.length / 2; k++) {
-                            //    if (testPoly[(2 * k) + 1] > maxY || testPoly[(2 * k) + 1] < minY) {
-                            //        //point out of level
-                            //        countPointsOutOfLevel++;
-                            //    } else {
-                            //        countPointsInLevel++;
-                            //    }
-                            //}
-                            ////sort according to whether poly has more points in current slice,
-                            ////or belongs in remainder
-                            //if (countPointsInLevel > countPointsOutOfLevel) {
-                            //    //poly belongs in current level
-                            //    polysInSlice[polysInSlice.length] = testPoly;
-                            //} else {
-                            //    polysOutOfSlice[polysOutOfSlice.length] = testPoly;
-                            //}
-
-                            //check if y coord of upper left corner of bounding box is less than
-                            //y coord of midpoint of poly
                             var AABB = PolyK.GetAABB(testPoly);
-                            if (AABB.y < midY && (AABB.y + heightOfSlice) > midY ) {
+                            var comparisonVal = horizontalSliceFlag ? AABB.y : AABB.x;
+
+                            //test what bucket poly should go into according to bounding box
+                            if (comparisonVal < midVal && (comparisonVal + heightOfSlice) > midVal ) {
                                 //this poly belongs in this slice
                                 polysInSlice[polysInSlice.length] = testPoly;
                             } else {
@@ -197,7 +181,8 @@ var NeighborhoodParser = {
 
                     } catch (e) {
                         console.log("exception exception Hayyyyy: " + e);
-                        return null;
+                        slices[slices.length] = polysOutOfSlice;
+                        return slices;
                     }
                 }
 
@@ -219,7 +204,295 @@ var NeighborhoodParser = {
             return null;
         }
 
+    },
+
+    testGrid: function(pathCoords3d, dimensions, d, svg) {
+
+        var optimalHorizontalSlices = -1;
+        var lowestError = Number.MAX_VALUE;
+
+        for (var horCount = 1; horCount < HORIZONTAL_SLICE_CAP; horCount++) {
+
+            var horLevelError = 0;
+
+            //try this level. compare with optimal aspect ratio.
+            //NeighborhoodParser.divide(pathCoords3d, horCount, dimensions,)
+
+
+
+            var phrasePieces = TextUtil.slicePhrase(horCount, d.properties.name);
+
+            if (horCount != phrasePieces.length) {
+                console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name);
+            }
+
+            //get horizontal slices that are viable
+            var slices = NeighborhoodParser.divide(pathCoords3d, horCount, dimensions, svg, d, true);
+
+            if (slices != null) {
+
+                //assert that everything is still working
+                if (slices.length != horCount || horCount != phrasePieces.length) {
+                    console.log("slice error--number of slices != computed number of levels or num levels "
+                        + " != number of phrase pieces");
+                }
+
+                //loop through the slices
+                for (var i = 0; i < slices.length; i++) {
+
+                    //get color for this slice
+                    var color = DebugTool.colors[i];
+                    var currSlice = slices[i];
+
+                    //divide phrase for this slice into polys for this slice
+                    var phraseSlicePoly = TextUtil.slicePhrase(currSlice.length, phrasePieces[i]);
+
+                    //loop through polys within a slice
+                    //slice vertically, but have to keep track of order, left to right
+                    for (var j = 0; j < slices[i].length; j++) {
+                        var currPolyInSlice = currSlice[j];
+
+                        //paint color of whole horizontal slice
+                        var polyInSlicePath = neighborhoodGroup.append("path");
+                        polyInSlicePath.attr("d", function() {
+                                var twoDPath = NeighborhoodParser.oneDToTwoD(currPolyInSlice);
+                                //console.log("twoDPath: " + twoDPath);
+                                var pathString = NeighborhoodParser.arrayToPath(twoDPath);
+                                //console.log(pathString);
+                                return pathString;
+                            })
+                            .attr("fill", color);
+
+
+                        //worry about vertical slicing horizontal slice now
+                        var currPoly2d = NeighborhoodParser.oneDToTwoD(currPolyInSlice);
+                        var currPoly3d = [currPoly2d];
+                        var sliceDimensions = NeighborhoodParser.getNeighborhoodDimensions(currPoly3d);
+                        var phraseForSlicePiece = phraseSlicePoly[j];
+
+                        //make new dimensions for vertical slice (flip 90 degrees clockwise)
+                        var verDimensions = {
+                            max: sliceDimensions.right,
+                            min: sliceDimensions.left,
+                            left: sliceDimensions.min,
+                            right: sliceDimensions.max
+                        };
+
+                        //slice vertically
+                        var numVerticalSlices = phraseForSlicePiece.length;
+                        var verticalSlices = NeighborhoodParser.divide(currPoly3d, numVerticalSlices,
+                            verDimensions, svg, d, false);
+
+                        if (verticalSlices != null) {
+
+                            //loop through each vertical slice
+                            for (var g = 0; g < verticalSlices.length; g++) {
+                                var vertColor = DebugTool.colorfulColors[g];
+                                var currVertSlice = verticalSlices[g];
+
+                                var currPhrase = phraseForSlicePiece[g];
+
+                                //loop through each piece of this vertical slice
+                                for (var k = 0; k < currVertSlice.length; k++) {
+
+                                    var currPolyInSlice = currVertSlice[k];
+                                    horLevelError += NeighborhoodParser.estimateError(currPolyInSlice, neighborhoodGroup);
+
+                                }
+
+                            }
+                        } else {
+                            console.log("error: vertical slices null for neighborhood: " + d.properties.name);
+                        }
+
+                        //remove this poly
+                        polyInSlicePath.remove();
+                    }
+
+                }
+
+            } else {
+                console.log("slices null for neighborhood: " + d.properties.name);
+            }
+
+            if (horLevelError < lowestError) {
+                //this number of horizontal levels is a better
+                //fit for our letters
+                lowestError = horLevelError;
+                optimalHorizontalSlices = horCount;
+            }
+
+        }
+
+        //DebugTool.showInCenterOfPoly(pathCoords3d, optimalHorizontalSlices, 0);
+        return optimalHorizontalSlices;
+
+    },
+
+    //same as test grid, but doesn't loop through a bunch of different numbers
+    //of horizontal levels...instead, uses known value
+    createGrid: function(pathCoords3d, dimensions, numLevels, d, svg) {
+
+        //to be filled with rectangles that make up grid units
+        var grid = [];
+
+        var phrasePieces = TextUtil.slicePhrase(numLevels, d.properties.name);
+
+        if (numLevels != phrasePieces.length) {
+            console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name);
+        }
+
+        //get horizontal slices that are viable
+        var slices = NeighborhoodParser.divide(pathCoords3d, numLevels, dimensions, svg, d, true);
+
+        if (slices != null) {
+
+            //assert that everything is still working
+            if (slices.length != numLevels || numLevels != phrasePieces.length) {
+                console.log("slice error--number of slices != computed number of levels or num levels "
+                    + " != number of phrase pieces");
+            }
+
+            //loop through the slices
+            for (var i = 0; i < slices.length; i++) {
+
+                //get color for this slice
+                var color = DebugTool.colors[i];
+                var currSlice = slices[i];
+
+                //divide phrase for this slice into polys for this slice
+                var phraseSlicePoly = TextUtil.slicePhrase(currSlice.length, phrasePieces[i]);
+
+                //loop through polys within a slice
+                //slice vertically, but have to keep track of order, left to right
+                for (var j = 0; j < slices[i].length; j++) {
+                    var currPolyInSlice = currSlice[j];
+
+                    //paint color of whole horizontal slice
+                    var polyInSlicePath = neighborhoodGroup.append("path");
+                    polyInSlicePath.attr("d", function() {
+                            var twoDPath = NeighborhoodParser.oneDToTwoD(currPolyInSlice);
+                            //console.log("twoDPath: " + twoDPath);
+                            var pathString = NeighborhoodParser.arrayToPath(twoDPath);
+                            //console.log(pathString);
+                            return pathString;
+                        })
+                        .attr("fill", color);
+
+
+                    //worry about vertical slicing horizontal slice now
+                    var currPoly2d = NeighborhoodParser.oneDToTwoD(currPolyInSlice);
+                    var currPoly3d = [currPoly2d];
+                    var sliceDimensions = NeighborhoodParser.getNeighborhoodDimensions(currPoly3d);
+                    var phraseForSlicePiece = phraseSlicePoly[j];
+
+                    //make new dimensions for vertical slice (flip 90 degrees clockwise)
+                    var verDimensions = {
+                        max: sliceDimensions.right,
+                        min: sliceDimensions.left,
+                        left: sliceDimensions.min,
+                        right: sliceDimensions.max
+                    };
+
+                    //slice vertically
+                    var numVerticalSlices = phraseForSlicePiece.length;
+                    var verticalSlices = NeighborhoodParser.divide(currPoly3d, numVerticalSlices,
+                        verDimensions, svg, d, false);
+
+                    if (verticalSlices != null) {
+
+                        //loop through each vertical slice
+                        for (var g = 0; g < verticalSlices.length; g++) {
+                            var vertColor = DebugTool.colorfulColors[g];
+                            var currVertSlice = verticalSlices[g];
+
+                            var currPhrase = phraseForSlicePiece[g];
+
+                            //loop through each piece of this vertical slice
+                            for (var k = 0; k < currVertSlice.length; k++) {
+                                var twoDPath = NeighborhoodParser.oneDToTwoD(currVertSlice[k]);
+                                var vertSlicePath = neighborhoodGroup.append("path")
+                                    .attr("d", function() {
+                                        var pathString = NeighborhoodParser.arrayToPath(twoDPath);
+                                        //console.log(pathString);
+                                        return pathString;
+                                    })
+                                    .attr("fill", vertColor)
+                                    .attr("opacity", ".50");
+
+                                //get largest inscribed rectangle for this slice
+                                //TODO: WHAT ABOUT MULTIPOLYGONS HEYYYY
+                                var inscribed = d3plus.geom.largestRect(twoDPath, {
+                                    angle: [90, 270], nTries: 50, tolerance: 0.02
+                                });
+
+                                if (inscribed != null && inscribed[0] != null) {
+                                    //append inscribed rectangle
+                                    DebugTool.appendRect(svg, inscribed, d);
+                                    grid[grid.length] = inscribed;
+                                }
+                            }
+                            if (!displayBounds && vertSlicePath != null) {
+                                vertSlicePath.remove();
+                            }
+
+                        }
+                    } else {
+                        console.log("error: vertical slices null for neighborhood: " + d.properties.name);
+                    }
+
+                    if (!displayBounds && polyInSlicePath != null) {
+                        polyInSlicePath.remove();
+                    }
+
+                }
+
+            }
+
+        } else {
+            console.log("slices null for neighborhood: " + d.properties.name);
+        }
+
+        return grid;
+
+    },
+
+    estimateError: function(currPoly, neighborhoodGroup) {
+        var twoDPath = NeighborhoodParser.oneDToTwoD(currPoly);
+        var vertSlicePath = neighborhoodGroup.append("path")
+            .attr("d", function() {
+                //console.log("twoDPath: " + twoDPath);
+                var pathString = NeighborhoodParser.arrayToPath(twoDPath);
+                //console.log(pathString);
+                return pathString;
+            })
+            .attr("opacity", ".50");
+
+        var horLevelError = NeighborhoodParser.getDiffAspectRatio(twoDPath);
+
+        //the error was what we were really after.
+        //remove this slice.
+        vertSlicePath.remove();
+        return horLevelError;
+    },
+
+    getDiffAspectRatio: function(twoDPath) {
+        //get largest inscribed rectangle for this slice
+        //TODO: WHAT ABOUT MULTIPOLYGONS HEYYYY
+        var inscribed = d3plus.geom.largestRect(twoDPath, {
+            angle: [90, 270], nTries: 50, tolerance: 0.02
+        });
+
+        var horLevelError;
+
+        if (inscribed != null && inscribed[0] != null) {
+            var inscribedAspectRatio = Math.min(inscribed[0].height, inscribed[0].width) /
+                Math.max(inscribed[0].height, inscribed[0].width);
+            horLevelError = Math.abs(inscribedAspectRatio - CHAR_ASPECT_RATIO);
+        }
+        return horLevelError;
     }
+
 
 
 };

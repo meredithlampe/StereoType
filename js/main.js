@@ -31,13 +31,16 @@ var AREA_CUTOFF = 40;
 
 //use rectangle mods made in database
 var USE_RECTANGLE_DATABASE = false;
+var HORIZONTAL_SLICE_CAP = 6;
+var CHAR_ASPECT_RATIO = .5;
+
 
 //display various steps in text append process
 var displayPolygons = true;
 var displayRectangles = false;
 var displayOnlyCenterRectangle = false;
-var displayBounds = false;
-var displayText = false;
+var displayBounds = true;
+var displayText = true;
 var processAll = false; //does another recursive round of polyogn generation
 
 //get width of parent
@@ -119,13 +122,14 @@ d3.json("json/neighborhoods.json", function(error, topology) {
 
                         //eliminate spaces from phrase
                         var nameWithoutSpaces = d.properties.name.replace(" ", "");
+                        var capsNameNoSpace = nameWithoutSpaces.toUpperCase();
                         //var text = nameWithoutSpaces + nameWithoutSpaces;
                         //var text = nameWithoutSpaces;
                         //var text = nameWithoutSpaces;
                         var text = nameWithoutSpaces + nameWithoutSpaces + nameWithoutSpaces;
 
                         //var neighborhood = inscribedRectangleAlg(pathCoords2d, d);
-                        var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d);
+                        var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d, capsNameNoSpace);
 
                         //Necessary for inscribedRectAlg
                         //rectanglesForText = neighborhood.rectangles;
@@ -210,7 +214,7 @@ function appendRectangle(rectangle, displayFlag, d, location) {
 //slice neighborhood horizontally, then vertically
 //according to length of phrase to get grid over neighborhood.
 //Use inscribed rectangles to fill each grid slot with a letter
-function horizontalSliceAlg(svg, pathCoords3d, d) {
+function horizontalSliceAlg(svg, pathCoords3d, d, phrase) {
 
     //get height and width of polygon
     var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords3d);
@@ -218,50 +222,18 @@ function horizontalSliceAlg(svg, pathCoords3d, d) {
     var widthOfPoly = dimensions.right - dimensions.left;
 
     //here our aspect ratio will always be height over width
-    var roughAspectRatio = Math.max(heightOfPoly, widthOfPoly) / Math.min(heightOfPoly, widthOfPoly);
-    var roughNumLevels = TextUtil.calculateNumLevels(roughAspectRatio, d.properties.name, 0, false);
+    //var roughAspectRatio = Math.max(heightOfPoly, widthOfPoly) / Math.min(heightOfPoly, widthOfPoly);
+    //var roughNumLevels = TextUtil.calculateNumLevels(roughAspectRatio, d.properties.name, 0, false);
 
-    var phrasePieces = TextUtil.slicePhrase(roughNumLevels, d.properties.name);
+    var optimalHoriontalSlices = NeighborhoodParser.testGrid(pathCoords3d, dimensions, d, svg);
+    var gridUnits = NeighborhoodParser.createGrid(pathCoords3d, dimensions, optimalHoriontalSlices, d, svg);
 
-    if (roughNumLevels != phrasePieces.length) {
-        console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name);
+
+
+    for (var i = 0; i < gridUnits.length; i++) {
+        var character = phrase.charAt(i);
+        TextUtil.appendCharacterIntoRectangle(character, gridUnits[i], svg, d, i);
     }
-    //get horizontal slices that are viable
-
-    if (d.properties.name == "Industrial District") {
-        debugger;
-    }
-    var slices = NeighborhoodParser.divide(pathCoords3d, roughNumLevels, dimensions, svg, d);
-    //console.log(slices);
-    if (slices != null) {
-
-        //loop through the slices
-        for (var i = 0; i < slices.length; i++) {
-
-            //get color for this slice
-            var color = DebugTool.colors[i];
-            var currSlice = slices[i];
-            //loop through variables within a slice
-            //paint entire slice the same color
-            for (var j = 0; j < slices[i].length; j++) {
-
-                neighborhoodGroup.append("path")
-                    .attr("d", function() {
-                        var twoDPath = NeighborhoodParser.oneDToTwoD(currSlice[j]);
-                        console.log("twoDPath: " + twoDPath);
-                        var pathString = NeighborhoodParser.arrayToPath(twoDPath);
-                        console.log(pathString);
-                        return pathString;
-                    })
-                    .attr("fill", color);
-            }
-        }
-
-    } else {
-        console.log("slices null for neighborhood: " + d.properties.name);
-    }
-
-
 
 }
 
@@ -277,69 +249,6 @@ function inscribedRectangleAlg(pathCoords2d, d) {
     return neighborhood;
 }
 
-function appendPathAndText(startPathX, startPathY, endPathX, endPathY,
-                           phrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
-                            heightOfSlice, rectangleId) {
-
-    var pathStroke = displayBounds ? "black" : "none";
-
-    var pathString = "M" + startPathX + "," + startPathY + "L" + endPathX + "," + endPathY;
-    svg.append("path")
-        .attr("id", "innerPath_" + rectangleId + "_" + k)
-        .attr("d", pathString)
-        .style("fill", "none")
-        .style('stroke', pathStroke);
-
-    var textSize = 1;
-
-    var phantomSvg = d3.select("body").append("svg");
-    var text = svg.append("text")
-        .text(phrase)
-        .attr("font-size", textSize + "pt");
-    var bbox = text.node().getBBox();
-
-    if (displayText) {
-
-        var widthTransform = bbox.width;
-        var heightTransform = bbox.height;
-
-        var eBrake = true;
-
-        while (widthTransform < widthOfSlice && heightTransform < heightOfSlice && eBrake) {
-
-            textSize++;
-
-            text = phantomSvg.append("text")
-                .text(phrase)
-                .attr("font-size", textSize + "pt");
-
-            //var textNode = document.getElementById("t1");
-            bbox = text.node().getBBox();
-            widthTransform = bbox.width;
-            heightTransform = bbox.height;
-
-            if (textSize > 25) {
-                eBrake = false;
-            }
-
-        }
-
-        //use length of bbox, amt of characters on line and length of rectangle to
-        //determine spacing in between rectangles
-        //var extraSpace = widthOfSlice - widthTransform;
-        //var spacePerChar = extraSpace / phrase.length;
-        //.attr("letter-spacing", spacePerChar + "pt")
-
-        var text = svg.append("text")
-            .append("textPath")
-            .attr("xlink:href", "#" + "innerPath_" + rectangleId + "_" + k)
-            .style("text-anchor", "middle")
-             .attr("startOffset", "50%")
-            .text(phrase)
-            .attr("font-size", (textSize * 1.2) + "pt")
-            .attr("font-family", font);
-    }
-}
 
 function appendSingleLetter(rectangle, letter, d) {
 

@@ -4,6 +4,7 @@
 var DebugTool = {
 
     colors: ["#DCDCDD", "#C5C3C6", "#46494C", "#4C5C68", "#1985A1", "#114B5F"],
+    colorfulColors: ["#9D8189", "#F4ACB7", "#FFCAD4", "#FFE5D9", "#D8E2DC"],
 
     markFourCorners: function(rectTopYCoord, rectLowYCoord, rectLeftXCoord, rectRightXCoord) {
         svg.append("circle").attr("cy", rectTopYCoord)
@@ -45,10 +46,10 @@ var DebugTool = {
 
     },
 
-    showInCenterOfPoly: function(pathCoords2d, message, verticalOffset) {
+    showInCenterOfPoly: function(pathCoords3d, message, verticalOffset) {
 
         //get height and width of polygon
-        var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords2d);
+        var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords3d);
         var heightOfPoly = dimensions.max - dimensions.min;
         var widthOfPoly = dimensions.right - dimensions.left;
 
@@ -56,7 +57,21 @@ var DebugTool = {
         var middleY = dimensions.max - (heightOfPoly / 2);
         var middleX = dimensions.left + (widthOfPoly / 2);
 
-        svg.append("text").text(message).attr("font-size", 10 + "pt")
+        svg.append("text").text(message + "").attr("font-size", 10 + "pt")
             .attr("x", middleX).attr("y", middleY + verticalOffset);
+    },
+
+    appendRect: function(svg, rectangle, d) {
+        svg.append("rect")
+            .attr("width", rectangle[0].width)
+            .attr("height", rectangle[0].height)
+            .attr("x", rectangle[0].cx - (rectangle[0].width / 2))
+            .attr("y", rectangle[0].cy - (rectangle[0].height / 2))
+            .attr("transform", "rotate(" + rectangle[0].angle + "," + rectangle[0].cx + "," + rectangle[0].cy + ")")
+            .attr("id", function() {
+                return "rect_" + d.id + "_" + location;
+            })
+            .attr("fill", "white")
+            .attr("opacity", "0.5");
     }
 };
