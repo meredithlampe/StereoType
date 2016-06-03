@@ -209,16 +209,21 @@ var NeighborhoodParser = {
     testGrid: function(pathCoords3d, dimensions, d, svg) {
 
         var optimalHorizontalSlices = -1;
+        var optimalHorizontalSlicesArea = -1;
         var lowestError = Number.MAX_VALUE;
+        var lowestErrorArea = Number.MAX_VALUE;
+
+        if (d.id == 17) {
+            debugger;
+        }
 
         for (var horCount = 1; horCount < HORIZONTAL_SLICE_CAP; horCount++) {
 
             var horLevelError = 0;
+            var horLevelError_Area = 0;
 
             //try this level. compare with optimal aspect ratio.
             //NeighborhoodParser.divide(pathCoords3d, horCount, dimensions,)
-
-
 
             var phrasePieces = TextUtil.slicePhrase(horCount, d.properties.name);
 
@@ -297,7 +302,8 @@ var NeighborhoodParser = {
 
                                     var currPolyInSlice = currVertSlice[k];
                                     horLevelError += NeighborhoodParser.estimateError(currPolyInSlice, neighborhoodGroup);
-
+                                    horLevelError_Area += NeighborhoodParser.estimateErrorByArea(currPolyInSlice,
+                                        neighborhoodGroup, svg, d);
                                 }
 
                             }
@@ -322,10 +328,18 @@ var NeighborhoodParser = {
                 optimalHorizontalSlices = horCount;
             }
 
+
+            if (horLevelError_Area < lowestErrorArea) {
+                //this number of horizontal levels is a better
+                //fit for our letters
+                lowestErrorArea = horLevelError_Area;
+                optimalHorizontalSlicesArea = horCount;
+            }
+
         }
 
         //DebugTool.showInCenterOfPoly(pathCoords3d, optimalHorizontalSlices, 0);
-        return optimalHorizontalSlices;
+        return optimalHorizontalSlicesArea;
 
     },
 
@@ -474,6 +488,49 @@ var NeighborhoodParser = {
         //remove this slice.
         vertSlicePath.remove();
         return horLevelError;
+    },
+
+    estimateErrorByArea: function(currPoly, neighborhoodGroup, svg, d) {
+        var twoDPath = NeighborhoodParser.oneDToTwoD(currPoly);
+        var vertSlicePath = neighborhoodGroup.append("path")
+            .attr("d", function() {
+                //console.log("twoDPath: " + twoDPath);
+                var pathString = NeighborhoodParser.arrayToPath(twoDPath);
+                //console.log(pathString);
+                return pathString;
+            })
+            .attr("opacity", ".50");
+
+        var horLevelError = NeighborhoodParser.getDiffArea(twoDPath, svg, d);
+
+        //the error was what we were really after.
+        //remove this slice.
+        vertSlicePath.remove();
+        return horLevelError;
+    },
+
+    getDiffArea: function(twoDPath, svg, d) {
+        var inscribed = d3plus.geom.largestRect(twoDPath, {
+            angle: [90, 270], nTries: 50, tolerance: 0.02
+        });
+        var diff;
+
+        if (inscribed != null && inscribed[0] != null) {
+            //estimate error based on area
+            var inscribedArea = inscribed[1];
+
+            //do a sample append...doesn't really matter what character it is
+            var pathAndText = TextUtil.appendCharacterIntoRectangle('X', inscribed, svg, d, "test");
+            var textBox = pathAndText[1].node().getBBox();
+            var textArea = textBox.width * textBox.height;
+
+            //remove path and text
+            pathAndText[0].remove();
+            pathAndText[1].remove();
+
+            diff = inscribedArea - textArea;
+        }
+        return diff
     },
 
     getDiffAspectRatio: function(twoDPath) {

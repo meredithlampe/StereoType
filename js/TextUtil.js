@@ -526,7 +526,7 @@ var TextUtil = {
         var pathStroke = displayBounds ? "black" : "none";
 
         var pathString = "M" + startPathX + "," + startPathY + "L" + endPathX + "," + endPathY;
-        svg.append("path")
+        var path = svg.append("path")
             .attr("id", "innerPath_" + rectangleId + "_" + k)
             .attr("d", pathString)
             .style("fill", "none")
@@ -580,7 +580,12 @@ var TextUtil = {
                 .text(phrase)
                 .attr("font-size", (textSize * 1.2) + "pt")
                 .attr("font-family", font);
+
+            //return path and text
+            var result = [path, text];
+            return result;
         }
+
     },
 
     appendCharacterIntoRectangle: function(char, rectangle, svg, d, tag) {
@@ -612,8 +617,11 @@ var TextUtil = {
         verticalText = false;
         rectangleId = d.properties.name + "_inner";
 
-        TextUtil.appendPathAndText(startPathX, startPathY, endPathX, endPathY, char, d, tag, displayText,
+        var pathAndText = TextUtil.appendPathAndText(startPathX, startPathY, endPathX, endPathY, char, d, tag, displayText,
         displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId);
+
+        //return character that you just appended
+        return pathAndText;
     }
 
 
