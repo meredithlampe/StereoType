@@ -5,21 +5,34 @@
  */
 var NeighborhoodParser = {
   get3dPathArray: function(element, isMultiPoly) {
+
     var neighborhoodBoundsString = element.getAttribute("neighborhoodBounds");
     var pathCoords2d;
+    var pathCorods3d;
 
       if (isMultiPoly) { //industrial district case
-            var polyStrings = neighborhoodBoundsString.split('M');
-          var pathCorods3d = [];
+          pathCoords3d = [];
+          var polyStrings = neighborhoodBoundsString.split('M');
+          var indexIn3d = 0;
+
           for (var i = 0; i < polyStrings.length; i++) {
               var currString = polyStrings[i];
-              var pathCoords = currString.split('L');
-              var pathCoords2d = [];
 
-              //fill 2d array
-              for (var j = 0; j < pathCoords.length; j++) {
-                  var bothCoords = pathCoords[j].split(',');
-                  pathCoords2d[j] = [parseFloat(bothCoords[0]), parseFloat(bothCoords[1])];
+              if (currString.length > 0) {
+                  var pathCoords = currString.split('L');
+                  var pathCoords2d = [];
+
+                  //fill 2d array
+                  for (var j = 0; j < pathCoords.length; j++) {
+                      var bothCoords = pathCoords[j].split(',');
+                      pathCoords2d[j] = [parseFloat(bothCoords[0]), parseFloat(bothCoords[1])];
+                  }
+
+                  pathCoords3d[indexIn3d] = pathCoords2d;
+                  indexIn3d++;
+              } else {
+                  //string is empty string -- when splitting on M causes empty string
+                  //at the beginning: don't increment index in 3d array
               }
           }
       } else {
@@ -76,7 +89,7 @@ var NeighborhoodParser = {
     return pathString;
   },
 
-  getNeighborhoodDimensions: function(pathCoords3d) {
+  getNeighborhoodDimensions: function(pathCoords3d, padding) {
 
     //find max and min y coords
     var firstCoord = pathCoords3d[0][0];
@@ -93,19 +106,20 @@ var NeighborhoodParser = {
             rightMost = Math.max(pathCoords3d[i][j][0], rightMost);
         }
     }
-    var results = {max: max, min: min, left: leftMost, right: rightMost};
+    var results = {max: max - padding, min: min + padding, left: leftMost + padding, right: rightMost - padding};
     return results;
   },
 
     divide: function(pathCoords3d, num, dimensions, svg, d, horizontalSliceFlag) {
+
         //slice (height is width if doing vertical slice)
         var heightOfSlice = (dimensions.max - dimensions.min) / num;
+        var slices = [];
 
-        if (d.type != "MultiPolygon") {
+        for (var currPathCoord = 0; currPathCoord < pathCoords3d.length; currPathCoord++) {
             //format polygon for polySlice
-            var pathCoords1d = PolygonGenerator.twoToOneDimensional(pathCoords3d[0]);
+            var pathCoords1d = PolygonGenerator.twoToOneDimensional(pathCoords3d[currPathCoord]);
             var unfilledPolys = [pathCoords1d];
-
             //3d array of polys in each level:
             /*
              [
@@ -131,7 +145,6 @@ var NeighborhoodParser = {
              ]
              ]
              */
-            var slices = [];
 
             //going to num - 1 because on the last iteration we don't
             //actually need to slice
@@ -194,40 +207,45 @@ var NeighborhoodParser = {
                 if (unfilledPolys == null && j < num - 1) {
                     debugger;
                 }
-
             }
-
             //remember to save the last poly..the one that we didn't slice
             slices[slices.length] = unfilledPolys;
-            return slices;
-        } else { //multiPolynomial.
-            return null;
         }
 
+        return slices;
     },
 
-    testGrid: function(pathCoords3d, dimensions, d, svg) {
+    testGrid: function(pathCoords3d, dimensions, d, svg, phrase, padding) {
 
         var optimalHorizontalSlices = -1;
         var optimalHorizontalSlicesArea = -1;
         var lowestError = Number.MAX_VALUE;
         var lowestErrorArea = Number.MAX_VALUE;
+        var lowestAreaDifference = Number.MAX_VALUE;
 
-        if (d.id == 17) {
-            debugger;
+        //find total poly area
+        var totalPolyArea = 0;
+        for (var poly = 0; poly < pathCoords3d.length; poly++) {
+            //PolyK.GetArea(null);
+            totalPolyArea += PolyK.GetArea(PolygonGenerator.twoToOneDimensional(pathCoords3d[poly]));
         }
 
         for (var horCount = 1; horCount < HORIZONTAL_SLICE_CAP; horCount++) {
 
             var horLevelError = 0;
-            var horLevelError_Area = 0;
+            var horLevelError_Area = 0; //difference between char area and inscribed rectangle area
+            var coveredArea = 0; //difference between inscribed rect area and total poly area
+
+
 
             //try this level. compare with optimal aspect ratio.
             //NeighborhoodParser.divide(pathCoords3d, horCount, dimensions,)
 
-            var phrasePieces = TextUtil.slicePhrase(horCount, d.properties.name);
+            //slice into n levels, where n = number of horizontal levels * number of polygons that make
+            //up neighborhood
+            var phrasePieces = TextUtil.slicePhrase(horCount * pathCoords3d.length, phrase);
 
-            if (horCount != phrasePieces.length) {
+            if (horCount * pathCoords3d.length != phrasePieces.length) {
                 console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name);
             }
 
@@ -235,12 +253,6 @@ var NeighborhoodParser = {
             var slices = NeighborhoodParser.divide(pathCoords3d, horCount, dimensions, svg, d, true);
 
             if (slices != null) {
-
-                //assert that everything is still working
-                if (slices.length != horCount || horCount != phrasePieces.length) {
-                    console.log("slice error--number of slices != computed number of levels or num levels "
-                        + " != number of phrase pieces");
-                }
 
                 //loop through the slices
                 for (var i = 0; i < slices.length; i++) {
@@ -272,7 +284,7 @@ var NeighborhoodParser = {
                         //worry about vertical slicing horizontal slice now
                         var currPoly2d = NeighborhoodParser.oneDToTwoD(currPolyInSlice);
                         var currPoly3d = [currPoly2d];
-                        var sliceDimensions = NeighborhoodParser.getNeighborhoodDimensions(currPoly3d);
+                        var sliceDimensions = NeighborhoodParser.getNeighborhoodDimensions(currPoly3d, 0);
                         var phraseForSlicePiece = phraseSlicePoly[j];
 
                         //make new dimensions for vertical slice (flip 90 degrees clockwise)
@@ -300,10 +312,48 @@ var NeighborhoodParser = {
                                 //loop through each piece of this vertical slice
                                 for (var k = 0; k < currVertSlice.length; k++) {
 
-                                    var currPolyInSlice = currVertSlice[k];
-                                    horLevelError += NeighborhoodParser.estimateError(currPolyInSlice, neighborhoodGroup);
-                                    horLevelError_Area += NeighborhoodParser.estimateErrorByArea(currPolyInSlice,
-                                        neighborhoodGroup, svg, d);
+                                    var currPoly = currVertSlice[k];
+                                    horLevelError += NeighborhoodParser.estimateError(currPoly, neighborhoodGroup);
+
+                                    //horLevelError_Area += NeighborhoodParser.estimateErrorByArea(currPolyInSlice,
+                                    //    neighborhoodGroup, svg, d);
+
+                                    var twoDPath = NeighborhoodParser.oneDToTwoD(currPoly);
+                                    var vertSlicePath = neighborhoodGroup.append("path")
+                                        .attr("d", function() {
+                                            //console.log("twoDPath: " + twoDPath);
+                                            var pathString = NeighborhoodParser.arrayToPath(twoDPath);
+                                            //console.log(pathString);
+                                            return pathString;
+                                        })
+                                        .attr("opacity", ".50");
+
+                                    var rectangle = d3plus.geom.largestRect(twoDPath, {
+                                        angle: [0, 90, 270], nTries: 50, tolerance: 0.02
+                                    });
+
+                                    if (rectangle != null && rectangle[0] != null) {
+                                        //var areaError = NeighborhoodParser.getDiffArea(twoDPath, svg, d, rectangle);
+                                        //estimate error based on area
+                                        var inscribedArea = rectangle[1];
+
+                                        //do a sample append...doesn't really matter what character it is
+                                        var pathAndText = TextUtil.appendCharacterIntoRectangle('X', rectangle, svg, d, "test", 0);
+                                        var textBox = pathAndText[1].node().getBBox();
+                                        var textArea = textBox.width * textBox.height;
+
+                                        //remove path and text
+                                        pathAndText[0].remove();
+                                        pathAndText[1].remove();
+
+                                        //horLevelError_Area += areaError;
+                                        coveredArea += textArea;
+                                    }
+
+                                    //the error was what we were really after.
+                                    //remove this slice.
+                                    vertSlicePath.remove();
+
                                 }
 
                             }
@@ -321,36 +371,42 @@ var NeighborhoodParser = {
                 console.log("slices null for neighborhood: " + d.properties.name);
             }
 
-            if (horLevelError < lowestError) {
-                //this number of horizontal levels is a better
-                //fit for our letters
-                lowestError = horLevelError;
+            //if (horLevelError < lowestError) {
+            //    //this number of horizontal levels is a better
+            //    //fit for our letters
+            //    lowestError = horLevelError;
+            //    optimalHorizontalSlices = horCount;
+            //}
+
+
+            //if (horLevelError_Area < lowestErrorArea) {
+            //    //this number of horizontal levels is a better
+            //    //fit for our letters
+            //    lowestErrorArea = horLevelError_Area;
+            //    optimalHorizontalSlicesArea = horCount;
+            //}
+
+            var areaDifference = totalPolyArea - coveredArea;
+            if (areaDifference < lowestAreaDifference) {
+                lowestAreaDifference = areaDifference;
                 optimalHorizontalSlices = horCount;
-            }
-
-
-            if (horLevelError_Area < lowestErrorArea) {
-                //this number of horizontal levels is a better
-                //fit for our letters
-                lowestErrorArea = horLevelError_Area;
-                optimalHorizontalSlicesArea = horCount;
             }
 
         }
 
         //DebugTool.showInCenterOfPoly(pathCoords3d, optimalHorizontalSlices, 0);
-        return optimalHorizontalSlicesArea;
+        return optimalHorizontalSlices;
 
     },
 
     //same as test grid, but doesn't loop through a bunch of different numbers
     //of horizontal levels...instead, uses known value
-    createGrid: function(pathCoords3d, dimensions, numLevels, d, svg) {
+    createGrid: function(pathCoords3d, dimensions, numLevels, d, svg, phrase, padding) {
 
         //to be filled with rectangles that make up grid units
         var grid = [];
 
-        var phrasePieces = TextUtil.slicePhrase(numLevels, d.properties.name);
+        var phrasePieces = TextUtil.slicePhrase(numLevels * pathCoords3d.length, phrase, padding);
 
         if (numLevels != phrasePieces.length) {
             console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name);
@@ -397,7 +453,7 @@ var NeighborhoodParser = {
                     //worry about vertical slicing horizontal slice now
                     var currPoly2d = NeighborhoodParser.oneDToTwoD(currPolyInSlice);
                     var currPoly3d = [currPoly2d];
-                    var sliceDimensions = NeighborhoodParser.getNeighborhoodDimensions(currPoly3d);
+                    var sliceDimensions = NeighborhoodParser.getNeighborhoodDimensions(currPoly3d, 0);
                     var phraseForSlicePiece = phraseSlicePoly[j];
 
                     //make new dimensions for vertical slice (flip 90 degrees clockwise)
@@ -442,7 +498,7 @@ var NeighborhoodParser = {
 
                                 if (inscribed != null && inscribed[0] != null) {
                                     //append inscribed rectangle
-                                    DebugTool.appendRect(svg, inscribed, d);
+                                    //DebugTool.appendRect(svg, inscribed, d);
                                     grid[grid.length] = inscribed;
                                 }
                             }
@@ -490,48 +546,6 @@ var NeighborhoodParser = {
         return horLevelError;
     },
 
-    estimateErrorByArea: function(currPoly, neighborhoodGroup, svg, d) {
-        var twoDPath = NeighborhoodParser.oneDToTwoD(currPoly);
-        var vertSlicePath = neighborhoodGroup.append("path")
-            .attr("d", function() {
-                //console.log("twoDPath: " + twoDPath);
-                var pathString = NeighborhoodParser.arrayToPath(twoDPath);
-                //console.log(pathString);
-                return pathString;
-            })
-            .attr("opacity", ".50");
-
-        var horLevelError = NeighborhoodParser.getDiffArea(twoDPath, svg, d);
-
-        //the error was what we were really after.
-        //remove this slice.
-        vertSlicePath.remove();
-        return horLevelError;
-    },
-
-    getDiffArea: function(twoDPath, svg, d) {
-        var inscribed = d3plus.geom.largestRect(twoDPath, {
-            angle: [90, 270], nTries: 50, tolerance: 0.02
-        });
-        var diff;
-
-        if (inscribed != null && inscribed[0] != null) {
-            //estimate error based on area
-            var inscribedArea = inscribed[1];
-
-            //do a sample append...doesn't really matter what character it is
-            var pathAndText = TextUtil.appendCharacterIntoRectangle('X', inscribed, svg, d, "test");
-            var textBox = pathAndText[1].node().getBBox();
-            var textArea = textBox.width * textBox.height;
-
-            //remove path and text
-            pathAndText[0].remove();
-            pathAndText[1].remove();
-
-            diff = inscribedArea - textArea;
-        }
-        return diff
-    },
 
     getDiffAspectRatio: function(twoDPath) {
         //get largest inscribed rectangle for this slice

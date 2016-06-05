@@ -49,7 +49,7 @@ var DebugTool = {
     showInCenterOfPoly: function(pathCoords3d, message, verticalOffset) {
 
         //get height and width of polygon
-        var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords3d);
+        var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords3d, 0);
         var heightOfPoly = dimensions.max - dimensions.min;
         var widthOfPoly = dimensions.right - dimensions.left;
 

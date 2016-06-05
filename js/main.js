@@ -3,8 +3,6 @@
  */
 
 
-
-
 var width = 900;
 var height = 600;
 var rotate = [122, 0, 0];
@@ -16,8 +14,11 @@ var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
 var font = "Oswald";
 //var font = "Impact";
 
+var color1 = ['a', 'b', 'c', 'd', 'e', 'f'];
+var color2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
 //padding to be given between text and inscribed rectangle
-var padding = "2";
+var padding = 4;
 
 //keep track of area of each polygon already processed
 var topPolyBounds = {};
@@ -31,15 +32,17 @@ var AREA_CUTOFF = 40;
 
 //use rectangle mods made in database
 var USE_RECTANGLE_DATABASE = false;
+var USE_GRID_CACHING = false;
 var HORIZONTAL_SLICE_CAP = 6;
 var CHAR_ASPECT_RATIO = .5;
+var TEXT_SIZE_MULTIPLIER = 1.1;
 
 
 //display various steps in text append process
 var displayPolygons = true;
 var displayRectangles = false;
 var displayOnlyCenterRectangle = false;
-var displayBounds = true;
+var displayBounds = false;
 var displayText = true;
 var processAll = false; //does another recursive round of polyogn generation
 
@@ -81,6 +84,8 @@ var topoGeometries;
 
 d3.json("json/neighborhoods.json", function(error, topology) {
 
+
+
         topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
             .geometries;
 
@@ -91,6 +96,13 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             .append("path")
             .attr("d", path)
             .attr("class", "neighborhoodOutline")
+            .attr("fill", function() {
+                var colorA = color1[Math.floor(Math.random() * color1.length)];
+                var colorB = color2[Math.floor(Math.random() * color2.length)];
+                var pair = colorA + "" + colorB;
+                var color = "#" + pair + pair + pair;
+                return color;
+            })
             .attr("id", function (d) {
                 return "n_" + d.id
             });
@@ -115,6 +127,8 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             })
             .attr("d", function (d) {
 
+                //if (d.id == 41) {
+                if (true) {
                     //get current neighborhood shape
                     var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
 
@@ -127,9 +141,12 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                         //var text = nameWithoutSpaces;
                         //var text = nameWithoutSpaces;
                         var text = nameWithoutSpaces + nameWithoutSpaces + nameWithoutSpaces;
+                        var twoCapsName = capsNameNoSpace + capsNameNoSpace;
+                        //var threeCapsName = capsNameNoSpace + capsNameNoSpace + capsNameNoSpace;
 
                         //var neighborhood = inscribedRectangleAlg(pathCoords2d, d);
-                        var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d, capsNameNoSpace);
+                        var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d, capsNameNoSpace, padding);
+
 
                         //Necessary for inscribedRectAlg
                         //rectanglesForText = neighborhood.rectangles;
@@ -145,8 +162,11 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                         //LATEST VERSION OF INSCRIBED RECTANGLE TEXT POPULATION
                         //TextUtil.fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase);
                     }
+                }
                 //stop spinner--we're done!
                 loadingIndicator.stop();
+                //svg.append("text").text(JSON.stringify(gridCache));
+                console.log(JSON.stringify(gridCache) + "end");
                 return null;
             });
 
@@ -214,10 +234,11 @@ function appendRectangle(rectangle, displayFlag, d, location) {
 //slice neighborhood horizontally, then vertically
 //according to length of phrase to get grid over neighborhood.
 //Use inscribed rectangles to fill each grid slot with a letter
-function horizontalSliceAlg(svg, pathCoords3d, d, phrase) {
+function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding) {
 
     //get height and width of polygon
-    var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords3d);
+    //don't use padding this time (padding = 0)
+    var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords3d, 0);
     var heightOfPoly = dimensions.max - dimensions.min;
     var widthOfPoly = dimensions.right - dimensions.left;
 
@@ -225,15 +246,29 @@ function horizontalSliceAlg(svg, pathCoords3d, d, phrase) {
     //var roughAspectRatio = Math.max(heightOfPoly, widthOfPoly) / Math.min(heightOfPoly, widthOfPoly);
     //var roughNumLevels = TextUtil.calculateNumLevels(roughAspectRatio, d.properties.name, 0, false);
 
-    var optimalHoriontalSlices = NeighborhoodParser.testGrid(pathCoords3d, dimensions, d, svg);
-    var gridUnits = NeighborhoodParser.createGrid(pathCoords3d, dimensions, optimalHoriontalSlices, d, svg);
 
-
-
-    for (var i = 0; i < gridUnits.length; i++) {
-        var character = phrase.charAt(i);
-        TextUtil.appendCharacterIntoRectangle(character, gridUnits[i], svg, d, i);
+    var optimalHorizontalSlices;
+    if (USE_GRID_CACHING && gridCache[d.properties.name] != null &&
+        gridCache[d.properties.name][phrase.length] != null) {
+        optimalHorizontalSlices = gridCache[d.properties.name][phrase.length];
+    } else { //cache optimal slices..only used to use output and save
+        optimalHorizontalSlices = NeighborhoodParser.testGrid(pathCoords3d, dimensions, d, svg, phrase, padding);
+        if (gridCache[d.properties.name] == null ) {
+            gridCache[d.properties.name] = {};
+        }
+        gridCache[d.properties.name][phrase.length] = optimalHorizontalSlices;
     }
+
+    var gridUnits = NeighborhoodParser.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, d, svg,
+        phrase, padding);
+
+    if (displayText) {
+        for (var i = 0; i < gridUnits.length; i++) {
+            var character = phrase.charAt(i);
+            TextUtil.appendCharacterIntoRectangle(character, gridUnits[i], svg, d, i, padding);
+        }
+    }
+
 
 }
 

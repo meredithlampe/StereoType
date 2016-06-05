@@ -91,13 +91,15 @@ var RectangleGenerator = {
     //apply padding dictated in global padding variable
     //effectively shrink available space in rectangle by changing corner coordinates and area
     applyPadding: function(rectangle) {
-        rectangle.corners.leftX += (padding / 2.0);
-        rectangle.corners.rightX -= (padding / 2.0);
-        rectangle.corners.lowY -= (padding / 2.0);
-        rectangle.corners.topY += (padding / 2.0);
+        rectangle.leftX += (padding / 2.0);
+        rectangle.rightX -= (padding / 2.0);
+        rectangle.lowY -= (padding / 2.0);
+        rectangle.topY += (padding / 2.0);
 
-        rectangle.area = (rectangle.corners.lowY - rectangle.corners.topY)
-            * (rectangle.corners.rightX - rectangle.corners.leftX);
+        rectangle.area = (rectangle.lowY - rectangle.topY)
+            * (rectangle.rightX - rectangle.leftX);
         return rectangle;
-    }
+    },
+
+
 };

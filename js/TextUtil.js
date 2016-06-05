@@ -540,8 +540,6 @@ var TextUtil = {
             .attr("font-size", textSize + "pt");
         var bbox = text.node().getBBox();
 
-        if (displayText) {
-
             var widthTransform = bbox.width;
             var heightTransform = bbox.height;
 
@@ -578,17 +576,18 @@ var TextUtil = {
                 .style("text-anchor", "middle")
                 .attr("startOffset", "50%")
                 .text(phrase)
-                .attr("font-size", (textSize * 1.2) + "pt")
+                .attr("font-size", (textSize * TEXT_SIZE_MULTIPLIER) + "pt")
                 .attr("font-family", font);
 
             //return path and text
             var result = [path, text];
             return result;
-        }
 
     },
 
-    appendCharacterIntoRectangle: function(char, rectangle, svg, d, tag) {
+    appendCharacterIntoRectangle: function(char, rectangle, svg, d, tag, padding) {
+
+        //we're only applying padding to the bottom
 
         var startPathX,
             startPathY,
@@ -601,16 +600,16 @@ var TextUtil = {
 
         if (rectangle[0].angle == 0 || rectangle[0].angle == 180) {
             startPathX = rectangle[0].cx - (rectangle[0].width / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].height / 2);
+            startPathY = rectangle[0].cy + (rectangle[0].height / 2) - padding;
             endPathX = startPathX + rectangle[0].width;
             widthOfSlice = rectangle[0].width;
-            heightOfSlice = rectangle[0].height;
+            heightOfSlice = rectangle[0].height - padding;
         } else { //rectangle angle == 90 || 270
             startPathX = rectangle[0].cx - (rectangle[0].height / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].width / 2);
+            startPathY = rectangle[0].cy + (rectangle[0].width / 2) - padding;
             endPathX = startPathX + rectangle[0].height;
             widthOfSlice = rectangle[0].height;
-            heightOfSlice = rectangle[0].width;
+            heightOfSlice = rectangle[0].width - padding;
         }
 
         endPathY = startPathY;
