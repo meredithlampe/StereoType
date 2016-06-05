@@ -32,10 +32,11 @@ var AREA_CUTOFF = 40;
 
 //use rectangle mods made in database
 var USE_RECTANGLE_DATABASE = false;
-var USE_GRID_CACHING = false;
+var USE_GRID_CACHING = true;
 var HORIZONTAL_SLICE_CAP = 6;
 var CHAR_ASPECT_RATIO = .5;
 var TEXT_SIZE_MULTIPLIER = 1.1;
+var GRID_CACHE_OUTPUT = false;
 
 
 //display various steps in text append process
@@ -81,6 +82,7 @@ var neighborhoodGroup = svg.append("g")
 
 var topoGeometries;
 
+Model.initTwitter();
 
 d3.json("json/neighborhoods.json", function(error, topology) {
 
@@ -144,8 +146,23 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                         var twoCapsName = capsNameNoSpace + capsNameNoSpace;
                         //var threeCapsName = capsNameNoSpace + capsNameNoSpace + capsNameNoSpace;
 
+
+                        //debugger;
+
+                        //get phrase from twitter API
+                        var tweetsForNeighborhood = Model.twitterRequest(d.properties.name, cb);
+                        //var tweetsForNeighborhood = null;
+                        var phraseForNeighborhood = "NONE";
+
+                        if (tweetsForNeighborhood == null || tweetsForNeighborhood.length == 0) {
+                            //console.log("error getting phrase for neighborhood " + d.properties.name);
+                        } else {
+                            phraseForNeighborhood = tweetsForNeighborhood[0].text;
+                        }
+
+
                         //var neighborhood = inscribedRectangleAlg(pathCoords2d, d);
-                        var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d, capsNameNoSpace, padding);
+                        var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d, phraseForNeighborhood, padding);
 
 
                         //Necessary for inscribedRectAlg
@@ -166,7 +183,9 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                 //stop spinner--we're done!
                 loadingIndicator.stop();
                 //svg.append("text").text(JSON.stringify(gridCache));
-                console.log(JSON.stringify(gridCache) + "end");
+                if (GRID_CACHE_OUTPUT) {
+                    console.log(JSON.stringify(gridCache) + "end");
+                }
                 return null;
             });
 

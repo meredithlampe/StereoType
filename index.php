@@ -19,7 +19,6 @@
     <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>-->
     <!--<script type="text/javascript" src="http://polyk.ivank.net/polyk.js"></script>-->
     <script src="spinner/spin.min.js" type="text/javascript"></script>
-    <script src="codebird/codebird.js" type="text/javascript"></script>
     <script src="d3/d3.v3.min.js" type="text/javascript"></script>
     <script src="d3plus/d3plus.js" type="text/javascript"></script>
     <script src="polyk/polyk.js" type="text/javascript"></script>
@@ -48,6 +47,12 @@
 
 </head>
 <body>
+
+    <?php
+
+        print("it works!");
+
+    ?>
 
     <!--bootstrap stuff-->
     <!-- Latest compiled and minified JavaScript -->
@@ -125,7 +130,6 @@
 //                $.getScript("js/main.js");
 //            });
         </script>
-        <script src="js/NeighborhoodGeolocation.js"></script>
         <script src="js/RectangleDatabase.js"></script>
         <script src="js/GridCache.js"></script>
         <script src="js/PolygonGenerator.js"></script>
