@@ -32,7 +32,7 @@ var AREA_CUTOFF = 40;
 
 //use rectangle mods made in database
 var USE_RECTANGLE_DATABASE = false;
-var USE_GRID_CACHING = false;
+var USE_GRID_CACHING = true;
 var HORIZONTAL_SLICE_CAP = 6;
 var CHAR_ASPECT_RATIO = .5;
 var TEXT_SIZE_MULTIPLIER = 1.1;
