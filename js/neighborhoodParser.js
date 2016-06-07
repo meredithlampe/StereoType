@@ -408,7 +408,7 @@ var NeighborhoodParser = {
 
         var phrasePieces = TextUtil.slicePhrase(numLevels * pathCoords3d.length, phrase, padding);
 
-        if (numLevels != phrasePieces.length) {
+        if (numLevels * pathCoords3d != phrasePieces.length) {
             console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name);
         }
 

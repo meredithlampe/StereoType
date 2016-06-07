@@ -4,6 +4,7 @@
 var Model = {
 
     cb: null,
+    proxy: false,
 
     initTwitter: function() {
         /*v2*/
@@ -29,12 +30,18 @@ var Model = {
     },
 
     //"q=&geocode=37.781157,-122.398720,1mi"
-    twitterRequest: function(neighborhoodName) {
+    twitterRequest: function(neighborhoodName, callback) {
 
         console.log("querying for " + neighborhoodName);
 
+        if (NeighborhoodGeolocation[neighborhoodName] == null
+                || NeighborhoodGeolocation[neighborhoodName].length == 0) {
+            neighborhoodName = "University District";
+        } else {
+
+        }
         //CHANGE THIS
-        neighborhoodName = "University District";
+
 
         var tweets;
 
@@ -44,35 +51,44 @@ var Model = {
             //and search at each point
             var hoods = NeighborhoodGeolocation[neighborhoodName];
             tweets = [];
+            var countFinished = 0;
             for (var i = 0; i < hoods.length; i++) {
 
                 var queryString = "q=&geocode=" + hoods[i].lat + "," + hoods[i].long +
-                        "," + hoods[i].radius + "mi";
+                        "," + hoods[i].radius + "mi&count=" + TWEETS_PER_QUERY;
 
-                cb.__call(
-                    "search_tweets",
-                    queryString,
-                    function (reply, err) {
-                        if (err) {
-                            console.log("err: " + err);
-                        }
-                        if (reply) {
-                            console.log("reply: " + reply);
-                            for (var i = 0; i < reply.statuses.length; i++) {
-                                console.log(reply.statuses[i]);
+                if (!this.proxy) {
+                    cb.__call(
+                        "search_tweets",
+                        queryString,
+                        function (reply, err) {
+                            //debugger;
+                            if (err) {
+                                console.log("queries remaining: " + err.remaining + " / " + err.limit);
                             }
-                            tweets.concat(reply.statuses);
-                        }
-                    },
-                    true // this parameter required
-                );
+                            if (reply) {
+                                tweets = tweets.concat(reply.statuses);
+                            }
+                            countFinished++;
+                            if (countFinished == hoods.length) {
+                                //console.log(JSON.stringify(tweets));
+                                callback(tweets);
+                            }
+                        },
+                        true // this parameter required
+                    );
+                } else {
+                    //set up proxy twitter status array for testing
+                    tweets = TweetProxy.tweets;
+                    callback(tweets);
+                }
+
             }
-
-
-
         }
 
-        return tweets;
+    },
+
+    checkRequestLimit: function () {
 
     }
 }

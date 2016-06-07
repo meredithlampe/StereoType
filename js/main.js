@@ -36,15 +36,19 @@ var USE_GRID_CACHING = true;
 var HORIZONTAL_SLICE_CAP = 6;
 var CHAR_ASPECT_RATIO = .5;
 var TEXT_SIZE_MULTIPLIER = 1.1;
-var GRID_CACHE_OUTPUT = false;
+var GRID_CACHE_OUTPUT = true;
+var TWEET_CACHE_OUTPUT = true;
+var TWEETS_PER_QUERY = 100;
+
+var SEATTLE_OUTLINE_COLOR = "black";
 
 
 //display various steps in text append process
 var displayPolygons = true;
-var displayRectangles = false;
+var displayRectangles = true;
 var displayOnlyCenterRectangle = false;
-var displayBounds = false;
-var displayText = true;
+var displayBounds = true;
+var displayText = false;
 var processAll = false; //does another recursive round of polyogn generation
 
 //get width of parent
@@ -91,8 +95,19 @@ d3.json("json/neighborhoods.json", function(error, topology) {
         topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
             .geometries;
 
-        //generate paths around each neighborhood
-        neighborhoodGroup.selectAll("path")
+        //generate path to serve as outline of entire seattle area
+        //neighborhoodGroup.selectAll("path")
+        //    .data(topoGeometries)
+        //    .enter()
+        //    .append("path")
+        //    .attr("d", path)
+        //    .attr("class", "neighborhoodOutlineBorder")
+        //    .attr("id", function (d) {
+        //        return "n_" + d.id + "outlinePath";
+        //    });
+
+    //generate paths around each neighborhood
+    neighborhoodGroup.selectAll("path")
             .data(topoGeometries)
             .enter()
             .append("path")
@@ -130,40 +145,41 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             .attr("d", function (d) {
 
                 //if (d.id == 41) {
-                if (true) {
-                    //get current neighborhood shape
-                    var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
+                //get current neighborhood shape
+                var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
 
-                    if (pathCoords3d != null) { //coordinates are enough to actually make a shape
+                if (pathCoords3d != null) { //coordinates are enough to actually make a shape
 
-                        //eliminate spaces from phrase
-                        var nameWithoutSpaces = d.properties.name.replace(" ", "");
-                        var capsNameNoSpace = nameWithoutSpaces.toUpperCase();
-                        //var text = nameWithoutSpaces + nameWithoutSpaces;
-                        //var text = nameWithoutSpaces;
-                        //var text = nameWithoutSpaces;
-                        var text = nameWithoutSpaces + nameWithoutSpaces + nameWithoutSpaces;
-                        var twoCapsName = capsNameNoSpace + capsNameNoSpace;
-                        //var threeCapsName = capsNameNoSpace + capsNameNoSpace + capsNameNoSpace;
+                    //eliminate spaces from phrase
+                    var nameWithoutSpaces = d.properties.name.replace(" ", "");
+                    var capsNameNoSpace = nameWithoutSpaces.toUpperCase();
+                    //var text = nameWithoutSpaces + nameWithoutSpaces;
+                    //var text = nameWithoutSpaces;
+                    //var text = nameWithoutSpaces;
+                    var text = nameWithoutSpaces + nameWithoutSpaces + nameWithoutSpaces;
+                    var twoCapsName = capsNameNoSpace + capsNameNoSpace;
+                    //var threeCapsName = capsNameNoSpace + capsNameNoSpace + capsNameNoSpace;
 
 
-                        //debugger;
+                    //debugger;
 
-                        //get phrase from twitter API
-                        var tweetsForNeighborhood = Model.twitterRequest(d.properties.name, cb);
+                    //get phrase from twitter API
+                    Model.twitterRequest(d.properties.name, function(tweetsForNeighborhood) {
+                        //inside tweet callback function
                         //var tweetsForNeighborhood = null;
                         var phraseForNeighborhood = "NONE";
 
                         if (tweetsForNeighborhood == null || tweetsForNeighborhood.length == 0) {
-                            //console.log("error getting phrase for neighborhood " + d.properties.name);
+                            console.log("error getting phrase for neighborhood " + d.properties.name);
                         } else {
-                            phraseForNeighborhood = tweetsForNeighborhood[0].text;
+                            var hashtagPackage = TweetUtil.extractHashtags(tweetsForNeighborhood);
+                            if (hashtagPackage != null && hashtagPackage["mostUsed"] != null) {
+                                phraseForNeighborhood = "#" + hashtagPackage["mostUsed"].toUpperCase();
+                            }
                         }
-
 
                         //var neighborhood = inscribedRectangleAlg(pathCoords2d, d);
                         var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d, phraseForNeighborhood, padding);
-
 
                         //Necessary for inscribedRectAlg
                         //rectanglesForText = neighborhood.rectangles;
@@ -178,13 +194,16 @@ d3.json("json/neighborhoods.json", function(error, topology) {
 
                         //LATEST VERSION OF INSCRIBED RECTANGLE TEXT POPULATION
                         //TextUtil.fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase);
-                    }
+                    });
                 }
                 //stop spinner--we're done!
                 loadingIndicator.stop();
                 //svg.append("text").text(JSON.stringify(gridCache));
                 if (GRID_CACHE_OUTPUT) {
                     console.log(JSON.stringify(gridCache) + "end");
+                }
+                if (TWEET_CACHE_OUTPUT) {
+                    console.log();
                 }
                 return null;
             });
