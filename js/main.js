@@ -18,7 +18,7 @@ var color1 = ['a', 'b', 'c', 'd', 'e', 'f'];
 var color2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 //padding to be given between text and inscribed rectangle
-var padding = 4;
+var padding = 0.05; //given as percentage of total rectangle space
 
 //keep track of area of each polygon already processed
 var topPolyBounds = {};
@@ -35,7 +35,12 @@ var USE_RECTANGLE_DATABASE = false;
 var USE_GRID_CACHING = true;
 var HORIZONTAL_SLICE_CAP = 6;
 var CHAR_ASPECT_RATIO = .5;
-var TEXT_SIZE_MULTIPLIER = 1.1;
+var TEXT_SIZE_MULTIPLIER = 1.2;
+var GRID_CACHE_OUTPUT = true;
+var TWEET_CACHE_OUTPUT = true;
+var TWEETS_PER_QUERY = 100;
+
+var SEATTLE_OUTLINE_COLOR = "black";
 
 
 //display various steps in text append process
@@ -69,6 +74,7 @@ var projection = d3.geo.mercator()
 var path = d3.geo.path()
     .projection(projection);
 
+var hashtagsToCache = {};
 
 var neighborhoodGroup = svg.append("g")
     .attr('id', 'neighborhoodGroup');
@@ -81,6 +87,7 @@ var neighborhoodGroup = svg.append("g")
 
 var topoGeometries;
 
+Model.initTwitter();
 
 d3.json("json/neighborhoods.json", function(error, topology) {
 
@@ -89,14 +96,26 @@ d3.json("json/neighborhoods.json", function(error, topology) {
         topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
             .geometries;
 
-        //generate paths around each neighborhood
-        neighborhoodGroup.selectAll("path")
+        //generate path to serve as outline of entire seattle area
+        //neighborhoodGroup.selectAll("path")
+        //    .data(topoGeometries)
+        //    .enter()
+        //    .append("path")
+        //    .attr("d", path)
+        //    .attr("class", "neighborhoodOutlineBorder")
+        //    .attr("id", function (d) {
+        //        return "n_" + d.id + "outlinePath";
+        //    });
+
+    //generate paths around each neighborhood
+    neighborhoodGroup.selectAll("path")
             .data(topoGeometries)
             .enter()
             .append("path")
             .attr("d", path)
             .attr("class", "neighborhoodOutline")
             .attr("fill", function() {
+
                 var colorA = color1[Math.floor(Math.random() * color1.length)];
                 var colorB = color2[Math.floor(Math.random() * color2.length)];
                 var pair = colorA + "" + colorB;
@@ -128,25 +147,42 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             .attr("d", function (d) {
 
                 //if (d.id == 41) {
-                if (true) {
-                    //get current neighborhood shape
-                    var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
+                //get current neighborhood shape
+                var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
 
-                    if (pathCoords3d != null) { //coordinates are enough to actually make a shape
+                if (pathCoords3d != null) { //coordinates are enough to actually make a shape
 
-                        //eliminate spaces from phrase
-                        var nameWithoutSpaces = d.properties.name.replace(" ", "");
-                        var capsNameNoSpace = nameWithoutSpaces.toUpperCase();
-                        //var text = nameWithoutSpaces + nameWithoutSpaces;
-                        //var text = nameWithoutSpaces;
-                        //var text = nameWithoutSpaces;
-                        var text = nameWithoutSpaces + nameWithoutSpaces + nameWithoutSpaces;
-                        var twoCapsName = capsNameNoSpace + capsNameNoSpace;
-                        //var threeCapsName = capsNameNoSpace + capsNameNoSpace + capsNameNoSpace;
+                    //eliminate spaces from phrase
+                    var nameWithoutSpaces = d.properties.name.replace(" ", "");
+                    var capsNameNoSpace = nameWithoutSpaces.toUpperCase();
+                    //var text = nameWithoutSpaces + nameWithoutSpaces;
+                    //var text = nameWithoutSpaces;
+                    //var text = nameWithoutSpaces;
+                    var text = nameWithoutSpaces + nameWithoutSpaces + nameWithoutSpaces;
+                    var twoCapsName = capsNameNoSpace + capsNameNoSpace;
+                    //var threeCapsName = capsNameNoSpace + capsNameNoSpace + capsNameNoSpace;
+
+
+                    //debugger;
+
+                    //get phrase from twitter API
+                    Model.twitterRequest(d.properties.name, function(tweetsForNeighborhood) {
+                        //inside tweet callback function
+                        //var tweetsForNeighborhood = null;
+                        var phraseForNeighborhood = "NONE";
+
+                        if (tweetsForNeighborhood == null || tweetsForNeighborhood.length == 0) {
+                            console.log("error getting phrase for neighborhood " + d.properties.name);
+                        } else {
+                            var hashtagPackage = TweetUtil.extractHashtags(tweetsForNeighborhood);
+                            if (hashtagPackage != null && hashtagPackage["mostUsed"] != null) {
+                                phraseForNeighborhood = "#" + hashtagPackage["mostUsed"].toUpperCase();
+                                hashtagsToCache[d.properties.name] = hashtagPackage;
+                            }
+                        }
 
                         //var neighborhood = inscribedRectangleAlg(pathCoords2d, d);
-                        var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d, capsNameNoSpace, padding);
-
+                        var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d, phraseForNeighborhood, padding);
 
                         //Necessary for inscribedRectAlg
                         //rectanglesForText = neighborhood.rectangles;
@@ -161,12 +197,17 @@ d3.json("json/neighborhoods.json", function(error, topology) {
 
                         //LATEST VERSION OF INSCRIBED RECTANGLE TEXT POPULATION
                         //TextUtil.fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase);
-                    }
+                    });
                 }
                 //stop spinner--we're done!
                 loadingIndicator.stop();
                 //svg.append("text").text(JSON.stringify(gridCache));
-                console.log(JSON.stringify(gridCache) + "end");
+                if (GRID_CACHE_OUTPUT) {
+                    console.log(JSON.stringify(gridCache) + "end");
+                }
+                if (TWEET_CACHE_OUTPUT) {
+                    console.log(JSON.stringify(hashtagsToCache));
+                }
                 return null;
             });
 

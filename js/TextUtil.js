@@ -587,7 +587,6 @@ var TextUtil = {
 
     appendCharacterIntoRectangle: function(char, rectangle, svg, d, tag, padding) {
 
-        //we're only applying padding to the bottom
 
         var startPathX,
             startPathY,
@@ -600,17 +599,27 @@ var TextUtil = {
 
         if (rectangle[0].angle == 0 || rectangle[0].angle == 180) {
             startPathX = rectangle[0].cx - (rectangle[0].width / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].height / 2) - padding;
+            startPathY = rectangle[0].cy + (rectangle[0].height / 2);
             endPathX = startPathX + rectangle[0].width;
             widthOfSlice = rectangle[0].width;
-            heightOfSlice = rectangle[0].height - padding;
+            heightOfSlice = rectangle[0].height;
         } else { //rectangle angle == 90 || 270
             startPathX = rectangle[0].cx - (rectangle[0].height / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].width / 2) - padding;
+            startPathY = rectangle[0].cy + (rectangle[0].width / 2);
             endPathX = startPathX + rectangle[0].height;
             widthOfSlice = rectangle[0].height;
-            heightOfSlice = rectangle[0].width - padding;
+            heightOfSlice = rectangle[0].width;
         }
+
+        //apply padding
+        var paddingScaledWidth = padding * widthOfSlice;
+        var paddingScaledHeight =padding * heightOfSlice;
+        startPathX += paddingScaledWidth;
+        startPathY -= paddingScaledHeight;
+        endPathX -= paddingScaledWidth;
+        widthOfSlice -= 2 * paddingScaledWidth;
+        heightOfSlice -= paddingScaledHeight;
+
 
         endPathY = startPathY;
         verticalText = false;

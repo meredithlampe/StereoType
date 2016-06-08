@@ -4,6 +4,11 @@
 
 }
 
+.neighborhoodOutlineBorder {
+    stroke: black;
+    stroke-width: 5px;
+}
+
 #mapContainer {
     position: relative;
     margin: auto;
