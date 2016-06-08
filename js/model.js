@@ -4,7 +4,7 @@
 var Model = {
 
     cb: null,
-    proxy: false,
+    proxy: true,
 
     initTwitter: function() {
 
@@ -45,8 +45,8 @@ var Model = {
 
         if (NeighborhoodGeolocation[neighborhoodName] == null
                 || NeighborhoodGeolocation[neighborhoodName].length == 0) {
-            neighborhoodName = "University District";
-            console.log("can't find neighborhood geolocation...using u district");
+            debugger;
+            return null;
         }
         //CHANGE THIS
         var tweets;

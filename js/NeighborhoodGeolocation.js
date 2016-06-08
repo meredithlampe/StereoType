@@ -20,6 +20,7 @@ var NeighborhoodGeolocation = {
             "radius": 0.5
             }
     ],
+    
 "Broadview": [{
             "lat": 47.726977,
             "long": -122.364500,
@@ -31,6 +32,11 @@ var NeighborhoodGeolocation = {
             "radius": 0.5
             }
             ],
+    "View Ridge": [{
+        "lat": 47.683486,
+        "long": -122.273829,
+        "radius": 0.6
+    }],
 "Haller Lake":[{
             "lat": 47.719685,
             "long": -122.333860,
@@ -66,6 +72,16 @@ var NeighborhoodGeolocation = {
             "long": -122.315871,
             "radius": 0.5
             }],
+    "Matthews Beach": [{
+        "lat": 47.710099,
+        "long": -122.282763,
+        "radius": 0.4
+    },
+        {
+            "lat": 47.699991,
+            "long": -122.277184,
+            "radius": 0.5
+        }],
 "Sand Point":[{
             "lat": 47.681645,
             "long": -122.253911,
@@ -76,6 +92,24 @@ var NeighborhoodGeolocation = {
             "long": -122.266615,
             "radius": 0.5
             }],
+    "Pinehurst":[{
+        "lat": 47.728822,
+        "long": -122.318290,
+        "radius": 0.5
+    },
+        {
+            "lat": 47.717581,
+            "long": -122.318092,
+            "radius": 0.5
+        },
+        {   "lat": 47.711459,
+            "long": -122.324958,
+            "radius": 0.1},
+        {
+            "lat": 47.710535,
+            "long": -122.315173,
+            "radius": 0.1
+        }],
 "Wedgwood":[{
             "lat": 47.690557,
             "long": -122.290732,
@@ -357,6 +391,11 @@ var NeighborhoodGeolocation = {
             "long": -122.289729,
             "radius": 0.5
             }],
+    "Madison Park": [{
+        "lat": 47.636966,
+        "long": -122.286085,
+        "radius": 0.6
+    }],
 "Denny-Blaine": [{
             "lat": 47.621443,
             "long": -122.289939,
@@ -372,11 +411,49 @@ var NeighborhoodGeolocation = {
             "long": -122.340344,
             "radius": 1.0
             }],
+    "Whittier Heights": [{
+        "lat": 47.686643,
+        "long": -122.370952,
+        "radius": 0.3
+    },
+        {
+            "lat": 47.680258,
+            "long": -122.371081,
+            "radius": 0.3
+        }],
 "Broadmoor": [{
             "lat": 47.635906,
             "long": -122.289615,
             "radius": 0.5
             }],
+    "Brighton": [
+        {   "lat": 47.541623,
+        "long": -122.276692,
+        "radius": 0.4},
+        {"lat": 47.535626,
+            "long": -122.274332,
+            "radius": 0.4}
+    ],
+    "Sunset Hill": [{
+        "lat": 47.671964,
+        "long": -122.403107,
+        "radius": 0.3
+    },
+        {
+            "lat": 47.683002,
+            "long": -122.402850,
+            "radius": 0.5
+        },
+        {
+            "lat": 47.693633,
+            "long": -122.402421,
+            "radius": 0.1
+        }],
+    "Rainier Beach": [{
+        "lat": 47.513373,
+        "long": -122.260001,
+        "radius": 1
+    }],
 "South Lake Union": [{
             "lat": 47.623077,
             "long": -122.337105,

@@ -38,10 +38,10 @@ var TweetUtil = {
                             //skip seattle hashtags...so basic
                         }
                     }
-                } else {
-                    //something different came back from the tweets...console log it?
-                    console.log(JSON.stringify(tweets));
                 }
+            }  else {
+                //something different came back from the tweets...console log it?
+                console.log(JSON.stringify(tweet));
             }
 
         }
