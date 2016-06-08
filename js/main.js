@@ -18,7 +18,7 @@ var color1 = ['a', 'b', 'c', 'd', 'e', 'f'];
 var color2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 //padding to be given between text and inscribed rectangle
-var padding = 4;
+var padding = 0.05; //given as percentage of total rectangle space
 
 //keep track of area of each polygon already processed
 var topPolyBounds = {};
@@ -35,7 +35,7 @@ var USE_RECTANGLE_DATABASE = false;
 var USE_GRID_CACHING = true;
 var HORIZONTAL_SLICE_CAP = 6;
 var CHAR_ASPECT_RATIO = .5;
-var TEXT_SIZE_MULTIPLIER = 1.1;
+var TEXT_SIZE_MULTIPLIER = 1.2;
 var GRID_CACHE_OUTPUT = true;
 var TWEET_CACHE_OUTPUT = true;
 var TWEETS_PER_QUERY = 100;
@@ -45,10 +45,10 @@ var SEATTLE_OUTLINE_COLOR = "black";
 
 //display various steps in text append process
 var displayPolygons = true;
-var displayRectangles = true;
+var displayRectangles = false;
 var displayOnlyCenterRectangle = false;
-var displayBounds = true;
-var displayText = false;
+var displayBounds = false;
+var displayText = true;
 var processAll = false; //does another recursive round of polyogn generation
 
 //get width of parent
@@ -74,6 +74,7 @@ var projection = d3.geo.mercator()
 var path = d3.geo.path()
     .projection(projection);
 
+var hashtagsToCache = {};
 
 var neighborhoodGroup = svg.append("g")
     .attr('id', 'neighborhoodGroup');
@@ -114,6 +115,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             .attr("d", path)
             .attr("class", "neighborhoodOutline")
             .attr("fill", function() {
+
                 var colorA = color1[Math.floor(Math.random() * color1.length)];
                 var colorB = color2[Math.floor(Math.random() * color2.length)];
                 var pair = colorA + "" + colorB;
@@ -175,6 +177,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                             var hashtagPackage = TweetUtil.extractHashtags(tweetsForNeighborhood);
                             if (hashtagPackage != null && hashtagPackage["mostUsed"] != null) {
                                 phraseForNeighborhood = "#" + hashtagPackage["mostUsed"].toUpperCase();
+                                hashtagsToCache[d.properties.name] = hashtagPackage;
                             }
                         }
 
@@ -203,7 +206,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                     console.log(JSON.stringify(gridCache) + "end");
                 }
                 if (TWEET_CACHE_OUTPUT) {
-                    console.log();
+                    console.log(JSON.stringify(hashtagsToCache));
                 }
                 return null;
             });

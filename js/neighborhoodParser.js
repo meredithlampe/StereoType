@@ -409,7 +409,8 @@ var NeighborhoodParser = {
         var phrasePieces = TextUtil.slicePhrase(numLevels * pathCoords3d.length, phrase, padding);
 
         if (numLevels * pathCoords3d != phrasePieces.length) {
-            console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name);
+            console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name + ", expected: " + numLevels * pathCoords3d.length
+              + ", actual: " + phrasePieces.length);
         }
 
         //get horizontal slices that are viable
@@ -498,7 +499,9 @@ var NeighborhoodParser = {
 
                                 if (inscribed != null && inscribed[0] != null) {
                                     //append inscribed rectangle
-                                    //DebugTool.appendRect(svg, inscribed, d);
+                                    if (displayRectangles) {
+                                        DebugTool.appendRect(svg, inscribed, d);
+                                    }
                                     grid[grid.length] = inscribed;
                                 }
                             }

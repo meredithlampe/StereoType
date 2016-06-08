@@ -7,26 +7,35 @@ var Model = {
     proxy: false,
 
     initTwitter: function() {
+
+
         /*v2*/
-        cb = new Codebird;
-        cb.setConsumerKey("L9lgozTjiY4RZHfpHG5ucLogP", "h15MrqDDVFsl3S9adLOGKRNznJDeWEJASZFP9rXJW8Jcox5ptn");
+
+        if (!this.proxy) {
 
 
-        cb.__call(
-            "oauth2_token",
-            {},
-            function (reply, err) {
-                var bearer_token;
-                if (err) {
-                    console.log("error response or timeout exceeded" + err.error);
+            cb = new Codebird;
+            cb.setConsumerKey("L9lgozTjiY4RZHfpHG5ucLogP", "h15MrqDDVFsl3S9adLOGKRNznJDeWEJASZFP9rXJW8Jcox5ptn");
+
+
+            cb.__call(
+                "oauth2_token",
+                {},
+                function (reply, err) {
+                    var bearer_token;
+                    if (err) {
+                        console.log("error response or timeout exceeded" + err.error);
+                    }
+                    if (reply) {
+                        bearer_token = reply.access_token;
+                    }
+                    cb.setBearerToken(bearer_token);
+                    console.log("bearer_token: " + bearer_token);
                 }
-                if (reply) {
-                    bearer_token = reply.access_token;
-                }
-                cb.setBearerToken(bearer_token);
-                console.log("bearer_token: " + bearer_token);
-            }
-        );
+            );
+        } else {
+            //nothing! pulling phrase locally
+        }
     },
 
     //"q=&geocode=37.781157,-122.398720,1mi"
@@ -37,12 +46,9 @@ var Model = {
         if (NeighborhoodGeolocation[neighborhoodName] == null
                 || NeighborhoodGeolocation[neighborhoodName].length == 0) {
             neighborhoodName = "University District";
-        } else {
-
+            console.log("can't find neighborhood geolocation...using u district");
         }
         //CHANGE THIS
-
-
         var tweets;
 
         //look up geolocations for neighborhood
@@ -58,6 +64,7 @@ var Model = {
                         "," + hoods[i].radius + "mi&count=" + TWEETS_PER_QUERY;
 
                 if (!this.proxy) {
+                    console.log(!this.proxy);
                     cb.__call(
                         "search_tweets",
                         queryString,

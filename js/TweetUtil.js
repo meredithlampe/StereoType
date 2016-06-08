@@ -13,31 +13,37 @@ var TweetUtil = {
         var highestCount = 0;
         for (var i = 0; i < tweets.length; i++) {
             var tweet = tweets[i];
-            var hashtagsInTweet = tweet.entities.hashtags;
-            if (hashtagsInTweet != null && hashtagsInTweet.length > 0){
-                hashtags = hashtags.concat(hashtagsInTweet);
-                for (var tag = 0; tag < hashtagsInTweet.length; tag++) {
-                    var hashtag = hashtagsInTweet[tag];
-                    var hashtagText = hashtag.text;
-                    if (hashtagText.toUpperCase() != "SEATTLE") {
-                        if (hashtagPrevalance[hashtagText] == null) {
-                            hashtagPrevalance[hashtagText] = 1;
-                            if (highestCount == 0) {
-                                mostUsedTag = hashtagText;
-                                highestCount = 1;
+            if (tweet.entities != null) {
+                var hashtagsInTweet = tweet.entities.hashtags;
+                if (hashtagsInTweet != null && hashtagsInTweet.length > 0){
+                    hashtags = hashtags.concat(hashtagsInTweet);
+                    for (var tag = 0; tag < hashtagsInTweet.length; tag++) {
+                        var hashtag = hashtagsInTweet[tag];
+                        var hashtagText = hashtag.text;
+                        if (hashtagText.toUpperCase() != "SEATTLE") {
+                            if (hashtagPrevalance[hashtagText] == null) {
+                                hashtagPrevalance[hashtagText] = 1;
+                                if (highestCount == 0) {
+                                    mostUsedTag = hashtagText;
+                                    highestCount = 1;
+                                }
+                            } else {
+                                hashtagPrevalance[hashtagText] += 1;
+                                if (hashtagPrevalance[hashtagText] > highestCount) {
+                                    highestCount = hashtagPrevalance[hashtagText];
+                                    mostUsedTag = hashtagText;
+                                }
                             }
                         } else {
-                            hashtagPrevalance[hashtagText] += 1;
-                            if (hashtagPrevalance[hashtagText] > highestCount) {
-                                highestCount = hashtagPrevalance[hashtagText];
-                                mostUsedTag = hashtagText;
-                            }
+                            //skip seattle hashtags...so basic
                         }
-                    } else {
-                        //skip seattle hashtags...so basic
                     }
+                } else {
+                    //something different came back from the tweets...console log it?
+                    console.log(JSON.stringify(tweets));
                 }
             }
+
         }
         hashtagPackage = {
             "hashtags": hashtags,
