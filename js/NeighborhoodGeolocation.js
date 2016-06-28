@@ -463,5 +463,60 @@ var NeighborhoodGeolocation = {
             "lat": 47.632910,
             "long": -122.333758,
             "radius": 0.4
-            }]
+            }],
+    "Capitol Hill": [{
+        "lat": 47.627731,
+        "long": -122.317181,
+        "radius": 0.6
+    }],
+    "First Hill": [{
+        "lat": 47.609016,
+        "long": -122.325077,
+        "radius": 0.4
+    }],
+    "Meadowbrook": [{
+        "lat": 47.702143,
+        "long": -122.296535,
+        "radius": 0.3
+    },
+        {
+            "lat": 47.711124,
+            "long": -122.295763,
+            "radius": 0.3
+        }],
+    "Admiral": [{
+        "lat": 47.581198,
+        "long": -122.385528,
+        "radius": 0.1
+    }],
+    "North College Park": [{
+        "lat": 47.695875,
+        "long": -122.336834,
+        "radius": 0.5
+    },
+        {
+            "lat": 47.705002,
+            "long": -122.336749,
+            "radius": 0.4
+        }],
+    "Atlantic": [{
+        "lat": 47.596667,
+        "long": -122.305542,
+        "radius": 0.4
+    },
+        {
+            "lat": 47.587406,
+            "long": -122.301336,
+            "radius": 0.2
+        },
+        {
+            "lat": 47.581848,
+            "long": -122.299362,
+            "radius": 0.1
+        },
+        {
+            "lat": 47.579372,
+            "long": -122.297433,
+            "radius": 0.2
+        }]
 };
