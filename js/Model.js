@@ -4,7 +4,7 @@
 var Model = {
 
     cb: null,
-    proxy: true,
+    proxy: false,
 
     initTwitter: function() {
 

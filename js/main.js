@@ -145,7 +145,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                 return "inner_" + d.id;
             })
             .attr("d", function (d) {
-
+                
                 //if (d.id == 41) {
                 //get current neighborhood shape
                 var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
