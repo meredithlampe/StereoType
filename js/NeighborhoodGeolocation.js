@@ -463,5 +463,247 @@ var NeighborhoodGeolocation = {
             "lat": 47.632910,
             "long": -122.333758,
             "radius": 0.4
-            }]
+            }],
+    "Capitol Hill": [{
+        "lat": 47.627731,
+        "long": -122.317181,
+        "radius": 0.6
+    }],
+    "First Hill": [{
+        "lat": 47.609016,
+        "long": -122.325077,
+        "radius": 0.4
+    }],
+    "Meadowbrook": [{
+        "lat": 47.702143,
+        "long": -122.296535,
+        "radius": 0.3
+    },
+        {
+            "lat": 47.711124,
+            "long": -122.295763,
+            "radius": 0.3
+        }],
+    "Admiral": [{
+        "lat": 47.581198,
+        "long": -122.385528,
+        "radius": 0.1
+    }],
+    "North College Park": [{
+        "lat": 47.695875,
+        "long": -122.336834,
+        "radius": 0.5
+    },
+        {
+            "lat": 47.705002,
+            "long": -122.336749,
+            "radius": 0.4
+        }],
+    "Atlantic": [{
+        "lat": 47.596667,
+        "long": -122.305542,
+        "radius": 0.4
+    },
+        {
+            "lat": 47.587406,
+            "long": -122.301336,
+            "radius": 0.2
+        },
+        {
+            "lat": 47.581848,
+            "long": -122.299362,
+            "radius": 0.1
+        },
+        {
+            "lat": 47.579372,
+            "long": -122.297433,
+            "radius": 0.2
+        }],
+    "Loyal Heights": [{
+        "lat": 47.683318,
+        "long": -122.384374,
+        "radius": 0.4
+    }],
+    "Central District": [{
+        "lat": 47.606342,
+        "long": -122.282172,
+        "radius": 2.2
+    }],
+    "International District": [{
+        "lat": 47.598943,
+        "long": -122.324872,
+        "radius": 0.2
+    },
+        {
+            "lat": 47.597670,
+            "long": -122.317276,
+            "radius": 0.2
+        }],
+    "Roosevelt": [{
+        "lat": 47.679659,
+        "long": -122.316267,
+        "radius": 0.2
+    },
+        {
+            "lat": 47.673244,
+            "long": -122.315066,
+            "radius": 0.15
+        }],
+    "Pioneer Square": [
+        {
+        "lat": 47.600855,
+        "long": -122.332273,
+        "radius": 0.2
+    },
+        {
+            "lat": 47.603285,
+            "long": -122.329054,
+            "radius": 0.1
+        }],
+    "Ballard": [{
+        "lat": 47.676345,
+        "long": -122.388039,
+        "radius": 1.2
+    }],
+    "Roxhill": [{
+        "lat": 47.522857,
+        "long": -122.371232,
+        "radius": 0.4
+    },
+        {
+            "lat": 47.533115,
+            "long": -122.371104,
+            "radius": 0.25
+        }],
+    "North Delridge": [{
+        "lat": 47.563064,
+        "long": -122.363358,
+        "radius": 0.8
+    }],
+    "Greenwood": [{
+        "lat": 47.694669,
+        "long": -122.354564,
+        "radius": 0.8
+    }],
+    "Leschi": [{
+        "lat": 47.602414,
+        "long": -122.290351,
+        "radius": 0.35
+    },
+        {
+            "lat": 47.592950,
+            "long": -122.291638,
+            "radius": 0.2
+        }],
+    "Riverview": [{
+        "lat": 47.550774,
+        "long": -122.353223,
+        "radius": 0.6
+    },
+        {
+            "lat": 47.536695,
+            "long": -122.352193,
+            "radius": 0.3
+        }],
+    "Montlake": [{
+        "lat": 47.641211,
+        "long": -122.304351,
+        "radius": 0.4
+    }],
+    "Green Lake": [{
+        "lat": 47.681777,
+        "long": -122.333332,
+        "radius": 1.4
+    },
+        {
+            "lat": 47.668138,
+            "long": -122.344061,
+            "radius": 0.2
+        }],
+    "Ravenna": [{
+        "lat": 47.678981,
+        "long": -122.307090,
+        "radius": 0.8
+    }],
+    "Crown Hill": [{
+        "lat": 47.700922,
+        "long": -122.371123,
+        "radius": 0.3
+    },
+        {
+            "lat": 47.694192,
+            "long": -122.371252,
+            "radius": 0.3
+        },
+        {
+            "lat": 47.692748,
+            "long": -122.379878,
+            "radius": 0.1
+        }],
+    "Madrona": [{
+        "lat": 47.613357,
+        "long": -122.288264,
+        "radius": 0.5
+    }],
+    "Bitter Lake": [{
+        "lat": 47.729606,
+        "long": -122.350447,
+        "radius": 0.3
+    },
+        {
+            "lat": 47.720080,
+            "long": -122.349932,
+            "radius": 0.3
+        },
+        {
+            "lat": 47.710551,
+            "long": -122.394760,
+            "radius": 0.3
+        }],
+    "Olympic Manor": [{ //this place was just one spot...
+        "lat": 47.689922,
+        "long": -122.385390,
+        "radius": 0.3
+    }],
+    "Victory Heights": [{
+        "lat": 47.714114,
+        "long": -122.305320,
+        "radius": 0.5
+    },
+        {
+            "lat": 47.703805,
+            "long": -122.306908,
+            "radius": 0.3
+        }],
+    "Phinney Ridge": [{
+        "lat": 47.679529,
+        "long": -122.355152,
+        "radius": 0.6
+    },
+        {
+            "lat": 47.668491,
+            "long": -122.354551,
+            "radius": 0.8
+        },
+        {
+            "lat": 47.670514,
+            "long": -122.363563,
+            "radius": 0.1
+        }],
+    "Bryant": [{
+        "lat": 47.665372,
+        "long": -122.286601,
+        "radius": 0.25
+    },
+        {
+            "lat": 47.672539,
+            "long": -122.284970,
+            "radius": 0.3
+        },
+        {
+            "lat": 47.679474,
+            "long": -122.287888,
+            "radius": 0.25
+        }]
+
 };
