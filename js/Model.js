@@ -73,7 +73,7 @@ var Model = {
                             if (err) {
                                 console.log("queries remaining: " + err.remaining + " / " + err.limit);
                             }
-                            if (reply) {
+                            if (reply && reply.statuses) {
                                 tweets = tweets.concat(reply.statuses);
                             }
                             countFinished++;
