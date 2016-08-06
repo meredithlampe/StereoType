@@ -9,6 +9,15 @@
     <link href='https://fonts.googleapis.com/css?family=Oswald:700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="css/main.css">
 
+
+    <?php
+
+        //get hashtags from file...append to dom?
+        $tags = fopen("hashtags.txt", "r") or die("Unable to open file!");
+
+
+    ?>
+
     <!--oath stuff-->
     <script src="oauth/oauth.min.js"></script>
 
@@ -48,12 +57,6 @@
 
 </head>
 <body>
-
-    <?php
-
-        print("it works!");
-
-    ?>
 
     <!--bootstrap stuff-->
     <!-- Latest compiled and minified JavaScript -->
