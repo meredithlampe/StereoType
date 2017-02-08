@@ -538,7 +538,7 @@ var TextUtil = {
         var text = svg.append("text")
             .text(phrase)
             .attr("font-size", textSize + "pt");
-        var bbox = text.node().getBBox();
+        var bbox = text.node().getBoundingClientRect();
 
             var widthTransform = bbox.width;
             var heightTransform = bbox.height;

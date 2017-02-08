@@ -25,8 +25,15 @@
         $popular_hashtags = array();
         $hashtags_file = fopen("hashtags.txt", "w") or die("Unable to open file!");
 
+        //open file to add to cache
+        $archive = fopen("tweet-archive/archive.txt", "w") or die("Unable to open tweet archive!"); 
+        fwrite($archive, "{ \"archive\":\n{\n");
+
+        $num_locations = count($locations);
+        $curr_location_count = 1;
 
         foreach($locations as $name => $location) { //loop through locations
+
             if (!$api_water_break) {
 
                 $hashtags_for_location = array();
@@ -36,26 +43,26 @@
                         . "," . $circle["radius"] . "mi&count=5";
 
                     $reply = $cb->search_tweets($query, true);
-                    //print("<pre>");
-                    //print_r($reply);
-                    //print("</pre>");
+                    // print("<pre>");
+                    // print_r($reply);
+                    // print("</pre>");
+
                     $statuses = $reply['statuses'];
-                    //print(count($statuses));
+                    // print(count($statuses));
                     foreach ($statuses as $status) {
                         $entities = $status['entities'];
                         if ($entities != null) {
-                            //print_r("IAMENTITY" . $entities);
+                            // print_r("IAMENTITY" . $entities);
                             $hashtags = $entities['hashtags'];
                             if ($hashtags != null) {
-                                //print_r("IAMHASHTAG" . $hashtags);
+                                // print_r("IAMHASHTAG" . $hashtags);
                                 foreach ($hashtags as $hashtag) {
                                     if (!array_key_exists($hashtag["text"], $hashtags_for_location)) {
-                                        print($hashtag["text"]);
                                         $hashtags_for_location[$hashtag["text"]] = 1;
                                     } else {
-                                        print($hashtag["text"]);
                                         $hashtags_for_location[$hashtag["text"]] += 1;
                                     }
+                                    // print($hashtag["text"]);
                                 }
                             }
                         }
@@ -63,27 +70,44 @@
 
                 }
                 print("<pre>");
-                print_r($hashtags_for_location);
+                print_r("json encoded hashtag array: " . json_encode($hashtags_for_location));
                 print("</pre>");
+
+                // $name_string = "\"" . $name . "\": {\n";
+                // fwrite($archive, $name_string);
 
                 //now hashtags for location has count of all hashtags in location
                 //find top hashtag
                 $max = 0;
                 $max_tag = "none";
-                if ($hashtags != null) {
-                    fwrite($hashtags_file, "hashtags not null");
+                $num_tags = count($hashtags_for_location);
+                $curr = 1;
+                if ($hashtags_for_location != null) {
                     foreach ($hashtags_for_location as $hashtag => $count) {
-                       if ($count > $max) {
+                        $hashtag_string = "\"" . $hashtag . "\":" . $count;    
+                        if ($curr != $num_tags) {
+                            $hashtag_string = $hashtag_string . ",\n";
+                        } else {
+                            $hashtag_string = $hashtag_string . "\n";
+                        }
+                        $curr = $curr + 1;
+                        
+                        // fwrite($archive, $hashtag_string);
+                        if ($count > $max) {
                             $max = $count;
                             $max_tag = $hashtag;
                         }
-                    }
-                } else {
-                    fwrite($hashtags_file, "hashtags null");
+                    }                    
+                    //have found most popular hashtag for that neighborhood
+                    $popular_hashtags[$name] = $max_tag;
                 }
+                if ($curr_location_count < $num_locations) {
+                    // fwrite($archive, "},");    
+                } else {
+                    // fwrite($archive, "}");
+                }
+                $curr_location_count = $curr_location_count + 1;
 
-                //have found most popular hashtag for that neighborhood
-                $popular_hashtags[$name] = $max_tag;
             } else {
                 $max_tag = "proxy";
             }
@@ -92,7 +116,14 @@
             
             //write max tag to file for neighborhood
             fwrite($hashtags_file, "" . $name . "," . $max_tag . "\n");
+
         }
+
+        $name_string = "\"" . $name . "\": {\n";
+        fwrite($archive, $name_string);
+        fwrite($archive, json_decode($hashtags_for_location));
+        fwrite($archive, "}\n}");
+        fclose($archive);
 
         fclose($hashtags_file);
 
