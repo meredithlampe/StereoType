@@ -339,7 +339,7 @@ var NeighborhoodParser = {
 
                                         //do a sample append...doesn't really matter what character it is
                                         var pathAndText = TextUtil.appendCharacterIntoRectangle('X', rectangle, svg, d, "test", 0);
-                                        var textBox = pathAndText[1].node().getBBox();
+                                        var textBox = pathAndText[1].node().getBoundingClientRect();
                                         var textArea = textBox.width * textBox.height;
 
                                         //remove path and text

@@ -47,9 +47,11 @@ var SEATTLE_OUTLINE_COLOR = "black";
 var displayPolygons = true;
 var displayRectangles = false;
 var displayOnlyCenterRectangle = false;
-var displayBounds = false;
+var displayBounds = true;
 var displayText = true;
 var processAll = false; //does another recursive round of polyogn generation
+
+//debugger;
 
 //get width of parent
 var parentWidth = d3.select(".jumbotron").attr("width");
@@ -87,7 +89,7 @@ var neighborhoodGroup = svg.append("g")
 
 var topoGeometries;
 
-Model.initTwitter();
+//Model.initTwitter();
 
 d3.json("json/neighborhoods.json", function(error, topology) {
 
@@ -106,6 +108,8 @@ d3.json("json/neighborhoods.json", function(error, topology) {
         //    .attr("id", function (d) {
         //        return "n_" + d.id + "outlinePath";
         //    });
+
+    //debugger;
 
     //generate paths around each neighborhood
     neighborhoodGroup.selectAll("path")
@@ -147,7 +151,7 @@ d3.json("json/neighborhoods.json", function(error, topology) {
             .attr("d", function (d) {
                 
                 //if (d.id == 41) {
-                //get current neighborhood shape
+                //get current neighborhood shape - 3d list of coords
                 var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
 
                 if (pathCoords3d != null) { //coordinates are enough to actually make a shape
@@ -155,9 +159,6 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                     //eliminate spaces from phrase
                     var nameWithoutSpaces = d.properties.name.replace(" ", "");
                     var capsNameNoSpace = nameWithoutSpaces.toUpperCase();
-                    //var text = nameWithoutSpaces + nameWithoutSpaces;
-                    //var text = nameWithoutSpaces;
-                    //var text = nameWithoutSpaces;
                     var text = nameWithoutSpaces + nameWithoutSpaces + nameWithoutSpaces;
                     var twoCapsName = capsNameNoSpace + capsNameNoSpace;
                     //var threeCapsName = capsNameNoSpace + capsNameNoSpace + capsNameNoSpace;
@@ -166,38 +167,41 @@ d3.json("json/neighborhoods.json", function(error, topology) {
                     //debugger;
 
                     //get phrase from twitter API
-                    Model.twitterRequest(d.properties.name, function(tweetsForNeighborhood) {
-                        //inside tweet callback function
-                        //var tweetsForNeighborhood = null;
-                        var phraseForNeighborhood = "NONE";
+                    //Model.twitterRequest(d.properties.name, function(tweetsForNeighborhood) {
+                    //    //inside tweet callback function
+                    //    //var tweetsForNeighborhood = null;
+                    //    var phraseForNeighborhood = "NONE";
+                    //
+                    //    if (tweetsForNeighborhood == null || tweetsForNeighborhood.length == 0) {
+                    //        console.log("error getting phrase for neighborhood " + d.properties.name);
+                    //    } else {
+                    //        var hashtagPackage = TweetUtil.extractHashtags(tweetsForNeighborhood);
+                    //        if (hashtagPackage != null && hashtagPackage["mostUsed"] != null) {
+                    //            phraseForNeighborhood = "#" + hashtagPackage["mostUsed"].toUpperCase();
+                    //            hashtagsToCache[d.properties.name] = hashtagPackage;
+                    //        }
+                    //    }
+                    //
+                    //    //var neighborhood = inscribedRectangleAlg(pathCoords2d, d);
+                    //    var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d, phraseForNeighborhood, padding);
+                    //
+                    //    //Necessary for inscribedRectAlg
+                    //    //rectanglesForText = neighborhood.rectangles;
+                    //
+                    //    //generate next level of polygons
+                    //
+                    //    if (processAll) {
+                    //        processMiniPolygons(neighborhood, rectanglesForText);
+                    //    }
+                    //
+                    //    //TextUtil.fillNeighborhoodText(neighborhood.rectangles, d.properties.name.substring(0, Math.round(lengthWord *.75)), d, displayBounds, displayText);
+                    //
+                    //    //LATEST VERSION OF INSCRIBED RECTANGLE TEXT POPULATION
+                    //    //TextUtil.fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase);
+                    //});
 
-                        if (tweetsForNeighborhood == null || tweetsForNeighborhood.length == 0) {
-                            console.log("error getting phrase for neighborhood " + d.properties.name);
-                        } else {
-                            var hashtagPackage = TweetUtil.extractHashtags(tweetsForNeighborhood);
-                            if (hashtagPackage != null && hashtagPackage["mostUsed"] != null) {
-                                phraseForNeighborhood = "#" + hashtagPackage["mostUsed"].toUpperCase();
-                                hashtagsToCache[d.properties.name] = hashtagPackage;
-                            }
-                        }
-
-                        //var neighborhood = inscribedRectangleAlg(pathCoords2d, d);
-                        var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d, phraseForNeighborhood, padding);
-
-                        //Necessary for inscribedRectAlg
-                        //rectanglesForText = neighborhood.rectangles;
-
-                        //generate next level of polygons
-
-                        if (processAll) {
-                            processMiniPolygons(neighborhood, rectanglesForText);
-                        }
-
-                        //TextUtil.fillNeighborhoodText(neighborhood.rectangles, d.properties.name.substring(0, Math.round(lengthWord *.75)), d, displayBounds, displayText);
-
-                        //LATEST VERSION OF INSCRIBED RECTANGLE TEXT POPULATION
-                        //TextUtil.fillNeighborhoodText(rectanglesForText, text, d, displayBounds, displayText, rectDatabase);
-                    });
+                    // if not using model, do this
+                        var neighborhood = horizontalSliceAlg(svg, pathCoords3d, d, nameWithoutSpaces, padding);
                 }
                 //stop spinner--we're done!
                 loadingIndicator.stop();
