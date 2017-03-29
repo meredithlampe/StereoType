@@ -1,6 +1,6 @@
 #StereoType
 
-Web app designed to take in phrases associated with neighborhoods in Seattle, WA and juxtapose text in each neighborhood. Inspired by [Ork Posters](http://www.orkposters.com/index.html).
+Web app designed to take in phrases associated with neighborhoods in Seattle, WA and juxtapose text in each neighborhood. Text gathered by calling out to social media API. Inspired by [Ork Posters](http://www.orkposters.com/index.html).
 
 ![Final map](images/final.png)
 
