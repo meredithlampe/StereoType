@@ -1,10 +1,11 @@
 
+
 /**
  * Created by meredith on 6/5/16.
  *
  * Stores geolocation for neighborhoods in seattle, along with radius values
  */
-var NeighborhoodGeolocation = {
+module.exports = {
 
     "University District":  [
         {
