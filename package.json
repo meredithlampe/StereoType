@@ -1,0 +1,23 @@
+{
+  "name": "stereotype",
+  "version": "1.0.0",
+  "description": "Web app designed to take in phrases associated with neighborhoods in Seattle, WA and juxtapose text in each neighborhood. Text gathered by calling out to social media API. Inspired by [Ork Posters](http://www.orkposters.com/index.html).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meredithlampe/StereoType.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/meredithlampe/StereoType/issues"
+  },
+  "homepage": "https://github.com/meredithlampe/StereoType#readme",
+  "dependencies": {
+    "text-to-svg": "^3.1.0",
+    "webpack": "^2.3.3"
+  }
+}
