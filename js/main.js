@@ -57,17 +57,25 @@ function reqListener () {
     console.log(this.responseText);
 }
 
+console.log("setting up request");
 var oReq = new XMLHttpRequest(); //New request object
 oReq.onload = function() {
     //This is where you handle what to do with the response.
     //The actual data is found on this.responseText
-    console.log(this.responseText); //Will alert: 42
+    console.log("in onload function");
+    console.log(this.responseText);
 };
-oReq.open("get", "yelp/yelp.php", false);
-//                               ^ Don't block the rest of the execution.
-//                                 Don't wait until the request finishes to
-//                                 continue.
+oReq.open("get", "yelp/yelp.php", true);
 oReq.send();
+
+//
+//$(function() {
+//    $.get('yelp/yelp.php', { }, function(result) {
+//        console.log("in callback");
+//        console.log(result);
+//    }, 'json');
+//});
+
 
 //get width of parent
 var parentWidth = d3.select(".jumbotron").attr("width");
