@@ -521,7 +521,7 @@ var TextUtil = {
 
     appendPathAndText: function(startPathX, startPathY, endPathX, endPathY,
         phrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
-        heightOfSlice, rectangleId) {
+        heightOfSlice, rectangleId, svg) {
 
         var pathStroke = displayBounds ? "black" : "none";
 
@@ -626,7 +626,7 @@ var TextUtil = {
         rectangleId = d.properties.name + "_inner";
 
         var pathAndText = TextUtil.appendPathAndText(startPathX, startPathY, endPathX, endPathY, char, d, tag, displayText,
-        displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId);
+        displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId, svg);
 
         //return character that you just appended
         return pathAndText;
