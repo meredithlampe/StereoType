@@ -398,7 +398,8 @@ var NeighborhoodParser = {
 
     //same as test grid, but doesn't loop through a bunch of different numbers
     //of horizontal levels...instead, uses known value
-    createGrid: function(pathCoords3d, dimensions, numLevels, d, svg, phrase, padding) {
+    createGrid: function(pathCoords3d, dimensions, numLevels, d, svg, phrase, padding,
+                         displayRectangles, displayBounds) {
 
         //to be filled with rectangles that make up grid units
         var grid = [];
