@@ -226,7 +226,6 @@ var NeighborhoodParser = {
         //find total poly area
         var totalPolyArea = 0;
         for (var poly = 0; poly < pathCoords3d.length; poly++) {
-            //PolyK.GetArea(null);
             totalPolyArea += PolyK.GetArea(PolygonGenerator.twoToOneDimensional(pathCoords3d[poly]));
         }
 
@@ -235,8 +234,6 @@ var NeighborhoodParser = {
             var horLevelError = 0;
             var horLevelError_Area = 0; //difference between char area and inscribed rectangle area
             var coveredArea = 0; //difference between inscribed rect area and total poly area
-
-
 
             //try this level. compare with optimal aspect ratio.
             //NeighborhoodParser.divide(pathCoords3d, horCount, dimensions,)
@@ -270,7 +267,7 @@ var NeighborhoodParser = {
                         var currPolyInSlice = currSlice[j];
 
                         //paint color of whole horizontal slice
-                        var polyInSlicePath = neighborhoodGroup.append("path");
+                        var polyInSlicePath = svg.append("path");
                         polyInSlicePath.attr("d", function() {
                                 var twoDPath = NeighborhoodParser.oneDToTwoD(currPolyInSlice);
                                 //console.log("twoDPath: " + twoDPath);
@@ -313,13 +310,13 @@ var NeighborhoodParser = {
                                 for (var k = 0; k < currVertSlice.length; k++) {
 
                                     var currPoly = currVertSlice[k];
-                                    horLevelError += NeighborhoodParser.estimateError(currPoly, neighborhoodGroup);
+                                    horLevelError += NeighborhoodParser.estimateError(currPoly, svg);
 
                                     //horLevelError_Area += NeighborhoodParser.estimateErrorByArea(currPolyInSlice,
                                     //    neighborhoodGroup, svg, d);
 
                                     var twoDPath = NeighborhoodParser.oneDToTwoD(currPoly);
-                                    var vertSlicePath = neighborhoodGroup.append("path")
+                                    var vertSlicePath = svg.append("path")
                                         .attr("d", function() {
                                             //console.log("twoDPath: " + twoDPath);
                                             var pathString = NeighborhoodParser.arrayToPath(twoDPath);
@@ -440,7 +437,7 @@ var NeighborhoodParser = {
                     var currPolyInSlice = currSlice[j];
 
                     //paint color of whole horizontal slice
-                    var polyInSlicePath = neighborhoodGroup.append("path");
+                    var polyInSlicePath = svg.append("path");
                     polyInSlicePath.attr("d", function() {
                             var twoDPath = NeighborhoodParser.oneDToTwoD(currPolyInSlice);
                             //console.log("twoDPath: " + twoDPath);
@@ -482,7 +479,7 @@ var NeighborhoodParser = {
                             //loop through each piece of this vertical slice
                             for (var k = 0; k < currVertSlice.length; k++) {
                                 var twoDPath = NeighborhoodParser.oneDToTwoD(currVertSlice[k]);
-                                var vertSlicePath = neighborhoodGroup.append("path")
+                                var vertSlicePath = svg.append("path")
                                     .attr("d", function() {
                                         var pathString = NeighborhoodParser.arrayToPath(twoDPath);
                                         //console.log(pathString);

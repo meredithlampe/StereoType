@@ -1,4 +1,8 @@
 <?php
+
+$outputfilename = "../yelp/output.txt";
+
+
 header("Content-type: application/json");
 // get list of name -> business name (1st in list of 'best match')
 
@@ -7,23 +11,26 @@ $neighborhood_locations = fopen("../js/geo.json", "r") or die("Unable to open fi
 $locations_file = fread($neighborhood_locations, filesize("../js/geo.json"));
 $locations = json_decode($locations_file, true);
 fclose($neighborhood_locations);
-
-// open file to add neighborhoods to
-$num_locations = count($locations);
-$curr_location_count = 1;
 $response = array();
 
 foreach($locations as $name => $location) { //loop through locations
+    echo "working....";
     $encodedname = urlencode($name . ', Seattle, WA');
     $curl = curl_init('https://api.yelp.com/v3/businesses/search?location=' . $encodedname);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_HTTPHEADER, array(
         'Authorization: Bearer gizMnc5_0GCIymbtjEzcsbpPbow6WiAtcAk9HaivKu3_kZKX7u5TRsS0i7QrbYQBtVXE19evr63JwVryoTaUpAVNQxYDo-Qmzu4V_ym8i5IDulhK4wMpsxaY1R3pWHYx'
         ));
-    curl_exec($curl);
-//    $result = curl_exec($curl);
-//    $response[$name] = $result->businesses;
+    $result = json_decode(curl_exec($curl));
+    $response[$name] = $result->businesses[0]->name;
     curl_close($curl);
 }
-//echo json_encode($response);
+
+$outputfile = fopen($outputfilename, "w") or die ("Unable to open file");
+fwrite($outputfile, json_encode($response));
+fclose($outputfile);
+
+echo "done";
+
 ?>
 
