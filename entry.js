@@ -1,8 +1,11 @@
 /**
+ * Created by meredith on 4/11/17.
+ */
+/**
  * Created by meredith on 2/20/16.
  */
 
-const TextToSVG = require('text-to-svg');
+//const TextToSVG = require('text-to-svg');
 
 
 var width = 900;
@@ -65,7 +68,7 @@ oReq.onload = function() {
     var parentWidth = d3.select(".jumbotron").attr("width");
 
     var svg = d3.select(".jumbotron")
-      .attr("id", "mapContainer")
+        .attr("id", "mapContainer")
         .append("svg")
         .attr("id", "mapSVG")
         .attr("width", parentWidth)
@@ -76,10 +79,10 @@ oReq.onload = function() {
     loadingIndicator.spin(document.getElementById('mapContainer'));
 
     var projection = d3.geo.mercator()
-      .rotate(rotate)
-      .scale(scale)
-      .translate(offset)
-      .precision(.5);
+        .rotate(rotate)
+        .scale(scale)
+        .translate(offset)
+        .precision(.5);
 
     var path = d3.geo.path()
         .projection(projection);
@@ -87,21 +90,21 @@ oReq.onload = function() {
     var neighborhoodGroup = svg.append("g")
         .attr('id', 'neighborhoodGroup');
 
-/*parses json, call back function selects all paths (none exist yet)
- and joins data (all neighborhoods) with each path. since there are no
- paths, all data points are waiting in 'update.enter'. calling
- 'enter()' gives us these points, and appends a path for each of them,
- attributing a path and id to each.*/
+    /*parses json, call back function selects all paths (none exist yet)
+     and joins data (all neighborhoods) with each path. since there are no
+     paths, all data points are waiting in 'update.enter'. calling
+     'enter()' gives us these points, and appends a path for each of them,
+     attributing a path and id to each.*/
 
     var topoGeometries;
 
     d3.json("json/neighborhoods.json", function(error, topology) {
 
-    topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
-        .geometries;
+        topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
+            .geometries;
 
-    //generate paths around each neighborhood
-    neighborhoodGroup.selectAll("path")
+        //generate paths around each neighborhood
+        neighborhoodGroup.selectAll("path")
             .data(topoGeometries)
             .enter()
             .append("path")
@@ -109,12 +112,12 @@ oReq.onload = function() {
             .attr("class", "neighborhoodOutline")
             .attr("fill", function() {
 
-                                 var colorA = color1[Math.floor(Math.random() * color1.length)];
-                                 var colorB = color2[Math.floor(Math.random() * color2.length)];
-                                 var pair = colorA + "" + colorB;
-                                 var color = "#" + pair + pair + pair;
-                                 return color;
-                                 })
+                var colorA = color1[Math.floor(Math.random() * color1.length)];
+                var colorB = color2[Math.floor(Math.random() * color2.length)];
+                var pair = colorA + "" + colorB;
+                var color = "#" + pair + pair + pair;
+                return color;
+            })
             .attr("id", function (d) {
                 return "n_" + d.id
             });
@@ -127,30 +130,30 @@ oReq.onload = function() {
 //                    return color;
 //                });
 
-    //generate inner paths to append text to
-    neighborhoodGroup.selectAll(".neighborhoodInnerPath")
-        .data(topoGeometries)
-        .enter()
-        .append("path")
-        .attr("neighborhoodBounds", path)
-        .attr("class", "neighborhoodInnerPath")
-        .attr("id", function (d) {
-            return "inner_" + d.id;
-        })
-        .attr("d", function (d) {
+        //generate inner paths to append text to
+        neighborhoodGroup.selectAll(".neighborhoodInnerPath")
+            .data(topoGeometries)
+            .enter()
+            .append("path")
+            .attr("neighborhoodBounds", path)
+            .attr("class", "neighborhoodInnerPath")
+            .attr("id", function (d) {
+                return "inner_" + d.id;
+            })
+            .attr("d", function (d) {
 
-            //get current neighborhood shape - 3d list of coords
-            var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
+                //get current neighborhood shape - 3d list of coords
+                var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
 
-            if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                console.log("about to run slice alg for neighborhood: " + d.properties.name);
-                horizontalSliceAlg(svg, pathCoords3d, d, bestplaces[d.properties.name], padding, gridCache);
-            }
-            //stop spinner--we're done!
-            loadingIndicator.stop();
-            if (GRID_CACHE_OUTPUT) {
-                console.log(JSON.stringify(gridCache) + "end");
-            }
+                if (pathCoords3d != null) { //coordinates are enough to actually make a shape
+                    console.log("about to run slice alg for neighborhood: " + d.properties.name);
+                    horizontalSliceAlg(svg, pathCoords3d, d, bestplaces[d.properties.name], padding, gridCache);
+                }
+                //stop spinner--we're done!
+                loadingIndicator.stop();
+                if (GRID_CACHE_OUTPUT) {
+                    console.log(JSON.stringify(gridCache) + "end");
+                }
                 return null;
             });
 
@@ -192,13 +195,12 @@ function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache) {
     }
 
     var gridUnits = NeighborhoodParser.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, d, svg,
-        phrase, padding);
+        phrase, padding, displayRectangles, displayBounds);
 
     if (displayText) {
         for (var i = 0; i < gridUnits.length; i++) {
             var character = phrase.charAt(i);
-            TextUtil.appendCharacterIntoRectangle(character, gridUnits[i], svg, d, i, padding,
-                displayText, displayBounds, TEXT_SIZE_MULTIPLIER, font);
+            TextUtil.appendCharacterIntoRectangle(character, gridUnits[i], svg, d, i, padding);
         }
     }
 
