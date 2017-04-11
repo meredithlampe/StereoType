@@ -551,7 +551,7 @@ var NeighborhoodParser = {
         //get largest inscribed rectangle for this slice
         //TODO: WHAT ABOUT MULTIPOLYGONS HEYYYY
         var inscribed = d3plus.geom.largestRect(twoDPath, {
-            angle: [90, 270], nTries: 50, tolerance: 0.02
+            angle: [90, 270], nTries: 10, tolerance: 0.02
         });
 
         var horLevelError;
