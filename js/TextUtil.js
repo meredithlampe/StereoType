@@ -519,7 +519,8 @@ var TextUtil = {
 
     },
 
-    appendPathAndText: function(startPathX, startPathY, endPathX, endPathY,
+    // like append path and text, but using char converted to svg
+    appendChar: function(startPathX, startPathY, endPathX, endPathY,
         phrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
         heightOfSlice, rectangleId, svg) {
 
@@ -535,7 +536,60 @@ var TextUtil = {
         var textSize = 1;
 
         var phantomSvg = d3.select("body").append("svg");
-        var text = svg.append("text")
+        var text = phantomSvg.append("text")
+            .text(phrase)
+            .attr("font-size", textSize + "pt");
+
+        // convert text to svg
+
+            var eBrake = true;
+
+            while (widthTransform < widthOfSlice && heightTransform < heightOfSlice && eBrake) {
+
+                textSize++;
+
+                text = phantomSvg.append("text")
+                    .text(phrase)
+                    .attr("font-size", textSize + "pt");
+
+                if (textSize > 25) {
+                    eBrake = false;
+                }
+
+            }
+
+            var text = svg.append("text")
+                .append("textPath")
+                .attr("xlink:href", "#" + "innerPath_" + rectangleId + "_" + k)
+                .style("text-anchor", "middle")
+                .attr("startOffset", "50%")
+                .text(phrase)
+                .attr("font-size", (textSize * TEXT_SIZE_MULTIPLIER) + "pt")
+                .attr("font-family", font);
+
+            //return path and text
+            var result = [path, text];
+            return result;
+
+    },
+
+    appendPathAndText: function(startPathX, startPathY, endPathX, endPathY,
+        phrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
+        heightOfSlice, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font) {
+
+        var pathStroke = displayBounds ? "black" : "none";
+
+        var pathString = "M" + startPathX + "," + startPathY + "L" + endPathX + "," + endPathY;
+        var path = svg.append("path")
+            .attr("id", "innerPath_" + rectangleId + "_" + k)
+            .attr("d", pathString)
+            .style("fill", "none")
+            .style('stroke', pathStroke);
+
+        var textSize = 1;
+
+        var phantomSvg = d3.select("body").append("svg");
+        var text = phantomSvg.append("text")
             .text(phrase)
             .attr("font-size", textSize + "pt");
         var bbox = text.node().getBoundingClientRect();
@@ -585,7 +639,8 @@ var TextUtil = {
 
     },
 
-    appendCharacterIntoRectangle: function(char, rectangle, svg, d, tag, padding) {
+    appendCharacterIntoRectangle: function(char, rectangle, svg, d, tag, padding,
+                                           displayText, displayBounds, TEXT_SIZE_MULTIPLIER, font) {
 
 
         var startPathX,
@@ -626,7 +681,7 @@ var TextUtil = {
         rectangleId = d.properties.name + "_inner";
 
         var pathAndText = TextUtil.appendPathAndText(startPathX, startPathY, endPathX, endPathY, char, d, tag, displayText,
-        displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId, svg);
+        displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font);
 
         //return character that you just appended
         return pathAndText;
