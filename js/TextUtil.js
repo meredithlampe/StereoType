@@ -536,6 +536,9 @@ var TextUtil = {
                     var charToBig = false;
                     var shapeG = svg.append("g");
                     while (!charToBig) {
+
+
+                        // if char is normal,
                         // convert text to svg
                         var options = {
                             "x": startPathX,
@@ -543,24 +546,40 @@ var TextUtil = {
                             "fontSize": textSize
                         };
 
-                        const pathD = textToSVG.getD(phrase.toUpperCase(), options);
 
                         //var testCharPath = shapeG.append("path")
                         //    .attr("class", "testChar")
                         //    .attr("d", pathD)
                         //    .style("fill", "gray");
 
-                        // check coords of path, make sure they are inside of polygon
-                        var pathArray = TextUtil.pathToArray(pathD);
+                        const pathD = textToSVG.getD(phrase.toUpperCase(), options);
                         var allInside = true;
-                        for (var curr = 0; curr < pathArray.length; curr += 2) {
-                            var x = pathArray[curr];
-                            var y = pathArray[curr + 1];
+                        // if char is non-round, use this
+                        if (phrase.toUpperCase() != 'O' &&
+                                phrase.toUpperCase() != 'R' &&
+                                phrase.toUpperCase() != 'P' &&
+                                phrase.toUpperCase() != 'B' &&
+                                phrase.toUpperCase() != 'S') {
 
-                            // is point inside of polygon?
-                            if (!PolyK.ContainsPoint(rectangle.polygon, x, y)) {
+                            // check coords of path, make sure they are inside of polygon
+                            var pathArray = TextUtil.pathToArray(pathD);
+                            for (var curr = 0; curr < pathArray.length; curr += 2) {
+                                var x = pathArray[curr];
+                                var y = pathArray[curr + 1];
+
+                                // is point inside of polygon?
+                                if (!PolyK.ContainsPoint(rectangle.polygon, x, y)) {
+                                    allInside = false;
+                                    break;
+                                }
+                            }
+                        } else {
+                            // char is weird. use bounding box
+                            const shape = textToSVG.getMetrics(phrase.toUpperCase(), options);
+                            if (shape.width < rectangle[0].width && shape.height < rectangle[0].height) {
+                               // we're good
+                            } else {
                                 allInside = false;
-                                break;
                             }
                         }
 
@@ -739,7 +758,7 @@ var TextUtil = {
 
         //apply padding
         var paddingScaledWidth = padding * widthOfSlice;
-        var paddingScaledHeight =padding * heightOfSlice;
+        var paddingScaledHeight = padding * heightOfSlice;
         startPathX += paddingScaledWidth;
         startPathY -= paddingScaledHeight;
         rectangleId = d.properties.name + "_inner";
