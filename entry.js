@@ -6,7 +6,12 @@
  */
 
 const TextToSVG = require('text-to-svg');
+var scaleSVG = require("scale-svg-path")
+var parseSVG = require('parse-svg-path')
+var serializeSVG = require('serialize-svg-path')
+
 require("./js/NeighborhoodGeolocation.js");
+
 import { getGridCache as getGridCache } from './js/GridCache.js';
 
 function main() {
@@ -25,7 +30,7 @@ var color1 = ['a', 'b', 'c', 'd', 'e', 'f'];
 var color2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 //padding to be given between text and inscribed rectangle
-var padding = 0.05; //given as percentage of total rectangle space
+var padding = 0.2; //given as percentage of total rectangle space
 
 //keep track of area of each polygon already processed
 var topPolyBounds = {};
@@ -227,39 +232,56 @@ d3.json("json/neighborhoods.json", function (error, topology) {
             return "inner_" + d.id;
         })
         .attr("d", function (d) {
+            return this.getAttribute("neighborhoodBounds");
+        });
+        //.attr("transform-origin", function(d) {
+        //    // get center of polygon
+        //    var pathString = this.getAttribute("neighborhoodBounds");
+        //    var pathArray = TextUtil.pathToArray(pathString);
+        //
+        //    var aabb = PolyK.GetAABB(pathArray);
+        //    var xcenter = aabb.x + (aabb.width * 1.0 / 2);
+        //    var ycenter = aabb.y + (aabb.height * 1.0 / 2);
+        //    return xcenter + " " + ycenter;
+        //})
+        //.attr("transform", "scale(" + (1 - padding) + ", " + (1 - padding) + ")");
 
+    neighborhoodGroup.selectAll(".neighborhoodInnerPath")
+        .each(function(d) {
             // scale path
-            var polyString = this.getAttribute("neighborhoodBounds");
-            var pathElem = document.createElement("path");
-            pathElem.setAttribute("d", polyString);
+            //var polyString = this.getAttribute("neighborhoodBounds");
+            //console.log("before scaling: " + polyString);
+            //var pathParsed = parseSVG(polyString);
+            //console.log(pathParsed);
+            //var polyScaled = scaleSVG(pathParsed, 1 - padding);
+            //console.log(polyScaled);
+            //console.log("after scaling: " + serializeSVG(polyScaled));
+            var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
 
+            if (pathCoords3d != null) { //coordinates are enough to actually make a shape
+                console.log("about to run slice alg for neighborhood: " + d.properties.name);
 
-                var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
-
-                if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                    console.log("about to run slice alg for neighborhood: " + d.properties.name);
-
-                    var nameArray = bestplaces[d.properties.name].split(" ");
-                    var nameNoSpaces = nameArray[0];
-                    for (var i = 1; i < nameArray.length; i++) {
-                        nameNoSpaces += nameArray[i];
-                    }
-
-                    horizontalSliceAlg(svg, pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
-                        USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
-                        font, HORIZONTAL_SLICE_CAP);
+                var nameArray = bestplaces[d.properties.name].split(" ");
+                var nameNoSpaces = nameArray[0];
+                for (var i = 1; i < nameArray.length; i++) {
+                    nameNoSpaces += nameArray[i];
                 }
-                //stop spinner--we're done!
-                loadingIndicator.stop();
-                if (GRID_CACHE_OUTPUT) {
-                    console.log(JSON.stringify(getGridCache()) + "end");
-                }
-                return null;
+
+                horizontalSliceAlg(svg, pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
+                    USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
+                    font, HORIZONTAL_SLICE_CAP);
+            }
+            //stop spinner--we're done!
+            loadingIndicator.stop();
+            if (GRID_CACHE_OUTPUT) {
+                console.log(JSON.stringify(getGridCache()) + "end");
+            }
             //} else {
             //    return null;
             //}
-        });
 
+            //return serializeSVG(polyScaled);
+        })
 
 });
 };

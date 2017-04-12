@@ -19,6 +19,7 @@
 
 .neighborhoodInnerPath {
     stroke-width: 3 px;
+    stroke: black;
     fill: none;
 }
 
