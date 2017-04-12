@@ -559,7 +559,7 @@ var TextUtil = {
                             "fontSize": textSize
                         };
 
-                        const pathD = textToSVG.getD(phrase, options);
+                        const pathD = textToSVG.getD(phrase.toUpperCase(), options);
 
                         //var testCharPath = shapeG.append("path")
                         //    .attr("class", "testChar")
