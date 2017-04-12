@@ -25,7 +25,7 @@ var color1 = ['a', 'b', 'c', 'd', 'e', 'f'];
 var color2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 //padding to be given between text and inscribed rectangle
-var padding = 0.05; //given as percentage of total rectangle space
+var padding = 0.0; //given as percentage of total rectangle space
 
 //keep track of area of each polygon already processed
 var topPolyBounds = {};
@@ -42,7 +42,7 @@ var USE_RECTANGLE_DATABASE = false;
 var USE_GRID_CACHING = true;
 var HORIZONTAL_SLICE_CAP = 6;
 var CHAR_ASPECT_RATIO = .5;
-var TEXT_SIZE_MULTIPLIER = 1.2;
+var TEXT_SIZE_MULTIPLIER = 1;
 var GRID_CACHE_OUTPUT = false;
 var TWEET_CACHE_OUTPUT = false;
 var TWEETS_PER_QUERY = 100;
@@ -52,9 +52,9 @@ var SEATTLE_OUTLINE_COLOR = "black";
 
 //display various steps in text append process
 var displayPolygons = false;
-var displayRectangles = true;
+var displayRectangles = false;
 var displayOnlyCenterRectangle = false;
-var displayBounds = true;
+var displayBounds = false;
 var displayText = true;
 var processAll = false; //does another recursive round of polyogn generation
 
@@ -228,20 +228,24 @@ d3.json("json/neighborhoods.json", function (error, topology) {
         })
         .attr("d", function (d) {
 
-            //get current neighborhood shape - 3d list of coords
-            var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
+            //if (d.properties.name == "University District") {
+                //get current neighborhood shape - 3d list of coords
+                var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
 
-            if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                console.log("about to run slice alg for neighborhood: " + d.properties.name);
-                horizontalSliceAlg(svg, pathCoords3d, d, bestplaces[d.properties.name], padding, getGridCache(),
-                    USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER, font);
-            }
-            //stop spinner--we're done!
-            loadingIndicator.stop();
-            if (GRID_CACHE_OUTPUT) {
-                //console.log(JSON.stringify(getGridCache()) + "end");
-            }
-            return null;
+                if (pathCoords3d != null) { //coordinates are enough to actually make a shape
+                    console.log("about to run slice alg for neighborhood: " + d.properties.name);
+                    horizontalSliceAlg(svg, pathCoords3d, d, bestplaces[d.properties.name], padding, getGridCache(),
+                        USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER, font);
+                }
+                //stop spinner--we're done!
+                loadingIndicator.stop();
+                if (GRID_CACHE_OUTPUT) {
+                    //console.log(JSON.stringify(getGridCache()) + "end");
+                }
+                return null;
+            //} else {
+            //    return null;
+            //}
         });
 
 
@@ -289,7 +293,7 @@ function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache,
         for (var i = 0; i < gridUnits.length; i++) {
             var character = phrase.charAt(i);
             TextUtil.appendCharacterIntoRectangle(character, gridUnits[i], svg, d, i,
-                padding, displayText, displayBounds, TEXT_SIZE_MULTIPLIER, font);
+                padding, displayText, displayBounds, TEXT_SIZE_MULTIPLIER, font, TextToSVG, pathCoords3d);
         }
     }
 }

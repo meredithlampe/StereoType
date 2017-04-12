@@ -500,6 +500,7 @@ var NeighborhoodParser = {
                                     if (displayRectangles) {
                                         DebugTool.appendRect(svg, inscribed, d);
                                     }
+                                    inscribed.polygon = PolygonGenerator.twoToOneDimensional(twoDPath);
                                     grid[grid.length] = inscribed;
                                 }
                             }
