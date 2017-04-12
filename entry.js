@@ -59,10 +59,15 @@ var processAll = false; //does another recursive round of polyogn generation
 //debugger;
 
 var bestplaces;
-var oReq = new XMLHttpRequest(); //New request object
-oReq.onload = function() {
-    console.log(this.responseText);
-    bestplaces = JSON.parse(this.responseText);
+
+// these are for when we're in server
+//var oReq = new XMLHttpRequest(); //New request object
+//oReq.onload = function() {
+//    bestplaces = JSON.parse(this.responseText);
+//    console.log(bestplaces);
+
+bestplaces = {"University District":"Morsel","North Beach":"Golden Gardens Park","Broadview":"Carkeek Park","View Ridge":"Seattle Select Moving","Haller Lake":"The Bridge Coffee House","Olympic Hills":"Man'oushe Express","Cedar Park":"Jebena Cafe","Northgate":"Gyro Hut","Blue Ridge":"Carkeek Park","Maple Leaf":"Cloud City Coffee","Matthews Beach":"Burke-Gilman Trail","Sand Point":"Warren G Magnuson Park - Off Leash Area","Windermere":"Pagliacci Pizza","Pinehurst":"Chaiyo Thai Cuisine","Wedgwood":"Van Gogh Coffeehouse","Wallingford":"Harvest Beat","Fremont":"Paseo Caribbean Food - Fremont","Laurelhurst":"Jak's Grill","Hawthorne Hills":"Center For Spiritual Living","Magnolia":"Discovery Park","Queen Anne":"Storyville Coffee Company","Lower Queen Anne":"Kerry Park","Westlake":"Canlis","Interbay":"Windy City Pie","Eastlake":"Pomodoro","Portage Bay":"Little Lago","Beacon Hill":"Cafetal Quilombo","Georgetown":"Calozzi's Cheesesteaks","Belltown":"Some Random Bar","West Seattle":"The Beer Junction","Seward Park":"Seward Park Audubon Center","Alki":"Alki Beach Park","Fauntleroy":"Lincoln Park","South Park":"Phorale","Arbor Heights":"Alki Sewer","Highland Park":"Wanna Teriyaki & Burger","Columbia City":"La Teranga","South Delridge":"Fresh Flours","High Point":"Tug Inn","Mount Baker":"Tacos El Asadero","Industrial District":"Schooner Exact Brewing Company","Madison Valley":"The Harvest Vine","Madison Park":"Cactus Restaurants","Denny-Blaine":"Viretta Park","Downtown":"Monorail Espresso","Whittier Heights":"Un Bien","Broadmoor":"Washington Park Arboretum","Brighton":"Othello Wok and Teriyaki","Sunset Hill":"Geo's Cuban & Creole Cafe","Rainier Beach":"Redwing Cafe","South Lake Union":"I Love My GFF","Capitol Hill":"Ada's Technical Books and Cafe","First Hill":"George's Sausage & Delicatessen","Meadowbrook":"Tubs Gourmet Subs","Admiral":"Freshy's","North College Park":"Tropicos Breeze","Atlantic":"Wood Shop BBQ","Loyal Heights":"Un Bien","Central District":"Jackson's Catfish Corner","International District":"goPok\u00e9","Roosevelt":"Rain City Burgers","Pioneer Square":"Il Corvo Pasta","Ballard":"Caf\u00e9 Besalu","Roxhill":"The Westy","North Delridge":"Pearls Tea & Cafe","Greenwood":"Valhalla Sandwiches","Leschi":"Meet the Moon","Riverview":"Portside Coffee Company","Montlake":"Fuel","Green Lake":"Green Lake Park","Ravenna":"Ventoux Roasters","Crown Hill":"Wild Mountain Cafe","Madrona":"Bottlehouse","Bitter Lake":"Forno Pizza","Olympic Manor":"Taki's Mad Greek","Victory Heights":"Hydra Clean Northwest","Phinney Ridge":"The Dray","Bryant":"Seattle Sunshine Coffee"};
+console.log(bestplaces);
 
     //get width of parent
     var parentWidth = d3.select(".jumbotron").attr("width");
@@ -160,9 +165,9 @@ oReq.onload = function() {
 
     });
 
-};
-oReq.open("get", "yelp/getyelp.php", true);
-oReq.send();
+//};
+//oReq.open("get", "yelp/getyelp.php", true);
+//oReq.send();
 
 //slice neighborhood horizontally, then vertically
 //according to length of phrase to get grid over neighborhood.
@@ -177,10 +182,6 @@ function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache) {
     var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords3d, 0);
     var heightOfPoly = dimensions.max - dimensions.min;
     var widthOfPoly = dimensions.right - dimensions.left;
-
-    //here our aspect ratio will always be height over width
-    //var roughAspectRatio = Math.max(heightOfPoly, widthOfPoly) / Math.min(heightOfPoly, widthOfPoly);
-    //var roughNumLevels = TextUtil.calculateNumLevels(roughAspectRatio, d.properties.name, 0, false);
 
     var optimalHorizontalSlices;
     if (USE_GRID_CACHING && gridCache[d.properties.name] != null &&
@@ -200,12 +201,10 @@ function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache) {
     if (displayText) {
         for (var i = 0; i < gridUnits.length; i++) {
             var character = phrase.charAt(i);
-            TextUtil.appendCharacterIntoRectangle(character, gridUnits[i], svg, d, i, padding);
+            TextUtil.appendCharacterIntoRectangle(character, gridUnits[i], svg, d, i,
+                padding, displayText, displayBounds, TEXT_SIZE_MULTIPLIER, font);
         }
     }
-
-    console.log(gridCache);
-
 }
 
 function appendSingleLetter(rectangle, letter, d) {

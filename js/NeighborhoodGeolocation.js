@@ -5,7 +5,10 @@
  *
  * Stores geolocation for neighborhoods in seattle, along with radius values
  */
-module.exports = {
+
+// note I changed this on 4.11.17
+    // probably broke something
+ var locations = {
 
     "University District":  [
         {
