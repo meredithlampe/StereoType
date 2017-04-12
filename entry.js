@@ -25,7 +25,7 @@ var color1 = ['a', 'b', 'c', 'd', 'e', 'f'];
 var color2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 //padding to be given between text and inscribed rectangle
-var padding = 0.0; //given as percentage of total rectangle space
+var padding = 0.05; //given as percentage of total rectangle space
 
 //keep track of area of each polygon already processed
 var topPolyBounds = {};
@@ -51,10 +51,10 @@ var SEATTLE_OUTLINE_COLOR = "black";
 
 
 //display various steps in text append process
-var displayPolygons = false;
+var displayPolygons = true;
 var displayRectangles = false;
 var displayOnlyCenterRectangle = false;
-var displayBounds = false;
+var displayBounds = true;
 var displayText = true;
 var processAll = false; //does another recursive round of polyogn generation
 
