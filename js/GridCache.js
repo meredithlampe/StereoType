@@ -1,6 +1,7 @@
 /**
  * Created by meredith on 6/4/16.
  */
+
 var gridCache = {
     "Westlake": {"6": 5, "8": 4},
     "Sand Point": {"9": 2, "39": 5},
@@ -81,3 +82,5 @@ var gridCache = {
     "Alki": {"4": 1, "15": 1},
     "Georgetown": {"10": 2, "22": 4}
 };
+
+function getGridCache() { return gridCache; };
