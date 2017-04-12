@@ -83,4 +83,4 @@ var gridCache = {
     "Georgetown": {"10": 2, "22": 4}
 };
 
-function getGridCache() { return gridCache; };
+export function getGridCache() { return gridCache; };
