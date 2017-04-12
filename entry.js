@@ -5,8 +5,9 @@
  * Created by meredith on 2/20/16.
  */
 
-//const TextToSVG = require('text-to-svg');
-
+const TextToSVG = require('text-to-svg');
+require("./js/NeighborhoodGeolocation.js");
+//const GridCache = require("./js/GridCache.js");
 
 var width = 900;
 var height = 600;
@@ -152,12 +153,12 @@ console.log(bestplaces);
 
                 if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                     console.log("about to run slice alg for neighborhood: " + d.properties.name);
-                    horizontalSliceAlg(svg, pathCoords3d, d, bestplaces[d.properties.name], padding, gridCache);
+                    horizontalSliceAlg(svg, pathCoords3d, d, bestplaces[d.properties.name], padding, getGridCache());
                 }
                 //stop spinner--we're done!
                 loadingIndicator.stop();
                 if (GRID_CACHE_OUTPUT) {
-                    console.log(JSON.stringify(gridCache) + "end");
+                    //console.log(JSON.stringify(getGridCache()) + "end");
                 }
                 return null;
             });
