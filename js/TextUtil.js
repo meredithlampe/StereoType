@@ -522,7 +522,8 @@ var TextUtil = {
     // like append path and text, but using char converted to svg
     appendChar: function(startPathX, startPathY, endPathX, endPathY,
         phrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
-        heightOfSlice, rectangleId, svg) {
+        heightOfSlice, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font, TextToSVG,
+        rectangle) {
 
         var pathStroke = displayBounds ? "black" : "none";
 
@@ -533,44 +534,93 @@ var TextUtil = {
             .style("fill", "none")
             .style('stroke', pathStroke);
 
-        var textSize = 1;
+        var textSize = 3;
 
-        var phantomSvg = d3.select("body").append("svg");
-        var text = phantomSvg.append("text")
-            .text(phrase)
-            .attr("font-size", textSize + "pt");
+        //var phantomSvg = d3.select("body").append("svg");
+        //var text = phantomSvg.append("text")
+        //    .text(phrase)
+        //    .attr("font-size", textSize + "pt");
 
-        // convert text to svg
 
-            var eBrake = true;
 
-            while (widthTransform < widthOfSlice && heightTransform < heightOfSlice && eBrake) {
+            TextToSVG.load('./fonts/Oswald-Regular.ttf', function(err, textToSVG) {
+                if (err) {
+                    console.log(err);
+                } else {
 
-                textSize++;
+                    var bestPath;
+                    var charToBig = false;
+                    var shapeG = svg.append("g");
+                    while (!charToBig) {
+                        // convert text to svg
+                        var options = {
+                            "x": startPathX,
+                            "y": startPathY,
+                            "fontSize": textSize
+                        };
 
-                text = phantomSvg.append("text")
-                    .text(phrase)
-                    .attr("font-size", textSize + "pt");
+                        const pathD = textToSVG.getD(phrase, options);
 
-                if (textSize > 25) {
-                    eBrake = false;
-                }
+                        //var testCharPath = shapeG.append("path")
+                        //    .attr("class", "testChar")
+                        //    .attr("d", pathD)
+                        //    .style("fill", "gray");
 
+                        // check coords of path, make sure they are inside of polygon
+                        var pathArray = TextUtil.pathToArray(pathD);
+                        var allInside = true;
+                        for (var curr = 0; curr < pathArray.length; curr += 2) {
+                            var x = pathArray[curr];
+                            var y = pathArray[curr + 1];
+
+                            // is point inside of polygon?
+                            if (!PolyK.ContainsPoint(rectangle.polygon, x, y)) {
+                                allInside = false;
+                                break;
+                            }
+                        }
+
+                        if (allInside) {
+                            bestPath = pathD;
+                            textSize += 1;
+                        } else {
+                            charToBig = true;
+                        }
+
+                        //shapeG.remove(testCharPath);
+                    }
+
+                    shapeG.append("path")
+                        .attr("class", "charSVGThing")
+                        .attr("d", bestPath)
+                        .style("fill", "black");
+               }
+            });
+
+
+        //text = phantomSvg.append("text")
+        //            .text(phrase)
+        //            .attr("font-size", textSize + "pt");
+
+
+    },
+
+    // only works with single polygons
+    pathToArray: function(path) {
+        var pathCoords = path.substring(1).split('L');
+        var result = [];
+
+        for (var i = 0; i < pathCoords.length; i++) {
+            var bothCoords;
+            if (pathCoords[i].indexOf(',') != -1) {
+                bothCoords = pathCoords[i].split(',');
+            } else {
+               bothCoords = pathCoords[i].split(' ');
             }
-
-            var text = svg.append("text")
-                .append("textPath")
-                .attr("xlink:href", "#" + "innerPath_" + rectangleId + "_" + k)
-                .style("text-anchor", "middle")
-                .attr("startOffset", "50%")
-                .text(phrase)
-                .attr("font-size", (textSize * TEXT_SIZE_MULTIPLIER) + "pt")
-                .attr("font-family", font);
-
-            //return path and text
-            var result = [path, text];
-            return result;
-
+            result[i * 2] = parseFloat(bothCoords[0]);
+            result[(i*2) + 1] = parseFloat(bothCoords[1]);
+        }
+        return result;
     },
 
     appendPathAndText: function(startPathX, startPathY, endPathX, endPathY,
@@ -640,7 +690,8 @@ var TextUtil = {
     },
 
     appendCharacterIntoRectangle: function(char, rectangle, svg, d, tag, padding,
-                                           displayText, displayBounds, TEXT_SIZE_MULTIPLIER, font) {
+                                           displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
+                                           font, TextToSVG) {
 
 
         var startPathX,
@@ -680,8 +731,12 @@ var TextUtil = {
         verticalText = false;
         rectangleId = d.properties.name + "_inner";
 
-        var pathAndText = TextUtil.appendPathAndText(startPathX, startPathY, endPathX, endPathY, char, d, tag, displayText,
-        displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font);
+        //var pathAndText = TextUtil.appendPathAndText(startPathX, startPathY, endPathX, endPathY, char, d, tag, displayText,
+        //displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font);
+
+         var pathAndText = TextUtil.appendChar(startPathX, startPathY, endPathX, endPathY, char, d, tag, displayText,
+        displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font, TextToSVG,
+         rectangle);
 
         //return character that you just appended
         return pathAndText;
