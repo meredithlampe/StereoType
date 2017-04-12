@@ -51,10 +51,10 @@ var SEATTLE_OUTLINE_COLOR = "black";
 
 
 //display various steps in text append process
-var displayPolygons = true;
+var displayPolygons = false;
 var displayRectangles = false;
 var displayOnlyCenterRectangle = false;
-var displayBounds = true;
+var displayBounds = false;
 var displayText = true;
 var processAll = false; //does another recursive round of polyogn generation
 
@@ -228,19 +228,31 @@ d3.json("json/neighborhoods.json", function (error, topology) {
         })
         .attr("d", function (d) {
 
-            //if (d.properties.name == "University District") {
-                //get current neighborhood shape - 3d list of coords
+            // scale path
+            var polyString = this.getAttribute("neighborhoodBounds");
+            var pathElem = document.createElement("path");
+            pathElem.setAttribute("d", polyString);
+
+
                 var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
 
                 if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                     console.log("about to run slice alg for neighborhood: " + d.properties.name);
-                    horizontalSliceAlg(svg, pathCoords3d, d, bestplaces[d.properties.name], padding, getGridCache(),
-                        USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER, font);
+
+                    var nameArray = bestplaces[d.properties.name].split(" ");
+                    var nameNoSpaces = nameArray[0];
+                    for (var i = 1; i < nameArray.length; i++) {
+                        nameNoSpaces += nameArray[i];
+                    }
+
+                    horizontalSliceAlg(svg, pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
+                        USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
+                        font, HORIZONTAL_SLICE_CAP);
                 }
                 //stop spinner--we're done!
                 loadingIndicator.stop();
                 if (GRID_CACHE_OUTPUT) {
-                    //console.log(JSON.stringify(getGridCache()) + "end");
+                    console.log(JSON.stringify(getGridCache()) + "end");
                 }
                 return null;
             //} else {
@@ -263,7 +275,8 @@ window.onload = main;
 //Use inscribed rectangles to fill each grid slot with a letter
 function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache,
                             USE_GRID_CACHING, displayRectangles, displayBounds,
-                            displayText, TEXT_SIZE_MULTIPLIER, font) {
+                            displayText, TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP,
+                            CHAR_ASPECT_RATIO) {
 
     console.log("rendering neighborhodd: " + d.properties.name);
     if (d.properties.name == "Mount Baker") { return; }
@@ -279,7 +292,8 @@ function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache,
         gridCache[d.properties.name][phrase.length] != null) {
         optimalHorizontalSlices = gridCache[d.properties.name][phrase.length];
     } else { //cache optimal slices..only used to use output and save
-        optimalHorizontalSlices = NeighborhoodParser.testGrid(pathCoords3d, dimensions, d, svg, phrase, padding);
+        optimalHorizontalSlices = NeighborhoodParser.testGrid(pathCoords3d, dimensions, d, svg,
+            phrase, padding, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, TEXT_SIZE_MULTIPLIER, font, TextToSVG);
         if (gridCache[d.properties.name] == null ) {
             gridCache[d.properties.name] = {};
         }
@@ -292,8 +306,8 @@ function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache,
     if (displayText) {
         for (var i = 0; i < gridUnits.length; i++) {
             var character = phrase.charAt(i);
-            TextUtil.appendCharacterIntoRectangle(character, gridUnits[i], svg, d, i,
-                padding, displayText, displayBounds, TEXT_SIZE_MULTIPLIER, font, TextToSVG, pathCoords3d);
+            TextUtil.appendCharacterAsSVG(character, gridUnits[i], svg, d, i, padding, displayText, displayBounds,
+                TEXT_SIZE_MULTIPLIER, font, TextToSVG);
         }
     }
 }

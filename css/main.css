@@ -1,7 +1,6 @@
 .neighborhoodOutline {
-    stroke: black;
-    stroke-width: 1px;
-
+    stroke: #282828;
+    stroke-width: 3px;
 }
 
 .neighborhoodOutlineBorder {

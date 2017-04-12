@@ -7,6 +7,7 @@ var NeighborhoodParser = {
   get3dPathArray: function(element, isMultiPoly) {
 
     var neighborhoodBoundsString = element.getAttribute("neighborhoodBounds");
+
     var pathCoords2d;
     var pathCorods3d;
 
@@ -215,7 +216,9 @@ var NeighborhoodParser = {
         return slices;
     },
 
-    testGrid: function(pathCoords3d, dimensions, d, svg, phrase, padding) {
+    testGrid: function(pathCoords3d, dimensions, d, svg, phrase,
+                       padding, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO,
+                       TEXT_SIZE_MULTIPLIER, font, TextToSVG) {
 
         var optimalHorizontalSlices = -1;
         var optimalHorizontalSlicesArea = -1;
@@ -310,7 +313,7 @@ var NeighborhoodParser = {
                                 for (var k = 0; k < currVertSlice.length; k++) {
 
                                     var currPoly = currVertSlice[k];
-                                    horLevelError += NeighborhoodParser.estimateError(currPoly, svg);
+                                    horLevelError += NeighborhoodParser.estimateError(currPoly, svg, CHAR_ASPECT_RATIO);
 
                                     //horLevelError_Area += NeighborhoodParser.estimateErrorByArea(currPolyInSlice,
                                     //    neighborhoodGroup, svg, d);
@@ -335,7 +338,8 @@ var NeighborhoodParser = {
                                         var inscribedArea = rectangle[1];
 
                                         //do a sample append...doesn't really matter what character it is
-                                        var pathAndText = TextUtil.appendCharacterIntoRectangle('X', rectangle, svg, d, "test", 0);
+                                        var pathAndText = TextUtil.appendCharacterIntoRectangle('X', rectangle,
+                                            svg, d, "test", 0, false, false, TEXT_SIZE_MULTIPLIER, font, TextToSVG);
                                         var textBox = pathAndText[1].node().getBoundingClientRect();
                                         var textArea = textBox.width * textBox.height;
 
@@ -529,7 +533,7 @@ var NeighborhoodParser = {
 
     },
 
-    estimateError: function(currPoly, neighborhoodGroup) {
+    estimateError: function(currPoly, neighborhoodGroup, CHAR_ASPECT_RATIO) {
         var twoDPath = NeighborhoodParser.oneDToTwoD(currPoly);
         var vertSlicePath = neighborhoodGroup.append("path")
             .attr("d", function() {
@@ -540,7 +544,7 @@ var NeighborhoodParser = {
             })
             .attr("opacity", ".50");
 
-        var horLevelError = NeighborhoodParser.getDiffAspectRatio(twoDPath);
+        var horLevelError = NeighborhoodParser.getDiffAspectRatio(twoDPath, CHAR_ASPECT_RATIO);
 
         //the error was what we were really after.
         //remove this slice.
@@ -549,7 +553,7 @@ var NeighborhoodParser = {
     },
 
 
-    getDiffAspectRatio: function(twoDPath) {
+    getDiffAspectRatio: function(twoDPath, CHAR_ASPECT_RATIO) {
         //get largest inscribed rectangle for this slice
         //TODO: WHAT ABOUT MULTIPOLYGONS HEYYYY
         var inscribed = d3plus.geom.largestRect(twoDPath, {
