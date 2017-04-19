@@ -11,207 +11,232 @@ var parseSVG = require('parse-svg-path')
 var serializeSVG = require('serialize-svg-path')
 
 require("./js/NeighborhoodGeolocation.js");
+//require("./js/GridCache.js");
+const Spinner = require("./spinner/spin.min.js");
 
 import { getGridCache as getGridCache } from './js/GridCache.js';
 
-function main() {
+//function main() {
     var width = 900;
-var height = 600;
-var rotate = [122, 0, 0];
-var center = [0, 47.3097];
-var scale = 150000;
-var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
+    var height = 600;
+    var rotate = [122, 0, 0];
+    var center = [0, 47.3097];
+    var scale = 150000;
+    var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
 
 //font to be used for text
-var font = "Oswald";
+    var font = "Oswald";
 //var font = "Impact";
 
-var color1 = ['a', 'b', 'c', 'd', 'e', 'f'];
-var color2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    var color1 = ['a', 'b', 'c', 'd', 'e', 'f'];
+    var color2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 //padding to be given between text and inscribed rectangle
-var padding = 0.2; //given as percentage of total rectangle space
+    var padding = 0.1; //given as percentage of total rectangle space
 
 //keep track of area of each polygon already processed
-var topPolyBounds = {};
-var rightPolyBounds = {};
-var bottomPolyBounds = {};
-var leftPolyBounds = {};
+    var topPolyBounds = {};
+    var rightPolyBounds = {};
+    var bottomPolyBounds = {};
+    var leftPolyBounds = {};
 
 //any rectangles having area smaller than 40 pixels removed from
 //text-filling algorithm
-var AREA_CUTOFF = 40;
+    var AREA_CUTOFF = 40;
 
 //use rectangle mods made in database
-var USE_RECTANGLE_DATABASE = false;
-var USE_GRID_CACHING = true;
-var HORIZONTAL_SLICE_CAP = 6;
-var CHAR_ASPECT_RATIO = .5;
-var TEXT_SIZE_MULTIPLIER = 1;
-var GRID_CACHE_OUTPUT = false;
-var TWEET_CACHE_OUTPUT = false;
-var TWEETS_PER_QUERY = 100;
+    var USE_RECTANGLE_DATABASE = false;
+    var USE_GRID_CACHING = true;
+    var HORIZONTAL_SLICE_CAP = 6;
+    var CHAR_ASPECT_RATIO = .5;
+    var TEXT_SIZE_MULTIPLIER = 1.5;
+    var GRID_CACHE_OUTPUT = false;
+    var TWEET_CACHE_OUTPUT = false;
+    var TWEETS_PER_QUERY = 100;
 
-var SEATTLE_OUTLINE_COLOR = "black";
+    var SEATTLE_OUTLINE_COLOR = "black";
 
 
 //display various steps in text append process
-var displayPolygons = false;
-var displayRectangles = false;
-var displayOnlyCenterRectangle = false;
-var displayBounds = false;
-var displayText = true;
-var processAll = false; //does another recursive round of polyogn generation
+    var displayPolygons = false;
+    var displayRectangles = false;
+    var displayOnlyCenterRectangle = false;
+    var displayBounds = false;
+    var displayText = true;
 
 //debugger;
 
-var bestplaces;
+    var bestplaces;
 
-// these are for when we're in server
-//var oReq = new XMLHttpRequest(); //New request object
-//oReq.onload = function() {
-//    bestplaces = JSON.parse(this.responseText);
-//    console.log(bestplaces);
+    //these are for when we're in server
 
-bestplaces = {
-    "University District": "Morsel",
-    "North Beach": "Golden Gardens Park",
-    "Broadview": "Carkeek Park",
-    "View Ridge": "Seattle Select Moving",
-    "Haller Lake": "The Bridge Coffee House",
-    "Olympic Hills": "Man'oushe Express",
-    "Cedar Park": "Jebena Cafe",
-    "Northgate": "Gyro Hut",
-    "Blue Ridge": "Carkeek Park",
-    "Maple Leaf": "Cloud City Coffee",
-    "Matthews Beach": "Burke-Gilman Trail",
-    "Sand Point": "Warren G Magnuson Park - Off Leash Area",
-    "Windermere": "Pagliacci Pizza",
-    "Pinehurst": "Chaiyo Thai Cuisine",
-    "Wedgwood": "Van Gogh Coffeehouse",
-    "Wallingford": "Harvest Beat",
-    "Fremont": "Paseo Caribbean Food - Fremont",
-    "Laurelhurst": "Jak's Grill",
-    "Hawthorne Hills": "Center For Spiritual Living",
-    "Magnolia": "Discovery Park",
-    "Queen Anne": "Storyville Coffee Company",
-    "Lower Queen Anne": "Kerry Park",
-    "Westlake": "Canlis",
-    "Interbay": "Windy City Pie",
-    "Eastlake": "Pomodoro",
-    "Portage Bay": "Little Lago",
-    "Beacon Hill": "Cafetal Quilombo",
-    "Georgetown": "Calozzi's Cheesesteaks",
-    "Belltown": "Some Random Bar",
-    "West Seattle": "The Beer Junction",
-    "Seward Park": "Seward Park Audubon Center",
-    "Alki": "Alki Beach Park",
-    "Fauntleroy": "Lincoln Park",
-    "South Park": "Phorale",
-    "Arbor Heights": "Alki Sewer",
-    "Highland Park": "Wanna Teriyaki & Burger",
-    "Columbia City": "La Teranga",
-    "South Delridge": "Fresh Flours",
-    "High Point": "Tug Inn",
-    "Mount Baker": "Tacos El Asadero",
-    "Industrial District": "Schooner Exact Brewing Company",
-    "Madison Valley": "The Harvest Vine",
-    "Madison Park": "Cactus Restaurants",
-    "Denny-Blaine": "Viretta Park",
-    "Downtown": "Monorail Espresso",
-    "Whittier Heights": "Un Bien",
-    "Broadmoor": "Washington Park Arboretum",
-    "Brighton": "Othello Wok and Teriyaki",
-    "Sunset Hill": "Geo's Cuban & Creole Cafe",
-    "Rainier Beach": "Redwing Cafe",
-    "South Lake Union": "I Love My GFF",
-    "Capitol Hill": "Ada's Technical Books and Cafe",
-    "First Hill": "George's Sausage & Delicatessen",
-    "Meadowbrook": "Tubs Gourmet Subs",
-    "Admiral": "Freshy's",
-    "North College Park": "Tropicos Breeze",
-    "Atlantic": "Wood Shop BBQ",
-    "Loyal Heights": "Un Bien",
-    "Central District": "Jackson's Catfish Corner",
-    "International District": "goPok\u00e9",
-    "Roosevelt": "Rain City Burgers",
-    "Pioneer Square": "Il Corvo Pasta",
-    "Ballard": "Caf\u00e9 Besalu",
-    "Roxhill": "The Westy",
-    "North Delridge": "Pearls Tea & Cafe",
-    "Greenwood": "Valhalla Sandwiches",
-    "Leschi": "Meet the Moon",
-    "Riverview": "Portside Coffee Company",
-    "Montlake": "Fuel",
-    "Green Lake": "Green Lake Park",
-    "Ravenna": "Ventoux Roasters",
-    "Crown Hill": "Wild Mountain Cafe",
-    "Madrona": "Bottlehouse",
-    "Bitter Lake": "Forno Pizza",
-    "Olympic Manor": "Taki's Mad Greek",
-    "Victory Heights": "Hydra Clean Northwest",
-    "Phinney Ridge": "The Dray",
-    "Bryant": "Seattle Sunshine Coffee"
-};
-console.log(bestplaces);
+    /*
+    var oReq = new XMLHttpRequest(); //New request object
+    oReq.onload = function () {
+        bestplaces = JSON.parse(this.responseText);
+
+*/
+         bestplaces = {
+         "University District": "Morsel",
+         "North Beach": "Golden Gardens Park",
+         "Broadview": "Carkeek Park",
+         "View Ridge": "Seattle Select Moving",
+         "Haller Lake": "The Bridge Coffee House",
+         "Olympic Hills": "Man'oushe Express",
+         "Cedar Park": "Jebena Cafe",
+         "Northgate": "Gyro Hut",
+         "Blue Ridge": "Carkeek Park",
+         "Maple Leaf": "Cloud City Coffee",
+         "Matthews Beach": "Burke-Gilman Trail",
+         "Sand Point": "Warren G Magnuson Park - Off Leash Area",
+         "Windermere": "Pagliacci Pizza",
+         "Pinehurst": "Chaiyo Thai Cuisine",
+         "Wedgwood": "Van Gogh Coffeehouse",
+         "Wallingford": "Harvest Beat",
+         "Fremont": "Paseo Caribbean Food - Fremont",
+         "Laurelhurst": "Jak's Grill",
+         "Hawthorne Hills": "Center For Spiritual Living",
+         "Magnolia": "Discovery Park",
+         "Queen Anne": "Storyville Coffee Company",
+         "Lower Queen Anne": "Kerry Park",
+         "Westlake": "Canlis",
+         "Interbay": "Windy City Pie",
+         "Eastlake": "Pomodoro",
+         "Portage Bay": "Little Lago",
+         "Beacon Hill": "Cafetal Quilombo",
+         "Georgetown": "Calozzi's Cheesesteaks",
+         "Belltown": "Some Random Bar",
+         "West Seattle": "The Beer Junction",
+         "Seward Park": "Seward Park Audubon Center",
+         "Alki": "Alki Beach Park",
+         "Fauntleroy": "Lincoln Park",
+         "South Park": "Phorale",
+         "Arbor Heights": "Alki Sewer",
+         "Highland Park": "Wanna Teriyaki & Burger",
+         "Columbia City": "La Teranga",
+         "South Delridge": "Fresh Flours",
+         "High Point": "Tug Inn",
+         "Mount Baker": "Tacos El Asadero",
+         "Industrial District": "Schooner Exact Brewing Company",
+         "Madison Valley": "The Harvest Vine",
+         "Madison Park": "Cactus Restaurants",
+         "Denny-Blaine": "Viretta Park",
+         "Downtown": "Monorail Espresso",
+         "Whittier Heights": "Un Bien",
+         "Broadmoor": "Washington Park Arboretum",
+         "Brighton": "Othello Wok and Teriyaki",
+         "Sunset Hill": "Geo's Cuban & Creole Cafe",
+         "Rainier Beach": "Redwing Cafe",
+         "South Lake Union": "I Love My GFF",
+         "Capitol Hill": "Ada's Technical Books and Cafe",
+         "First Hill": "George's Sausage & Delicatessen",
+         "Meadowbrook": "Tubs Gourmet Subs",
+         "Admiral": "Freshy's",
+         "North College Park": "Tropicos Breeze",
+         "Atlantic": "Wood Shop BBQ",
+         "Loyal Heights": "Un Bien",
+         "Central District": "Jackson's Catfish Corner",
+         "International District": "goPok\u00e9",
+         "Roosevelt": "Rain City Burgers",
+         "Pioneer Square": "Il Corvo Pasta",
+         "Ballard": "Caf\u00e9 Besalu",
+         "Roxhill": "The Westy",
+         "North Delridge": "Pearls Tea & Cafe",
+         "Greenwood": "Valhalla Sandwiches",
+         "Leschi": "Meet the Moon",
+         "Riverview": "Portside Coffee Company",
+         "Montlake": "Fuel",
+         "Green Lake": "Green Lake Park",
+         "Ravenna": "Ventoux Roasters",
+         "Crown Hill": "Wild Mountain Cafe",
+         "Madrona": "Bottlehouse",
+         "Bitter Lake": "Forno Pizza",
+         "Olympic Manor": "Taki's Mad Greek",
+         "Victory Heights": "Hydra Clean Northwest",
+         "Phinney Ridge": "The Dray",
+         "Bryant": "Seattle Sunshine Coffee"
+         };
 
 //get width of parent
-var parentWidth = d3.select(".jumbotron").attr("width");
+//        var parentWidth = d3.select(".mapcontainer").attr("width");
 
-var svg = d3.select(".jumbotron")
-    .attr("id", "mapContainer")
-    .append("svg")
-    .attr("id", "mapSVG")
-    .attr("width", parentWidth)
-    .attr("height", height * 2);
+        var svg = d3.select(".mapcontainer")
+            .attr("id", "mapContainer")
+            .append("svg")
+            .attr("id", "mapSVG")
+            .attr("height", height * 2);
+            //.attr("width", parentWidth)
 
 //create loader - spinny guy
-var loadingIndicator = Object.create(LoadingIndicator);
-loadingIndicator.spin(document.getElementById('mapContainer'));
+    var opts = {
+        lines: 13 // The number of lines to draw
+        , length: 28 // The length of each line
+        , width: 14 // The line thickness
+        , radius: 42 // The radius of the inner circle
+        , scale: 1 // Scales overall size of the spinner
+        , corners: 1 // Corner roundness (0..1)
+        , color: '#000' // #rgb or #rrggbb or array of colors
+        , opacity: 0.25 // Opacity of the lines
+        , rotate: 0 // The rotation offset
+        , direction: 1 // 1: clockwise, -1: counterclockwise
+        , speed: 1 // Rounds per second
+        , trail: 60 // Afterglow percentage
+        , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+        , zIndex: 2e9 // The z-index (defaults to 2000000000)
+        , className: 'spinner' // The CSS class to assign to the spinner
+        , top: '50%' // Top position relative to parent
+        , left: '50%' // Left position relative to parent
+        , shadow: false // Whether to render a shadow
+        , hwaccel: false // Whether to use hardware acceleration
+        , position: 'absolute' // Element positioning
+    };
+        //var loadingIncidator = new Spinner(opts);
+//        var loadingIndicator = Object.create(Spinner.LoadingIndicator);
+//        loadingIndicator.spin(document.getElementById('mapContainer'));
 
-var projection = d3.geo.mercator()
-    .rotate(rotate)
-    .scale(scale)
-    .translate(offset)
-    .precision(.5);
+        var projection = d3.geo.mercator()
+            .rotate(rotate)
+            .scale(scale)
+            .translate(offset)
+            .precision(.5);
 
-var path = d3.geo.path()
-    .projection(projection);
+        var path = d3.geo.path()
+            .projection(projection);
 
-var neighborhoodGroup = svg.append("g")
-    .attr('id', 'neighborhoodGroup');
+        var neighborhoodGroup = svg.append("g")
+            .attr('id', 'neighborhoodGroup');
 
-/*parses json, call back function selects all paths (none exist yet)
- and joins data (all neighborhoods) with each path. since there are no
- paths, all data points are waiting in 'update.enter'. calling
- 'enter()' gives us these points, and appends a path for each of them,
- attributing a path and id to each.*/
+        /*parses json, call back function selects all paths (none exist yet)
+         and joins data (all neighborhoods) with each path. since there are no
+         paths, all data points are waiting in 'update.enter'. calling
+         'enter()' gives us these points, and appends a path for each of them,
+         attributing a path and id to each.*/
 
-var topoGeometries;
+        var topoGeometries;
 
-d3.json("json/neighborhoods.json", function (error, topology) {
+        d3.json("json/neighborhoods.json", function (error, topology) {
 
-    topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
-        .geometries;
+            topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
+                .geometries;
 
-    //generate paths around each neighborhood
-    neighborhoodGroup.selectAll("path")
-        .data(topoGeometries)
-        .enter()
-        .append("path")
-        .attr("d", path)
-        .attr("class", "neighborhoodOutline")
-        .attr("fill", function () {
+            //generate paths around each neighborhood
+            neighborhoodGroup.selectAll("path")
+                .data(topoGeometries)
+                .enter()
+                .append("path")
+                .attr("d", path)
+                .attr("class", "neighborhoodOutline")
+                .attr("fill", function () {
 
-            var colorA = color1[Math.floor(Math.random() * color1.length)];
-            var colorB = color2[Math.floor(Math.random() * color2.length)];
-            var pair = colorA + "" + colorB;
-            var color = "#" + pair + pair + pair;
-            return color;
-        })
-        .attr("id", function (d) {
-            return "n_" + d.id
-        });
+                    var colorA = color1[Math.floor(Math.random() * color1.length)];
+                    var colorB = color2[Math.floor(Math.random() * color2.length)];
+                    var pair = colorA + "" + colorB;
+                    var color = "#" + pair + pair + pair;
+                    return color;
+                })
+                .attr("id", function (d) {
+                    return "n_" + d.id
+                });
 //                .attr("fill", function() {
 //                    var letters = '0123456789ABCDEF'.split('');
 //                    var color = '#';
@@ -221,76 +246,99 @@ d3.json("json/neighborhoods.json", function (error, topology) {
 //                    return color;
 //                });
 
-    //generate inner paths to append text to
-    neighborhoodGroup.selectAll(".neighborhoodInnerPath")
-        .data(topoGeometries)
-        .enter()
-        .append("path")
-        .attr("neighborhoodBounds", path)
-        .attr("class", "neighborhoodInnerPath")
-        .attr("id", function (d) {
-            return "inner_" + d.id;
-        })
-        .attr("d", function (d) {
-            return this.getAttribute("neighborhoodBounds");
+            //generate inner paths to append text to
+            neighborhoodGroup.selectAll(".neighborhoodInnerPath")
+                .data(topoGeometries)
+                .enter()
+                .append("path")
+                .attr("neighborhoodBounds", path)
+                .attr("class", "neighborhoodInnerPath")
+                .attr("id", function (d) {
+                    return "inner_" + d.id;
+                })
+                .attr("d", function (d) {
+                    return this.getAttribute("neighborhoodBounds");
+                });
+            //.attr("transform-origin", function(d) {
+            //    // get center of polygon
+            //    var pathString = this.getAttribute("neighborhoodBounds");
+            //    var pathArray = TextUtil.pathToArray(pathString);
+            //
+            //    var aabb = PolyK.GetAABB(pathArray);
+            //    var xcenter = aabb.x + (aabb.width * 1.0 / 2);
+            //    var ycenter = aabb.y + (aabb.height * 1.0 / 2);
+            //    return xcenter + " " + ycenter;
+            //})
+            //.attr("transform", "scale(" + (1 - padding) + ", " + (1 - padding) + ")");
+
+            neighborhoodGroup.selectAll(".neighborhoodInnerPath")
+                .each(function (d) {
+                    // scale path
+                    //var polyString = this.getAttribute("neighborhoodBounds");
+                    //console.log("before scaling: " + polyString);
+                    //var pathParsed = parseSVG(polyString);
+                    //console.log(pathParsed);
+                    //var polyScaled = scaleSVG(pathParsed, 1 - padding);
+                    //console.log(polyScaled);
+                    //console.log("after scaling: " + serializeSVG(polyScaled));
+                    var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
+
+                    if (pathCoords3d != null) { //coordinates are enough to actually make a shape
+                        console.log("about to run slice alg for neighborhood: " + d.properties.name);
+
+                        this.setAttribute("phrase", bestplaces[d.properties.name]);
+                        var nameArray = bestplaces[d.properties.name].split(" ");
+                        var nameNoSpaces = nameArray[0];
+                        for (var i = 1; i < nameArray.length; i++) {
+                            nameNoSpaces += nameArray[i];
+                        }
+
+                        horizontalSliceAlg(svg, pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
+                            USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
+                            font, HORIZONTAL_SLICE_CAP);
+                    }
+                    //stop spinner--we're done!
+                    //loadingIndicator.stop();
+                    if (GRID_CACHE_OUTPUT) {
+                        console.log(JSON.stringify(getGridCache()) + "end");
+                    }
+                    //} else {
+                    //    return null;
+                    //}
+
+                    //return serializeSVG(polyScaled);
+                })
+                .on("mouseover", setLegend)
+                .on("mouseout", resetLegend);
+
         });
-        //.attr("transform-origin", function(d) {
-        //    // get center of polygon
-        //    var pathString = this.getAttribute("neighborhoodBounds");
-        //    var pathArray = TextUtil.pathToArray(pathString);
-        //
-        //    var aabb = PolyK.GetAABB(pathArray);
-        //    var xcenter = aabb.x + (aabb.width * 1.0 / 2);
-        //    var ycenter = aabb.y + (aabb.height * 1.0 / 2);
-        //    return xcenter + " " + ycenter;
-        //})
-        //.attr("transform", "scale(" + (1 - padding) + ", " + (1 - padding) + ")");
 
-    neighborhoodGroup.selectAll(".neighborhoodInnerPath")
-        .each(function(d) {
-            // scale path
-            //var polyString = this.getAttribute("neighborhoodBounds");
-            //console.log("before scaling: " + polyString);
-            //var pathParsed = parseSVG(polyString);
-            //console.log(pathParsed);
-            //var polyScaled = scaleSVG(pathParsed, 1 - padding);
-            //console.log(polyScaled);
-            //console.log("after scaling: " + serializeSVG(polyScaled));
-            var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
 
-            if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                console.log("about to run slice alg for neighborhood: " + d.properties.name);
+    //};
 
-                var nameArray = bestplaces[d.properties.name].split(" ");
-                var nameNoSpaces = nameArray[0];
-                for (var i = 1; i < nameArray.length; i++) {
-                    nameNoSpaces += nameArray[i];
-                }
-
-                horizontalSliceAlg(svg, pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
-                    USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
-                    font, HORIZONTAL_SLICE_CAP);
-            }
-            //stop spinner--we're done!
-            loadingIndicator.stop();
-            if (GRID_CACHE_OUTPUT) {
-                console.log(JSON.stringify(getGridCache()) + "end");
-            }
-            //} else {
-            //    return null;
-            //}
-
-            //return serializeSVG(polyScaled);
-        })
-
-});
-};
-
-window.onload = main;
+    //oReq.open("get", "yelp/getyelp.php", true);
+    //oReq.send();
 
 //};
-//oReq.open("get", "yelp/getyelp.php", true);
-//oReq.send();
+
+//window.onload = main;
+
+function setLegend(d, i) {
+    var name = d3.select(".neighborhoodname");
+    name.html(d.properties.name);
+
+    var phraseBox = d3.select(".neighborhoodphrase");
+    var phrase = d3.select(this).attr("phrase");
+    phraseBox.html(phrase);
+}
+
+function resetLegend(d, i) {
+     var name = d3.select(".neighborhoodname");
+    name.html("Hover to see name");
+
+    var phraseBox = d3.select(".neighborhoodphrase");
+    phraseBox.html("Hover to see phrase");
+}
 
 //slice neighborhood horizontally, then vertically
 //according to length of phrase to get grid over neighborhood.
@@ -301,7 +349,9 @@ function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache,
                             CHAR_ASPECT_RATIO) {
 
     console.log("rendering neighborhodd: " + d.properties.name);
-    if (d.properties.name == "Mount Baker") { return; }
+    if (d.properties.name == "Mount Baker") {
+        return;
+    }
 
     //get height and width of polygon
     //don't use padding this time (padding = 0)
@@ -316,7 +366,7 @@ function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache,
     } else { //cache optimal slices..only used to use output and save
         optimalHorizontalSlices = NeighborhoodParser.testGrid(pathCoords3d, dimensions, d, svg,
             phrase, padding, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, TEXT_SIZE_MULTIPLIER, font, TextToSVG);
-        if (gridCache[d.properties.name] == null ) {
+        if (gridCache[d.properties.name] == null) {
             gridCache[d.properties.name] = {};
         }
         gridCache[d.properties.name][phrase.length] = optimalHorizontalSlices;

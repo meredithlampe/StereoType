@@ -559,7 +559,8 @@ var TextUtil = {
                                 phrase.toUpperCase() != 'R' &&
                                 phrase.toUpperCase() != 'P' &&
                                 phrase.toUpperCase() != 'B' &&
-                                phrase.toUpperCase() != 'S') {
+                                phrase.toUpperCase() != 'S' &&
+                                phrase.toUpperCase() != 'C') {
 
                             // check coords of path, make sure they are inside of polygon
                             var pathArray = TextUtil.pathToArray(pathD);
@@ -578,8 +579,13 @@ var TextUtil = {
                             const shape = textToSVG.getMetrics(phrase.toUpperCase(), options);
                             if (shape.width < rectangle[0].width && shape.height < rectangle[0].height) {
                                // we're good
+                                bestPath = textToSVG.getD(phrase.toUpperCase(), options);
                             } else {
                                 allInside = false;
+
+                                // do one last increase because these letters look real small
+                                options.fontSize = textSize * TEXT_SIZE_MULTIPLIER;
+                                bestPath = textToSVG.getD(phrase.toUpperCase(), options);
                             }
                         }
 

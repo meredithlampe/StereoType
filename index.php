@@ -109,7 +109,6 @@
         <script src="js/RectangleGenerator.js"></script>
         <script src="js/LoadingIndicator.js"></script>
         <script src="js/Model.js"></script>
-//        <script src="js/main.js"></script>
         <script src="bundle.js"></script>
 
     </div> <!-- /container -->
