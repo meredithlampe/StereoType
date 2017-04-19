@@ -1,6 +1,6 @@
 .neighborhoodOutline {
     stroke: #282828;
-    stroke-width: 3px;
+    stroke-width: 1px;
 }
 
 .neighborhoodOutlineBorder {
@@ -8,13 +8,24 @@
     stroke-width: 5px;
 }
 
-#mapContainer {
-    position: relative;
+.mapcontainer {
+}
+
+.mapinfo {
+    padding-top: 100pt;
+    background-color: #efefef;
+}
+
+.main {
     margin: auto;
 }
 
 #mapSVG {
     width: 100%;
+}
+
+.legend {
+
 }
 
 .neighborhoodInnerPath {
