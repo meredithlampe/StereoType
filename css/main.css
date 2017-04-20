@@ -8,12 +8,13 @@
     stroke-width: 5px;
 }
 
-.mapcontainer {
-}
-
 .mapinfo {
     padding-top: 100pt;
     background-color: #efefef;
+}
+
+#neighborhoodname, #neighborhoodphrase {
+    font-size: 45pt;
 }
 
 .main {
@@ -22,10 +23,6 @@
 
 #mapSVG {
     width: 100%;
-}
-
-.legend {
-
 }
 
 .neighborhoodInnerPath {

@@ -219,10 +219,16 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
             topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
                 .geometries;
 
+
+
             //generate paths around each neighborhood
-            neighborhoodGroup.selectAll("path")
+            neighborhoodGroup.selectAll(".neighborhood")
                 .data(topoGeometries)
                 .enter()
+                .append("g")
+                .attr("neighborhoodBounds", path)
+                .attr("opacity", ".5")
+                .attr("class", "neighborhood")
                 .append("path")
                 .attr("d", path)
                 .attr("class", "neighborhoodOutline")
@@ -237,19 +243,9 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
                 .attr("id", function (d) {
                     return "n_" + d.id
                 });
-//                .attr("fill", function() {
-//                    var letters = '0123456789ABCDEF'.split('');
-//                    var color = '#';
-//                    for (var i = 0; i < 6; i++ ) {
-//                        color += letters[Math.floor(Math.random() * 16)];
-//                    }
-//                    return color;
-//                });
 
             //generate inner paths to append text to
-            neighborhoodGroup.selectAll(".neighborhoodInnerPath")
-                .data(topoGeometries)
-                .enter()
+            neighborhoodGroup.selectAll(".neighborhood")
                 .append("path")
                 .attr("neighborhoodBounds", path)
                 .attr("class", "neighborhoodInnerPath")
@@ -259,6 +255,26 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
                 .attr("d", function (d) {
                     return this.getAttribute("neighborhoodBounds");
                 });
+
+            neighborhoodGroup.selectAll(".neighborhood")
+                .each(function(d) {
+                    var pathCoords3d = NeighborhoodParser.get3dPathArray(
+                        d3.select(this).select(".neighborhoodInnerPath").attr("neighborhoodBounds"),
+                        d.type == "MultiPolygon");
+                    // make polygon
+                    var pointslist = "";
+                    for (var point = 0; point < pathCoords3d[0].length; point++) {
+                        var curr = pathCoords3d[0][point];
+                        pointslist += curr[0] + "," + curr[1] + " ";
+                    }
+                    d3.select(this)
+                        .append("polygon")
+                        .attr("points", pointslist)
+                        .attr("fill", "none");
+                })
+                .attr("phrase", function(d){ return bestplaces[d.properties.name]; })
+                .on("mouseover", setLegend)
+                .on("mouseout", resetLegend);
             //.attr("transform-origin", function(d) {
             //    // get center of polygon
             //    var pathString = this.getAttribute("neighborhoodBounds");
@@ -271,7 +287,7 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
             //})
             //.attr("transform", "scale(" + (1 - padding) + ", " + (1 - padding) + ")");
 
-            neighborhoodGroup.selectAll(".neighborhoodInnerPath")
+            neighborhoodGroup.selectAll(".neighborhood")
                 .each(function (d) {
                     // scale path
                     //var polyString = this.getAttribute("neighborhoodBounds");
@@ -281,19 +297,18 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
                     //var polyScaled = scaleSVG(pathParsed, 1 - padding);
                     //console.log(polyScaled);
                     //console.log("after scaling: " + serializeSVG(polyScaled));
-                    var pathCoords3d = NeighborhoodParser.get3dPathArray(this, d.type == "MultiPolygon");
+                    var neighborhoodBoundsString = this.getAttribute("neighborhoodBounds");
+                    var pathCoords3d = NeighborhoodParser.get3dPathArray(neighborhoodBoundsString, d.type == "MultiPolygon");
 
                     if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                         console.log("about to run slice alg for neighborhood: " + d.properties.name);
-
-                        this.setAttribute("phrase", bestplaces[d.properties.name]);
                         var nameArray = bestplaces[d.properties.name].split(" ");
                         var nameNoSpaces = nameArray[0];
                         for (var i = 1; i < nameArray.length; i++) {
                             nameNoSpaces += nameArray[i];
                         }
 
-                        horizontalSliceAlg(svg, pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
+                        horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
                             USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
                             font, HORIZONTAL_SLICE_CAP);
                     }
@@ -307,9 +322,9 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
                     //}
 
                     //return serializeSVG(polyScaled);
-                })
-                .on("mouseover", setLegend)
-                .on("mouseout", resetLegend);
+                });
+
+
 
         });
 
@@ -324,20 +339,30 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
 //window.onload = main;
 
 function setLegend(d, i) {
-    var name = d3.select(".neighborhoodname");
+    // set name
+    var name = d3.select("#neighborhoodname");
     name.html(d.properties.name);
 
-    var phraseBox = d3.select(".neighborhoodphrase");
-    var phrase = d3.select(this).attr("phrase");
+    // set phrase
+    var phraseBox = d3.select("#neighborhoodphrase");
+    var poly = d3.select(this);
+    var phrase = poly.attr("phrase");
     phraseBox.html(phrase);
+
+    // change opacity
+    var neighborhood = d3.select(this);
+    neighborhood.attr("opacity", "1.0");
 }
 
 function resetLegend(d, i) {
-     var name = d3.select(".neighborhoodname");
+     var name = d3.select("#neighborhoodname");
     name.html("Hover to see name");
 
-    var phraseBox = d3.select(".neighborhoodphrase");
+    var phraseBox = d3.select("#neighborhoodphrase");
     phraseBox.html("Hover to see phrase");
+
+    var neighborhood = d3.select(this);
+    neighborhood.attr("opacity", ".5");
 }
 
 //slice neighborhood horizontally, then vertically

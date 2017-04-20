@@ -4,9 +4,8 @@
  * Parses neighborhood bounds into usable array.
  */
 var NeighborhoodParser = {
-  get3dPathArray: function(element, isMultiPoly) {
+  get3dPathArray: function(neighborhoodBoundsString, isMultiPoly) {
 
-    var neighborhoodBoundsString = element.getAttribute("neighborhoodBounds");
 
     var pathCoords2d;
     var pathCorods3d;
