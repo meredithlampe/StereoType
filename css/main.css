@@ -9,12 +9,21 @@
 }
 
 .mapinfo {
-    padding-top: 100pt;
+    padding-top: 50pt;
     background-color: #efefef;
 }
 
+.legendterm {
+    overflow: hidden;
+}
+
+.legendtitle {
+    font-size: 13pt;
+}
+
+
 #neighborhoodname, #neighborhoodphrase {
-    font-size: 45pt;
+    font-size: 26pt;
 }
 
 .main {
