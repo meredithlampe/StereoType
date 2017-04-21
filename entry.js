@@ -6,9 +6,9 @@
  */
 
 const TextToSVG = require('text-to-svg');
-var scaleSVG = require("scale-svg-path")
-var parseSVG = require('parse-svg-path')
-var serializeSVG = require('serialize-svg-path')
+var scaleSVG = require("scale-svg-path");
+var parseSVG = require('parse-svg-path');
+var serializeSVG = require('serialize-svg-path');
 
 require("./js/NeighborhoodGeolocation.js");
 //require("./js/GridCache.js");
@@ -190,9 +190,8 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
         , hwaccel: false // Whether to use hardware acceleration
         , position: 'absolute' // Element positioning
     };
-        //var loadingIncidator = new Spinner(opts);
-//        var loadingIndicator = Object.create(Spinner.LoadingIndicator);
-//        loadingIndicator.spin(document.getElementById('mapContainer'));
+        var loadingIndicator = new Spinner(opts);
+        loadingIndicator.spin(document.getElementById('mapContainer'));
 
         var projection = d3.geo.mercator()
             .rotate(rotate)
@@ -312,8 +311,6 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
                             USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
                             font, HORIZONTAL_SLICE_CAP);
                     }
-                    //stop spinner--we're done!
-                    //loadingIndicator.stop();
                     if (GRID_CACHE_OUTPUT) {
                         console.log(JSON.stringify(getGridCache()) + "end");
                     }
@@ -325,9 +322,10 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
                 });
 
 
-
         });
 
+        //stop spinner--we're done!
+        loadingIndicator.stop();
 
     //};
 
@@ -339,6 +337,10 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
 //window.onload = main;
 
 function setLegend(d, i) {
+
+   // weird scrolling thing -- gotta save scroll top
+    var oldScrollTop = document.body.scrollTop;
+
     // set name
     var name = d3.select("#neighborhoodname");
     name.html(d.properties.name);
@@ -352,17 +354,26 @@ function setLegend(d, i) {
     // change opacity
     var neighborhood = d3.select(this);
     neighborhood.attr("opacity", "1.0");
+
+    // set scrolling top so that we don't scroll
+    document.body.scrollTop = oldScrollTop;
 }
 
 function resetLegend(d, i) {
+
+    // weird scrolling thing -- gotta save scroll top
+    var oldScrollTop = document.body.scrollTop;
      var name = d3.select("#neighborhoodname");
-    name.html("Hover to see name");
+    name.html("...");
 
     var phraseBox = d3.select("#neighborhoodphrase");
-    phraseBox.html("Hover to see phrase");
+    phraseBox.html("...");
 
     var neighborhood = d3.select(this);
     neighborhood.attr("opacity", ".5");
+
+    // set scrolling top so that we don't scroll
+    document.body.scrollTop = oldScrollTop;
 }
 
 //slice neighborhood horizontally, then vertically
