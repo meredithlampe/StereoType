@@ -177,8 +177,9 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                 .attr("points", pointslist)
                 .attr("fill", "none");
 
-            //if (d.properties.name == "Capitol Hill") {
+            if (d.properties.name == "Capitol Hill") {
             var offset = new Offset();
+                debugger;
             var innerPoly = offset.data(pathCoords3d[0]).padding(5);
             for (var poly = 0; poly < innerPoly.length; poly++) {
                 var innerPointsList = "";
@@ -193,7 +194,7 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                     .attr("fill", "pink");
             }
 
-            //}
+            }
 
         })
         .attr("phrase", function (d) {
