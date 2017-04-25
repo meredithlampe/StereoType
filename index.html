@@ -69,13 +69,26 @@
         <div class="mapinfo col-xs-12 row align-items-center">
             <div class="maplegend col-xs-2 col-xs-offset-1">
                <div class="legend col">
-                   <div class="legendterm row">
+                   <div class="legendterm row" id="name" >
                        <h3 class="legendtitle">Neighborhood Name:</h3>
                        <h1 id="neighborhoodname">...</h1>
                    </div>
-                   <div class="legendterm row">
-                       <h3 class="legendtitle">Best Match:</h3c>
-                       <h1 id="neighborhoodphrase">...<h1>
+                   <div class="legendterm row" id="bestmatch">
+                       <h3 class="legendtitle">Best Match:</h3>
+                       <h1 id="neighborhoodphrase">...</h1>
+                   </div>
+                    <div class="legendterm row" id="categories">
+                       <h3 class="legendtitle">Categories for Best Match:</h3>
+                        <!-- this one is a div because we'll put a list here -->
+                       <div id="neighborhoodcategories">...</div>
+                   </div>
+                    <div class="legendterm row" id="price">
+                       <h3 class="legendtitle">Price Range for Best Match:</h3>
+                       <h1 id="neighborhoodprice">...</h1>
+                   </div>
+                     <div class="legendterm row" id="reviewcount">
+                       <h3 class="legendtitle">Review Count for Best Match:</h3>
+                       <h1 id="neighborhoodreviewcount">...</h1>
                    </div>
                </div>
             </div>

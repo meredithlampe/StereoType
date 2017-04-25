@@ -21,9 +21,28 @@
     font-size: 13pt;
 }
 
-
 #neighborhoodname, #neighborhoodphrase {
     font-size: 26pt;
+}
+
+#name {
+    height: 150pt;
+}
+
+#bestmatch {
+    height: 200pt;
+}
+
+#categories {
+    height: 200pt;
+}
+
+#price {
+    height: 100pt;
+}
+
+#reviewcount {
+    height: 100pt;
 }
 
 .main {
