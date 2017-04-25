@@ -33,6 +33,9 @@ export function setLegend(d, i) {
     // set number of ratings
     d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount"));
 
+    // set all neighborhoods to dim
+    d3.selectAll(".neighborhood").attr("opacity", "0.5");
+
     // change opacity
     var neighborhood = d3.select(this);
     neighborhood.attr("opacity", "1.0");
@@ -60,8 +63,8 @@ export function resetLegend(d, i) {
     // set number of ratings
     d3.select("#neighborhoodreviewcount").html("...");
 
-    var neighborhood = d3.select(this);
-    neighborhood.attr("opacity", ".5");
+    // set all neighborhoods to brighten
+    d3.selectAll(".neighborhood").attr("opacity", "1.0");
 
     // set scrolling top so that we don't scroll
     document.body.scrollTop = oldScrollTop;
