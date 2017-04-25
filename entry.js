@@ -67,9 +67,10 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
 
     //these are for when we're in server
 
-    var oReq = new XMLHttpRequest(); //New request object
-    oReq.onload = function () {
-        bestplaces = JSON.parse(this.responseText);
+    //var oReq = new XMLHttpRequest(); //New request object
+    //oReq.onload = function () {
+    //    bestplaces = JSON.parse(this.responseText);
+        bestplaces = sample_bestplaces;
 
 //get width of parent
 //        var parentWidth = d3.select(".mapcontainer").attr("width");
@@ -243,10 +244,10 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
         //stop spinner--we're done!
         loadingIndicator.stop();
 
-    };
+    //};
 
-    oReq.open("get", "yelp/getyelp.php", true);
-    oReq.send();
+    //oReq.open("get", "yelp/getyelp.php", true);
+    //oReq.send();
 //};
 
 //window.onload = main;
