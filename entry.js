@@ -71,9 +71,6 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
     oReq.onload = function () {
         bestplaces = JSON.parse(this.responseText);
 
-//get width of parent
-//        var parentWidth = d3.select(".mapcontainer").attr("width");
-
         var svg = d3.select(".mapcontainer")
             .attr("id", "mapContainer")
             .append("svg")
