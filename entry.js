@@ -63,99 +63,13 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
     var displayOnlyCenterRectangle = false;
     var displayBounds = false;
     var displayText = true;
-
-//debugger;
-
     var bestplaces;
 
     //these are for when we're in server
 
-    /*
     var oReq = new XMLHttpRequest(); //New request object
     oReq.onload = function () {
         bestplaces = JSON.parse(this.responseText);
-
-*/
-         bestplaces = {
-         "University District": "Morsel",
-         "North Beach": "Golden Gardens Park",
-         "Broadview": "Carkeek Park",
-         "View Ridge": "Seattle Select Moving",
-         "Haller Lake": "The Bridge Coffee House",
-         "Olympic Hills": "Man'oushe Express",
-         "Cedar Park": "Jebena Cafe",
-         "Northgate": "Gyro Hut",
-         "Blue Ridge": "Carkeek Park",
-         "Maple Leaf": "Cloud City Coffee",
-         "Matthews Beach": "Burke-Gilman Trail",
-         "Sand Point": "Warren G Magnuson Park - Off Leash Area",
-         "Windermere": "Pagliacci Pizza",
-         "Pinehurst": "Chaiyo Thai Cuisine",
-         "Wedgwood": "Van Gogh Coffeehouse",
-         "Wallingford": "Harvest Beat",
-         "Fremont": "Paseo Caribbean Food - Fremont",
-         "Laurelhurst": "Jak's Grill",
-         "Hawthorne Hills": "Center For Spiritual Living",
-         "Magnolia": "Discovery Park",
-         "Queen Anne": "Storyville Coffee Company",
-         "Lower Queen Anne": "Kerry Park",
-         "Westlake": "Canlis",
-         "Interbay": "Windy City Pie",
-         "Eastlake": "Pomodoro",
-         "Portage Bay": "Little Lago",
-         "Beacon Hill": "Cafetal Quilombo",
-         "Georgetown": "Calozzi's Cheesesteaks",
-         "Belltown": "Some Random Bar",
-         "West Seattle": "The Beer Junction",
-         "Seward Park": "Seward Park Audubon Center",
-         "Alki": "Alki Beach Park",
-         "Fauntleroy": "Lincoln Park",
-         "South Park": "Phorale",
-         "Arbor Heights": "Alki Sewer",
-         "Highland Park": "Wanna Teriyaki & Burger",
-         "Columbia City": "La Teranga",
-         "South Delridge": "Fresh Flours",
-         "High Point": "Tug Inn",
-         "Mount Baker": "Tacos El Asadero",
-         "Industrial District": "Schooner Exact Brewing Company",
-         "Madison Valley": "The Harvest Vine",
-         "Madison Park": "Cactus Restaurants",
-         "Denny-Blaine": "Viretta Park",
-         "Downtown": "Monorail Espresso",
-         "Whittier Heights": "Un Bien",
-         "Broadmoor": "Washington Park Arboretum",
-         "Brighton": "Othello Wok and Teriyaki",
-         "Sunset Hill": "Geo's Cuban & Creole Cafe",
-         "Rainier Beach": "Redwing Cafe",
-         "South Lake Union": "I Love My GFF",
-         "Capitol Hill": "Ada's Technical Books and Cafe",
-         "First Hill": "George's Sausage & Delicatessen",
-         "Meadowbrook": "Tubs Gourmet Subs",
-         "Admiral": "Freshy's",
-         "North College Park": "Tropicos Breeze",
-         "Atlantic": "Wood Shop BBQ",
-         "Loyal Heights": "Un Bien",
-         "Central District": "Jackson's Catfish Corner",
-         "International District": "goPok\u00e9",
-         "Roosevelt": "Rain City Burgers",
-         "Pioneer Square": "Il Corvo Pasta",
-         "Ballard": "Caf\u00e9 Besalu",
-         "Roxhill": "The Westy",
-         "North Delridge": "Pearls Tea & Cafe",
-         "Greenwood": "Valhalla Sandwiches",
-         "Leschi": "Meet the Moon",
-         "Riverview": "Portside Coffee Company",
-         "Montlake": "Fuel",
-         "Green Lake": "Green Lake Park",
-         "Ravenna": "Ventoux Roasters",
-         "Crown Hill": "Wild Mountain Cafe",
-         "Madrona": "Bottlehouse",
-         "Bitter Lake": "Forno Pizza",
-         "Olympic Manor": "Taki's Mad Greek",
-         "Victory Heights": "Hydra Clean Northwest",
-         "Phinney Ridge": "The Dray",
-         "Bryant": "Seattle Sunshine Coffee"
-         };
 
 //get width of parent
 //        var parentWidth = d3.select(".mapcontainer").attr("width");
@@ -243,7 +157,7 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
                     return "n_" + d.id
                 });
 
-            //generate inner paths to append text to
+           //generate inner paths to append text to
             neighborhoodGroup.selectAll(".neighborhood")
                 .append("path")
                 .attr("neighborhoodBounds", path)
@@ -271,7 +185,10 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
                         .attr("points", pointslist)
                         .attr("fill", "none");
                 })
-                .attr("phrase", function(d){ return bestplaces[d.properties.name]; })
+                .attr("phrase", function(d){ return bestplaces[d.properties.name].bestmatch; })
+                .attr("categories", function(d) {return JSON.stringify(bestplaces[d.properties.name].categories); })
+                .attr("price", function(d) { return bestplaces[d.properties.name].price; })
+                .attr("reviewcount", function(d) { return bestplaces[d.properties.name].review_count; })
                 .on("mouseover", setLegend)
                 .on("mouseout", resetLegend);
             //.attr("transform-origin", function(d) {
@@ -301,12 +218,11 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
 
                     if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                         console.log("about to run slice alg for neighborhood: " + d.properties.name);
-                        var nameArray = bestplaces[d.properties.name].split(" ");
+                        var nameArray = bestplaces[d.properties.name].bestmatch.split(" ");
                         var nameNoSpaces = nameArray[0];
                         for (var i = 1; i < nameArray.length; i++) {
                             nameNoSpaces += nameArray[i];
                         }
-
                         horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
                             USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
                             font, HORIZONTAL_SLICE_CAP);
@@ -327,16 +243,16 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
         //stop spinner--we're done!
         loadingIndicator.stop();
 
-    //};
+    };
 
-    //oReq.open("get", "yelp/getyelp.php", true);
-    //oReq.send();
-
+    oReq.open("get", "yelp/getyelp.php", true);
+    oReq.send();
 //};
 
 //window.onload = main;
 
 function setLegend(d, i) {
+    var poly = d3.select(this);
 
    // weird scrolling thing -- gotta save scroll top
     var oldScrollTop = document.body.scrollTop;
@@ -347,9 +263,22 @@ function setLegend(d, i) {
 
     // set phrase
     var phraseBox = d3.select("#neighborhoodphrase");
-    var poly = d3.select(this);
     var phrase = poly.attr("phrase");
     phraseBox.html(phrase);
+
+    // set type
+    var categories = JSON.parse(poly.attr("categories"));
+    var categoryBox = d3.select("#neighborhoodcategories");
+    categoryBox.html("");
+    for (var i = 0; i < categories.length; i++) {
+        categoryBox.append("h3").html(categories[i].title);
+    }
+
+    // set price range
+    d3.select("#neighborhoodprice").html(poly.attr("price"));
+
+    // set number of ratings
+    d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount"));
 
     // change opacity
     var neighborhood = d3.select(this);
@@ -368,6 +297,15 @@ function resetLegend(d, i) {
 
     var phraseBox = d3.select("#neighborhoodphrase");
     phraseBox.html("...");
+
+    // set categories
+    d3.select("#neighborhoodcategories").html("...");
+
+    // set price range
+    d3.select("#neighborhoodprice").html("...");
+
+    // set number of ratings
+    d3.select("#neighborhoodreviewcount").html("...");
 
     var neighborhood = d3.select(this);
     neighborhood.attr("opacity", ".5");
