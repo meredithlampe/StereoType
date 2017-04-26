@@ -125,6 +125,8 @@ d3.json("json/neighborhoods.json", function (error, topology) {
     topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
         .geometries;
 
+    //neighborhoodGroup.on("mouseover", MapUtil.setMapOpacityFade);
+    //neighborhoodGroup.on("mouseout", MapUtil.setMapOpacityStrong);
 
     //generate paths around each neighborhood
     neighborhoodGroup.selectAll(".neighborhood")

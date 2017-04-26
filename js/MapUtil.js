@@ -4,6 +4,15 @@
 
 const TextToSVG = require('text-to-svg');
 
+export function setMapOpacityFade() {
+    d3.selectAll(".neighborhood").attr("opacity", "0.5");
+}
+
+export function setMapOpacityStrong() {
+    d3.selectAll(".neighborhood").attr("opacity", "1.0");
+}
+
+
 export function setLegend(d, i) {
     var poly = d3.select(this);
 
@@ -32,10 +41,14 @@ export function setLegend(d, i) {
     // set number of ratings
     d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount"));
 
+    // change opacity
+     var neighborhood = d3.select(this);
+    neighborhood.attr("opacity", "1.0");
+
     // set all neighborhoods to dim
     d3.selectAll(".neighborhood").attr("opacity", "0.5");
 
-    // change opacity
+    // hack -- do this twice
     var neighborhood = d3.select(this);
     neighborhood.attr("opacity", "1.0");
 
@@ -62,7 +75,6 @@ export function resetLegend(d, i) {
     // set number of ratings
     d3.select("#neighborhoodreviewcount").html("");
 
-    // set all neighborhoods to brighten
     d3.selectAll(".neighborhood").attr("opacity", "1.0");
 
     // set scrolling top so that we don't scroll
