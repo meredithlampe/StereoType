@@ -9,6 +9,14 @@
     stroke-width: 5px;
 }
 
+/*#neighborhoodGroup:hover {*/
+    /*opacity:0.5 ;*/
+/*}*/
+
+/*.neighborhood:hover {*/
+    /*opacity: 1.0;*/
+/*}*/
+
 .mapinfo {
     padding-top: 50pt;
     background-color: #efefef;
