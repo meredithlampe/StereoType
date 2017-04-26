@@ -42,11 +42,15 @@ var NeighborhoodParser = {
           pathCoords2d = [];
 
           //transform pathCoords array into array of 2-d arrays
-          for (var i = 0; i < pathCoords.length; i++) {
+          var i = 0;
+          for (; i < pathCoords.length; i++) {
               var bothCoords = pathCoords[i].split(',');
               pathCoords2d[i] = [parseFloat(bothCoords[0]), parseFloat(bothCoords[1])];
-
           }
+
+          // put first coords at the end again
+          var lastCoords = pathCoords[0].split(',');
+          pathCoords2d[i] = [parseFloat(lastCoords[0]), parseFloat(lastCoords[1])];
           var pathCoords3d = [pathCoords2d];
       }
 
