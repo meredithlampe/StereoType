@@ -162,34 +162,40 @@ d3.json("json/neighborhoods.json", function (error, topology) {
 
     neighborhoodGroup.selectAll(".neighborhood")
         .each(function (d) {
-            var pathCoords3d = NeighborhoodParser.get3dPathArray(
-                d3.select(this).select(".neighborhoodInnerPath").attr("neighborhoodBounds"),
+
+            var pathString = d3.select(this).select(".neighborhoodInnerPath").attr("neighborhoodBounds");
+            var pathCoords3d = NeighborhoodParser.get3dPathArray(pathString,
                 d.type == "MultiPolygon");
-            // make polygon
 
             var pointslist = "";
             for (var point = 0; point < pathCoords3d[0].length; point++) {
                 var curr = pathCoords3d[0][point];
                 pointslist += curr[0] + "," + curr[1] + " ";
             }
+
             d3.select(this)
                 .append("polygon")
                 .attr("points", pointslist)
                 .attr("fill", "none");
 
-            var offset = new Offset();
-            var innerPoly = offset.data(pathCoords3d[0]).padding(5);
-            for (var poly = 0; poly < innerPoly.length; poly++) {
-                var innerPointsList = "";
-                for (var innerPoint = 0; innerPoint < innerPoly[poly].length; innerPoint++) {
-                    var curr = innerPoly[poly][innerPoint];
-                    innerPointsList += curr[0] + "," + curr[1] + " ";
+            if (d.properties.name == 'Capitol Hill') {
+
+                debugger;
+                var offset = new Offset();
+                var innerPoly = offset.data(pathCoords3d[0]).padding(4);
+                for (var poly = 0; poly < innerPoly.length; poly++) {
+                    var innerPointsList = "";
+                    for (var innerPoint = 0; innerPoint < innerPoly[poly].length; innerPoint++) {
+                        var curr = innerPoly[poly][innerPoint];
+                        innerPointsList += curr[0] + "," + curr[1] + " ";
+                    }
+                    d3.select(this)
+                        .append("polygon")
+                        .attr("points", innerPointsList)
+                        .attr("class", "innertest")
+                        .attr("fill", "pink");
                 }
-                d3.select(this)
-                    .append("polygon")
-                    .attr("points", innerPointsList)
-                    .attr("class", "innertest")
-                    .attr("fill", "pink");
+
             }
 
 
