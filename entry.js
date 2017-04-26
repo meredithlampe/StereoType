@@ -21,11 +21,14 @@ import { getGridCache as getGridCache } from './js/GridCache.js';
 
 //function main() {
 var width = 900;
-var height = 600;
+var height = 1000;
 var rotate = [122, 0, 0];
 var center = [0, 47.3097];
 var scale = 150000;
-var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
+//var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
+
+var offset = [1141.329833984375 - 400 + width / 2, 142582.609375 + 30];
+//var offset = 0;
 
 //font to be used for text
 var font = "Oswald";
@@ -71,7 +74,7 @@ var bestplaces = sample_bestplaces;
             .attr("id", "mapContainer")
             .append("svg")
             .attr("id", "mapSVG")
-            .attr("height", height * 2);
+            .attr("height", height);
             //.attr("width", parentWidth)
 
 //create loader - spinny guy

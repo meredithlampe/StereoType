@@ -27,34 +27,33 @@
 }
 
 .legendtitle {
-    font-size: 13pt;
+    font-size: 10pt;
 }
 
-#neighborhoodname, #neighborhoodphrase {
-    font-size: 26pt;
-}
-
-.termbox {
+#neighborhoodname, #neighborhoodphrase,
+#neighborhoodcategory, #neighborhoodprice,
+#neighborhoodreviewcount {
+    font-size: 18pt;
 }
 
 #name {
-    height: 100pt;
+    height: 80pt;
 }
 
 #bestmatch {
-    height: 100pt;
+    height: 80pt;
 }
 
-#categories {
-    height: 100pt;
+#category {
+    height: 80pt;
 }
 
 #price {
-    height: 100pt;
+    height: 80pt;
 }
 
 #reviewcount {
-    height: 100pt;
+    height: 80pt;
 }
 
 .main {
