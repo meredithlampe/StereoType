@@ -21,10 +21,9 @@ export function setLegend(d, i) {
 
     // set type
     var categories = JSON.parse(poly.attr("categories"));
-    var categoryBox = d3.select("#neighborhoodcategories");
-    categoryBox.html("");
-    for (var i = 0; i < categories.length; i++) {
-        categoryBox.append("h3").html(categories[i].title);
+    var categoryBox = d3.select("#neighborhoodcategory");
+    if (categories != null) {
+        categoryBox.html(categories[0].title);
     }
 
     // set price range
@@ -55,7 +54,7 @@ export function resetLegend(d, i) {
     phraseBox.html("...");
 
     // set categories
-    d3.select("#neighborhoodcategories").html("...");
+    d3.select("#neighborhoodcategory").html("...");
 
     // set price range
     d3.select("#neighborhoodprice").html("...");
