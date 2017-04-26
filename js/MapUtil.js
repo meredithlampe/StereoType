@@ -48,19 +48,19 @@ export function resetLegend(d, i) {
     // weird scrolling thing -- gotta save scroll top
     var oldScrollTop = document.body.scrollTop;
     var name = d3.select("#neighborhoodname");
-    name.html("...");
+    name.html("");
 
     var phraseBox = d3.select("#neighborhoodphrase");
-    phraseBox.html("...");
+    phraseBox.html("");
 
     // set categories
-    d3.select("#neighborhoodcategory").html("...");
+    d3.select("#neighborhoodcategory").html("");
 
     // set price range
-    d3.select("#neighborhoodprice").html("...");
+    d3.select("#neighborhoodprice").html("");
 
     // set number of ratings
-    d3.select("#neighborhoodreviewcount").html("...");
+    d3.select("#neighborhoodreviewcount").html("");
 
     // set all neighborhoods to brighten
     d3.selectAll(".neighborhood").attr("opacity", "1.0");
