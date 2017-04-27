@@ -75,11 +75,6 @@ export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCa
                             displayText, TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP,
                             CHAR_ASPECT_RATIO) {
 
-    console.log("rendering neighborhodd: " + d.properties.name);
-    if (d.properties.name == "Mount Baker") {
-        return;
-    }
-
     //get height and width of polygon
     //don't use padding this time (padding = 0)
     var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords3d, 0);
@@ -102,13 +97,16 @@ export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCa
     var gridUnits = NeighborhoodParser.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, d, svg,
         phrase, padding, displayRectangles, displayBounds);
 
-    if (displayText) {
-        for (var i = 0; i < gridUnits.length; i++) {
-            var character = phrase.charAt(i);
-            TextUtil.appendCharacterAsSVG(character, gridUnits[i], svg, d, i, padding, displayText, displayBounds,
-                TEXT_SIZE_MULTIPLIER, font, TextToSVG);
-        }
+    if (d.properties.name == 'University District') {
+        debugger;
     }
+        if (displayText) {
+            for (var i = 0; i < gridUnits.length; i++) {
+                var character = phrase.charAt(i);
+                TextUtil.appendCharacterAsSVG(character, gridUnits[i], svg, d, i, padding, displayText, displayBounds,
+                    TEXT_SIZE_MULTIPLIER, font, TextToSVG);
+            }
+        }
 }
 
 function appendSingleLetter(rectangle, letter, d) {
