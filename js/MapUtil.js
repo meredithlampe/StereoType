@@ -2,7 +2,6 @@
  * Created by meredith on 4/24/17.
  */
 
-const TextToSVG = require('text-to-svg');
 
 export function setLegend(d, i) {
     var poly = d3.select(this);
@@ -73,7 +72,7 @@ export function resetLegend(d, i) {
 export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache,
                             USE_GRID_CACHING, displayRectangles, displayBounds,
                             displayText, TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP,
-                            CHAR_ASPECT_RATIO) {
+                            CHAR_ASPECT_RATIO, textToSVG) {
 
     //get height and width of polygon
     //don't use padding this time (padding = 0)
@@ -97,14 +96,14 @@ export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCa
     var gridUnits = NeighborhoodParser.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, d, svg,
         phrase, padding, displayRectangles, displayBounds);
 
-    if (d.properties.name == 'University District') {
-        debugger;
-    }
+    //if (d.properties.name == 'University District') {
+    //    debugger;
+    //}
         if (displayText) {
             for (var i = 0; i < gridUnits.length; i++) {
                 var character = phrase.charAt(i);
                 TextUtil.appendCharacterAsSVG(character, gridUnits[i], svg, d, i, padding, displayText, displayBounds,
-                    TEXT_SIZE_MULTIPLIER, font, TextToSVG);
+                    TEXT_SIZE_MULTIPLIER, font, textToSVG);
             }
         }
 }
