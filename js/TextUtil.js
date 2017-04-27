@@ -522,15 +522,11 @@ var TextUtil = {
     // like append path and text, but using char converted to svg
     appendChar: function(startPathX, startPathY,
         phrase, k, displayText, displayBounds,
-       rectangleId, svg, TEXT_SIZE_MULTIPLIER, font, TextToSVG,
-        rectangle) {
+       rectangleId, svg, TEXT_SIZE_MULTIPLIER, font,
+        rectangle, textToSVG) {
 
         var textSize = 3;
 
-            TextToSVG.load('./fonts/Oswald-Bold.ttf', function(err, textToSVG) {
-                if (err) {
-                    console.log(err);
-                } else {
 
                     var bestPath;
                     var charToBig = false;
@@ -603,9 +599,7 @@ var TextUtil = {
                         .attr("class", "charSVGThing")
                         .attr("d", bestPath)
                         .style("fill", "black");
-               }
-            });
-    },
+               },
 
     // only works with single polygons
     pathToArray: function(path) {
@@ -742,7 +736,7 @@ var TextUtil = {
 
     appendCharacterAsSVG: function(char, rectangle, svg, d, tag, padding,
                                            displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
-                                           font, TextToSVG) {
+                                           font, textToSVG) {
 
         var startPathX,
             startPathY,
@@ -770,8 +764,8 @@ var TextUtil = {
         rectangleId = d.properties.name + "_inner";
 
           TextUtil.appendChar(startPathX, startPathY, char, tag, displayText,
-        displayBounds, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font, TextToSVG,
-         rectangle);
+        displayBounds, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font,
+         rectangle, textToSVG);
 
     }
 

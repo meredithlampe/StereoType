@@ -16,6 +16,7 @@ var MapUtil = require("./js/MapUtil.js");
 //require("./js/SampleBestPlaces");
 //require("./js/GridCache.js");
 const Spinner = require("./spinner/spin.min.js");
+const TextToSVG = require('text-to-svg');
 
 import { sample_bestplaces as sample_bestplaces } from './js/SampleBestPlaces.js';
 import { getGridCache as getGridCache } from './js/GridCache.js';
@@ -122,160 +123,167 @@ var topoGeometries;
 
 d3.json("json/neighborhoods.json", function (error, topology) {
 
-    topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
-        .geometries;
+    TextToSVG.load('./fonts/Oswald-Bold.ttf', function(err, textToSVG) {
+        if (err) {
+            console.log(err);
+        } else {
 
-    //.attr("neighborhoodBounds", path)
-    //generate paths around each neighborhood
-    neighborhoodGroup.selectAll(".neighborhood")
-        .data(topoGeometries)
-        .enter()
-        .append("g")
-        .attr("opacity", ".5")
-        .attr("class", "neighborhood")
-        .append("path")
-        .attr("d", path)
-        .attr("class", "neighborhoodOutline")
-        .attr("fill", function () {
+            topoGeometries = topojson.object(topology, topology.objects.neighborhoods)
+                .geometries;
 
-            var colorA = color1[Math.floor(Math.random() * color1.length)];
-            var colorB = color2[Math.floor(Math.random() * color2.length)];
-            var pair = colorA + "" + colorB;
-            var color = "#" + pair + pair + pair;
-            return color;
-        })
-        .attr("id", function (d) {
-            return "n_" + d.id
-        });
+            //.attr("neighborhoodBounds", path)
+            //generate paths around each neighborhood
+            neighborhoodGroup.selectAll(".neighborhood")
+                .data(topoGeometries)
+                .enter()
+                .append("g")
+                .attr("opacity", ".5")
+                .attr("class", "neighborhood")
+                .append("path")
+                .attr("d", path)
+                .attr("class", "neighborhoodOutline")
+                .attr("fill", function () {
 
-    //generate inner paths to append text to
-    neighborhoodGroup.selectAll(".neighborhood")
-        .append("path")
-        .attr("class", "neighborhoodInnerPath")
-        .attr("neighborhoodBounds", path)
-        .attr("id", function (d) {
-            return "inner_" + d.id;
-        })
-        .attr("d", function (d) {
-            return this.getAttribute("neighborhoodBounds");
-        });
+                    var colorA = color1[Math.floor(Math.random() * color1.length)];
+                    var colorB = color2[Math.floor(Math.random() * color2.length)];
+                    var pair = colorA + "" + colorB;
+                    var color = "#" + pair + pair + pair;
+                    return color;
+                })
+                .attr("id", function (d) {
+                    return "n_" + d.id
+                });
 
-    neighborhoodGroup.selectAll(".neighborhood")
-        .each(function (d) {
+            //generate inner paths to append text to
+            neighborhoodGroup.selectAll(".neighborhood")
+                .append("path")
+                .attr("class", "neighborhoodInnerPath")
+                .attr("neighborhoodBounds", path)
+                .attr("id", function (d) {
+                    return "inner_" + d.id;
+                })
+                .attr("d", function (d) {
+                    return this.getAttribute("neighborhoodBounds");
+                });
 
-            var pathString = d3.select(this).select(".neighborhoodInnerPath").attr("neighborhoodBounds");
-            var pathCoords3d = NeighborhoodParser.get3dPathArray(pathString,
-                d.type == "MultiPolygon");
+            neighborhoodGroup.selectAll(".neighborhood")
+                .each(function (d) {
 
-            var pointslist = "";
-            for (var point = 0; point < pathCoords3d[0].length; point++) {
-                var curr = pathCoords3d[0][point];
-                pointslist += curr[0] + "," + curr[1] + " ";
-            }
+                    var pathString = d3.select(this).select(".neighborhoodInnerPath").attr("neighborhoodBounds");
+                    var pathCoords3d = NeighborhoodParser.get3dPathArray(pathString,
+                        d.type == "MultiPolygon");
 
-            d3.select(this)
-                .append("polygon")
-                .attr("points", pointslist)
-                .attr("fill", "none");
-
-
-                //var offset = new Offset();
-                //var innerPoly = offset.data(pathCoords3d[0]).padding(4);
-            var subj = new Clipper.Paths();
-            var solution = new Clipper.Paths();
-            var scale = 100;
-            var innerArray = [];
-            Clipper.JS.ScaleUpPaths(subj, scale);
-            for (var p = 0; p < pathCoords3d[0].length; p++) {
-                 innerArray[innerArray.length] = {"X": pathCoords3d[0][p][0], "Y" : pathCoords3d[0][p][1]};
-            }
-            subj[0] = innerArray;
-            //subj[0] = [{"X":348,"Y":257},{"X":364,"Y":148},{"X":362,"Y":148},{"X":326,"Y":241},{"X":295,"Y":219},{"X":258,"Y":88},{"X":440,"Y":129},{"X":370,"Y":196},{"X":372,"Y":275}];
-                var co = new Clipper.ClipperOffset(2, 0.25);
-                co.AddPaths(subj, Clipper.JoinType.jtRound, Clipper.EndType.etClosedPolygon);
-                co.Execute(solution, -4.0);
-                Clipper.JS.ScaleDownPaths(subj, scale);
-            //debugger;
-            for (var poly = 0; poly < solution.length; poly++) {
-                var innerPointsList = "";
-                    for (var innerPoint = 0; innerPoint < solution[poly].length; innerPoint++) {
-                        if (!isNaN(solution[poly][innerPoint].X)) {
-                            var curr = solution[poly][innerPoint];
-                            innerPointsList += curr.X + "," + curr.Y + " ";
-                        }
+                    var pointslist = "";
+                    for (var point = 0; point < pathCoords3d[0].length; point++) {
+                        var curr = pathCoords3d[0][point];
+                        pointslist += curr[0] + "," + curr[1] + " ";
                     }
+
                     d3.select(this)
-                        .attr("neighborhoodBounds", innerPointsList)
                         .append("polygon")
-                        .attr("points", innerPointsList)
-                        .attr("class", "innertest")
-                        .attr("fill", "pink");
-                }
+                        .attr("points", pointslist)
+                        .attr("fill", "none");
 
-                //for (var poly = 0; poly < innerPoly.length; poly++) {
-                //    var innerPointsList = "";
-                //    for (var innerPoint = 0; innerPoint < innerPoly[poly].length; innerPoint++) {
-                //        var curr = innerPoly[poly][innerPoint];
-                //        innerPointsList += curr[0] + "," + curr[1] + " ";
-                //    }
-                //    d3.select(this)
-                //        .append("polygon")
-                //        .attr("points", innerPointsList)
-                //        .attr("class", "innertest")
-                //        .attr("fill", "pink");
-                //}
 
-        })
-        .attr("phrase", function (d) {
-            return bestplaces[d.properties.name].bestmatch;
-        })
-        .attr("categories", function (d) {
-            return JSON.stringify(bestplaces[d.properties.name].categories);
-        })
-        .attr("price", function (d) {
-            return bestplaces[d.properties.name].price;
-        })
-        .attr("reviewcount", function (d) {
-            return bestplaces[d.properties.name].review_count;
-        })
-        .on("mouseover", MapUtil.setLegend)
-        .on("mouseout", MapUtil.resetLegend);
-    //.attr("transform-origin", function(d) {
-    //    // get center of polygon
-    //    var pathString = this.getAttribute("neighborhoodBounds");
-    //    var pathArray = TextUtil.pathToArray(pathString);
-    //
-    //    var aabb = PolyK.GetAABB(pathArray);
-    //    var xcenter = aabb.x + (aabb.width * 1.0 / 2);
-    //    var ycenter = aabb.y + (aabb.height * 1.0 / 2);
-    //    return xcenter + " " + ycenter;
-    //})
-    //.attr("transform", "scale(" + (1 - padding) + ", " + (1 - padding) + ")");
+                    //var offset = new Offset();
+                    //var innerPoly = offset.data(pathCoords3d[0]).padding(4);
+                    var subj = new Clipper.Paths();
+                    var solution = new Clipper.Paths();
+                    var scale = 100;
+                    var innerArray = [];
+                    Clipper.JS.ScaleUpPaths(subj, scale);
+                    for (var p = 0; p < pathCoords3d[0].length; p++) {
+                        innerArray[innerArray.length] = {"X": pathCoords3d[0][p][0], "Y": pathCoords3d[0][p][1]};
+                    }
+                    subj[0] = innerArray;
+                    //subj[0] = [{"X":348,"Y":257},{"X":364,"Y":148},{"X":362,"Y":148},{"X":326,"Y":241},{"X":295,"Y":219},{"X":258,"Y":88},{"X":440,"Y":129},{"X":370,"Y":196},{"X":372,"Y":275}];
+                    var co = new Clipper.ClipperOffset(2, 0.25);
+                    co.AddPaths(subj, Clipper.JoinType.jtRound, Clipper.EndType.etClosedPolygon);
+                    co.Execute(solution, -4.0);
+                    Clipper.JS.ScaleDownPaths(subj, scale);
+                    //debugger;
+                    for (var poly = 0; poly < solution.length; poly++) {
+                        var innerPointsList = "";
+                        for (var innerPoint = 0; innerPoint < solution[poly].length; innerPoint++) {
+                            if (!isNaN(solution[poly][innerPoint].X)) {
+                                var curr = solution[poly][innerPoint];
+                                innerPointsList += curr.X + "," + curr.Y + " ";
+                            }
+                        }
+                        d3.select(this)
+                            .attr("neighborhoodBounds", innerPointsList)
+                            .append("polygon")
+                            .attr("points", innerPointsList)
+                            .attr("class", "innertest")
+                            .attr("fill", "pink");
+                    }
 
-    neighborhoodGroup.selectAll(".neighborhood")
-        .each(function (d) {
-            var neighborhoodBoundsString = this.getAttribute("neighborhoodBounds");
-            var pathCoords3d = NeighborhoodParser.pathArray(neighborhoodBoundsString);
+                    //for (var poly = 0; poly < innerPoly.length; poly++) {
+                    //    var innerPointsList = "";
+                    //    for (var innerPoint = 0; innerPoint < innerPoly[poly].length; innerPoint++) {
+                    //        var curr = innerPoly[poly][innerPoint];
+                    //        innerPointsList += curr[0] + "," + curr[1] + " ";
+                    //    }
+                    //    d3.select(this)
+                    //        .append("polygon")
+                    //        .attr("points", innerPointsList)
+                    //        .attr("class", "innertest")
+                    //        .attr("fill", "pink");
+                    //}
 
-            if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                var nameArray = bestplaces[d.properties.name].bestmatch.split(" ");
-                var nameNoSpaces = nameArray[0];
-                for (var i = 1; i < nameArray.length; i++) {
-                    nameNoSpaces += nameArray[i];
-                }
-                MapUtil.horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
-                    USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
-                    font, HORIZONTAL_SLICE_CAP);
-            }
-            if (GRID_CACHE_OUTPUT) {
-                console.log(JSON.stringify(getGridCache()) + "end");
-            }
-            //} else {
-            //    return null;
-            //}
+                })
+                .attr("phrase", function (d) {
+                    return bestplaces[d.properties.name].bestmatch;
+                })
+                .attr("categories", function (d) {
+                    return JSON.stringify(bestplaces[d.properties.name].categories);
+                })
+                .attr("price", function (d) {
+                    return bestplaces[d.properties.name].price;
+                })
+                .attr("reviewcount", function (d) {
+                    return bestplaces[d.properties.name].review_count;
+                })
+                .on("mouseover", MapUtil.setLegend)
+                .on("mouseout", MapUtil.resetLegend);
+            //.attr("transform-origin", function(d) {
+            //    // get center of polygon
+            //    var pathString = this.getAttribute("neighborhoodBounds");
+            //    var pathArray = TextUtil.pathToArray(pathString);
+            //
+            //    var aabb = PolyK.GetAABB(pathArray);
+            //    var xcenter = aabb.x + (aabb.width * 1.0 / 2);
+            //    var ycenter = aabb.y + (aabb.height * 1.0 / 2);
+            //    return xcenter + " " + ycenter;
+            //})
+            //.attr("transform", "scale(" + (1 - padding) + ", " + (1 - padding) + ")");
 
-            //return serializeSVG(polyScaled);
-        });
+            neighborhoodGroup.selectAll(".neighborhood")
+                .each(function (d) {
+                    var neighborhoodBoundsString = this.getAttribute("neighborhoodBounds");
+                    var pathCoords3d = NeighborhoodParser.pathArray(neighborhoodBoundsString);
+
+                    if (pathCoords3d != null) { //coordinates are enough to actually make a shape
+                        var nameArray = bestplaces[d.properties.name].bestmatch.split(" ");
+                        var nameNoSpaces = nameArray[0];
+                        for (var i = 1; i < nameArray.length; i++) {
+                            nameNoSpaces += nameArray[i];
+                        }
+                        MapUtil.horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
+                            USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
+                            font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG);
+                    }
+                    if (GRID_CACHE_OUTPUT) {
+                        console.log(JSON.stringify(getGridCache()) + "end");
+                    }
+                    //} else {
+                    //    return null;
+                    //}
+
+                    //return serializeSVG(polyScaled);
+                });
+        }
+    });
 });
 
 //stop spinner--we're done!
