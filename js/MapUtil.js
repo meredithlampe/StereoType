@@ -90,9 +90,9 @@ export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCa
                             CHAR_ASPECT_RATIO) {
 
     console.log("rendering neighborhodd: " + d.properties.name);
-    if (d.properties.name == "Mount Baker") {
-        return;
-    }
+    //if (d.properties.name == "Mount Baker") {
+    //    return;
+    //}
 
     //get height and width of polygon
     //don't use padding this time (padding = 0)
