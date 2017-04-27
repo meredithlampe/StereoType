@@ -601,8 +601,7 @@ var TextUtil = {
 
                     var path = shapeG.append("path")
                         .attr("class", "charSVGThing")
-                        .attr("d", bestPath)
-                        .style("fill", "black");
+                        .attr("d", bestPath);
                }
             });
     },
