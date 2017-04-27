@@ -141,27 +141,17 @@ d3.json("json/neighborhoods.json", function (error, topology) {
         .attr("class", "neighborhood")
         .append("path")
         .attr("d", path)
+        .attr("class", "neighborhoodUnFocus")
         .attr("class", "neighborhoodOutline")
         .attr("id", function (d) {
             return "n_" + d.id
         });
 
-    //generate inner paths to append text to
-    neighborhoodGroup.selectAll(".neighborhood")
-        .append("path")
-        .attr("neighborhoodBounds", path)
-        .attr("class", "neighborhoodInnerPath")
-        .attr("id", function (d) {
-            return "inner_" + d.id;
-        })
-        .attr("d", function (d) {
-            return this.getAttribute("neighborhoodBounds");
-        });
-
+    // fill text
     neighborhoodGroup.selectAll(".neighborhood")
         .each(function (d) {
             var pathCoords3d = NeighborhoodParser.get3dPathArray(
-                d3.select(this).select(".neighborhoodInnerPath")
+                d3.select(this)
                     .attr("neighborhoodBounds"), d.type == "MultiPolygon");
 
             var pointslist = "";
@@ -233,7 +223,6 @@ d3.json("json/neighborhoods.json", function (error, topology) {
             var pathCoords3d = NeighborhoodParser.get3dPathArray(neighborhoodBoundsString, d.type == "MultiPolygon");
 
             if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                console.log("about to run slice alg for neighborhood: " + d.properties.name);
                 var nameArray = bestplaces[d.properties.name].bestmatch.split(" ");
                 var nameNoSpaces = nameArray[0];
                 for (var i = 1; i < nameArray.length; i++) {

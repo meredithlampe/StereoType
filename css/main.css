@@ -1,8 +1,23 @@
 .neighborhoodOutline {
     stroke: #282828;
     stroke-width: 1px;
+    stroke: black;
+    fill: none;
+}
+
+.neighborhoodUnFocus {
     fill: white;
 }
+
+.neighborhoodFocus {
+    fill: black;
+}
+
+/*.neighborhoodFocus.charSVGThing {*/
+    /*stroke: white;*/
+    /*fill: white;*/
+/*}*/
+
 
 .neighborhoodOutlineBorder {
     stroke: black;
@@ -34,6 +49,10 @@
 #neighborhoodcategory, #neighborhoodprice,
 #neighborhoodreviewcount {
     font-size: 18pt;
+}
+
+#neighborhoodphrase {
+    font-size: 24pt;
 }
 
 #name {

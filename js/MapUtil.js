@@ -41,22 +41,29 @@ export function setLegend(d, i) {
     // set number of ratings
     d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount"));
 
-    // change opacity
-     var neighborhood = d3.select(this);
-    neighborhood.attr("opacity", "1.0");
-
     // set all neighborhoods to dim
     d3.selectAll(".neighborhood").attr("opacity", "0.5");
+    d3.selectAll(".neighborhood")
+        .select(".neighborhoodOutline")
+        .classed("neighborhoodUnFocus", true);
 
-    // hack -- do this twice
-    var neighborhood = d3.select(this);
-    neighborhood.attr("opacity", "1.0");
+    poly.attr("opacity", "1.0");
+
+    //var chars = poly.selectAll(".charSVGThing").attr("stroke", "white");
+    var chars = poly.selectAll(".charSVGThing").attr("fill", "white");
+
+    var pathinpoly = poly.select(".neighborhoodOutline");
+    pathinpoly.classed("neighborhoodUnFocus", false);
+    pathinpoly.classed("neighborhoodFocus", true);
+
 
     // set scrolling top so that we don't scroll
     document.body.scrollTop = oldScrollTop;
 }
 
 export function resetLegend(d, i) {
+
+    var poly = d3.select(this);
 
     // weird scrolling thing -- gotta save scroll top
     var oldScrollTop = document.body.scrollTop;
@@ -76,6 +83,13 @@ export function resetLegend(d, i) {
     d3.select("#neighborhoodreviewcount").html("");
 
     d3.selectAll(".neighborhood").attr("opacity", "1.0");
+
+    var pathinpoly = poly.select(".neighborhoodOutline");
+    pathinpoly.classed("neighborhoodFocus", false);
+    pathinpoly.classed("neighborhoodUnFocus", true);
+
+    //var chars = poly.selectAll(".charSVGThing").attr("stroke", "black");
+    var chars = poly.selectAll(".charSVGThing").attr("fill", "black");
 
     // set scrolling top so that we don't scroll
     document.body.scrollTop = oldScrollTop;
