@@ -39,6 +39,7 @@ var color2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 //padding to be given between text and inscribed rectangle
 var padding = 0.1; //given as percentage of total rectangle space
+//var padding = 0;
 
 //any rectangles having area smaller than 40 pixels removed from
 //text-filling algorithm
