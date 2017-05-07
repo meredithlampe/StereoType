@@ -72,7 +72,7 @@ export function resetLegend(d, i) {
 export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache,
                             USE_GRID_CACHING, displayRectangles, displayBounds,
                             displayText, TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP,
-                            CHAR_ASPECT_RATIO, textToSVG) {
+                            CHAR_ASPECT_RATIO, textToSVG, TextToSVG) {
 
     //get height and width of polygon
     //don't use padding this time (padding = 0)
