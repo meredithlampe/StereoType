@@ -60,6 +60,7 @@ var displayRectangles = false;
 var displayBounds = false;
 var displayText = true;
 var bestplaces;
+var displayPaddedPolygons = false;
 
 //these are for when we're in server
 //
@@ -179,18 +180,11 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                         pointslist += curr[0] + "," + curr[1] + " ";
                     }
 
-                    d3.select(this)
-                        .append("polygon")
-                        .attr("points", pointslist)
-                        .attr("fill", "none");
-
-
-                    //var offset = new Offset();
-                    //var innerPoly = offset.data(pathCoords3d[0]).padding(4);
                     var subj = new Clipper.Paths();
                     var solution = new Clipper.Paths();
                     var scale = 100;
                     var innerArray = [];
+
                     Clipper.JS.ScaleUpPaths(subj, scale);
                     for (var p = 0; p < pathCoords3d[0].length; p++) {
                         innerArray[innerArray.length] = {"X": pathCoords3d[0][p][0], "Y": pathCoords3d[0][p][1]};
@@ -201,7 +195,6 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                     co.AddPaths(subj, Clipper.JoinType.jtRound, Clipper.EndType.etClosedPolygon);
                     co.Execute(solution, -4.0);
                     Clipper.JS.ScaleDownPaths(subj, scale);
-                    //debugger;
                     for (var poly = 0; poly < solution.length; poly++) {
                         var innerPointsList = "";
                         for (var innerPoint = 0; innerPoint < solution[poly].length; innerPoint++) {
@@ -215,7 +208,7 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                             .append("polygon")
                             .attr("points", innerPointsList)
                             .attr("class", "innertest")
-                            .attr("fill", "pink");
+                            .attr("fill", function(d) { return displayPaddedPolygons ? "pink" : "none"; });
                     }
 
                     //for (var poly = 0; poly < innerPoly.length; poly++) {
@@ -271,7 +264,7 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                         }
                         MapUtil.horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
                             USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
-                            font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG);
+                            font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG, TextToSVG);
                     }
                     if (GRID_CACHE_OUTPUT) {
                         console.log(JSON.stringify(getGridCache()) + "end");
