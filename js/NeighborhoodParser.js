@@ -58,7 +58,7 @@ var NeighborhoodParser = {
   },
 
     pathArray: function (neighborhoodBoundsString) {
-         var pathCoords = neighborhoodBoundsString.split(' ');
+         var pathCoords = neighborhoodBoundsString.trim().split(' ');
          var pathCoords2d = [];
 
           //transform pathCoords array into array of 2-d arrays
@@ -428,6 +428,8 @@ var NeighborhoodParser = {
     createGrid: function(pathCoords3d, dimensions, numLevels, d, svg, phrase, padding,
                          displayRectangles, displayBounds) {
 
+
+
         //to be filled with rectangles that make up grid units
         var grid = [];
 
@@ -495,6 +497,7 @@ var NeighborhoodParser = {
 
                     //slice vertically
                     var numVerticalSlices = phraseForSlicePiece.length;
+
                     var verticalSlices = NeighborhoodParser.divide(currPoly3d, numVerticalSlices,
                         verDimensions, svg, d, false);
 
