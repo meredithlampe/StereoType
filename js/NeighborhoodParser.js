@@ -42,16 +42,38 @@ var NeighborhoodParser = {
           pathCoords2d = [];
 
           //transform pathCoords array into array of 2-d arrays
-          for (var i = 0; i < pathCoords.length; i++) {
+          var i = 0;
+          for (; i < pathCoords.length; i++) {
               var bothCoords = pathCoords[i].split(',');
               pathCoords2d[i] = [parseFloat(bothCoords[0]), parseFloat(bothCoords[1])];
-
           }
+
+          // put first coords at the end again
+          var lastCoords = pathCoords[0].split(',');
+          pathCoords2d[i] = [parseFloat(lastCoords[0]), parseFloat(lastCoords[1])];
           var pathCoords3d = [pathCoords2d];
       }
 
     return pathCoords3d;
   },
+
+    pathArray: function (neighborhoodBoundsString) {
+         var pathCoords = neighborhoodBoundsString.trim().split(' ');
+         var pathCoords2d = [];
+
+          //transform pathCoords array into array of 2-d arrays
+          var i = 0;
+          for (; i < pathCoords.length; i++) {
+              var bothCoords = pathCoords[i].split(',');
+              pathCoords2d[i] = [parseFloat(bothCoords[0]), parseFloat(bothCoords[1])];
+          }
+
+          // put first coords at the end again
+          var lastCoords = pathCoords[0].split(',');
+          pathCoords2d[i] = [parseFloat(lastCoords[0]), parseFloat(lastCoords[1])];
+          var pathCoords3d = [pathCoords2d];
+        return pathCoords3d;
+    },
 
     //returns new 2d coord array from 1d coord array
     //usually to make the stuff that comes out of PolyK play nice with d3
@@ -100,10 +122,12 @@ var NeighborhoodParser = {
 
     for (var i = 0; i < pathCoords3d.length; i++) {
         for (var j = 0; j < pathCoords3d[i].length; j++) {
-            max = Math.max(pathCoords3d[i][j][1], max);
-            min = Math.min(pathCoords3d[i][j][1], min);
-            leftMost = Math.min(pathCoords3d[i][j][0], leftMost);
-            rightMost = Math.max(pathCoords3d[i][j][0], rightMost);
+            if (j != pathCoords3d[i].length - 2) {
+                max = Math.max(pathCoords3d[i][j][1], max);
+                min = Math.min(pathCoords3d[i][j][1], min);
+                leftMost = Math.min(pathCoords3d[i][j][0], leftMost);
+                rightMost = Math.max(pathCoords3d[i][j][0], rightMost);
+            }
         }
     }
     var results = {max: max - padding, min: min + padding, left: leftMost + padding, right: rightMost - padding};
@@ -404,6 +428,8 @@ var NeighborhoodParser = {
     createGrid: function(pathCoords3d, dimensions, numLevels, d, svg, phrase, padding,
                          displayRectangles, displayBounds) {
 
+
+
         //to be filled with rectangles that make up grid units
         var grid = [];
 
@@ -433,6 +459,9 @@ var NeighborhoodParser = {
                 var currSlice = slices[i];
 
                 //divide phrase for this slice into polys for this slice
+                if (!phrasePieces[i]) {
+                    continue;
+                }
                 var phraseSlicePoly = TextUtil.slicePhrase(currSlice.length, phrasePieces[i]);
 
                 //loop through polys within a slice
@@ -468,6 +497,7 @@ var NeighborhoodParser = {
 
                     //slice vertically
                     var numVerticalSlices = phraseForSlicePiece.length;
+
                     var verticalSlices = NeighborhoodParser.divide(currPoly3d, numVerticalSlices,
                         verDimensions, svg, d, false);
 
