@@ -525,7 +525,15 @@ var TextUtil = {
                           rectangle, textToSVG) {
 
         var textSize = 3;
-        var bestPath;
+
+        var options = {
+            "x": startPathX,
+            "y": startPathY,
+            "fontSize": textSize
+        };
+
+        // just use this one for now
+        var bestPath = textToSVG.getD(phrase.toUpperCase(), options);
         var charToBig = false;
         var shapeG = svg.append("g");
         while (!charToBig) {
@@ -568,7 +576,6 @@ var TextUtil = {
             } else {
                 // char is weird. use bounding box
                 const shape = textToSVG.getMetrics(phrase.toUpperCase(), options);
-                debugger;
                 if (shape.width < rectangle[0].width && shape.height < rectangle[0].height) {
                     // we're good
                     bestPath = textToSVG.getD(phrase.toUpperCase(), options);
