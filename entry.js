@@ -161,10 +161,6 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                         var curr = pathCoords3d[0][point];
                         pointslist += curr[0] + "," + curr[1] + " ";
                     }
-                    d3.select(this)
-                        .append("polygon")
-                        .attr("points", pointslist)
-                        .attr("fill", "none");
 
                     var subj = new Clipper.Paths();
                     var solution = new Clipper.Paths();
@@ -227,9 +223,9 @@ d3.json("json/neighborhoods.json", function (error, topology) {
 
             neighborhoodGroup.selectAll(".neighborhood")
                 .each(function (d) {
-                    debugger;
                     var neighborhoodBoundsString = this.getAttribute("neighborhoodBounds");
-                    var pathCoords3d = NeighborhoodParser.get3dPathArray(neighborhoodBoundsString, d.type == "MultiPolygon");
+                    var pathCoords3d = NeighborhoodParser.pathArray(neighborhoodBoundsString);
+                    //var pathCoords3d = NeighborhoodParser.get3dPathArray(neighborhoodBoundsString, d.type == "MultiPolygon");
 
                     if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                         var nameArray = bestplaces[d.properties.name].bestmatch.split(" ");
