@@ -49,7 +49,8 @@ export function setLegend(d, i) {
     poly.attr("opacity", "1.0");
 
     //var chars = poly.selectAll(".charSVGThing").attr("stroke", "white");
-    var chars = poly.selectAll(".charSVGThing").attr("fill", "white");
+    var chars = poly.selectAll(".charSVGThing");
+    chars.style("fill", "white");
 
     var pathinpoly = poly.select(".neighborhoodOutline");
     pathinpoly.classed("neighborhoodUnFocus", false);
@@ -87,7 +88,7 @@ export function resetLegend(d, i) {
     pathinpoly.classed("neighborhoodUnFocus", true);
 
     //var chars = poly.selectAll(".charSVGThing").attr("stroke", "black");
-    var chars = poly.selectAll(".charSVGThing").attr("fill", "black");
+    var chars = poly.selectAll(".charSVGThing").style("fill", "black");
 
     // set scrolling top so that we don't scroll
     document.body.scrollTop = oldScrollTop;
@@ -127,7 +128,7 @@ export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCa
         for (var i = 0; i < gridUnits.length; i++) {
             var character = phrase.charAt(i);
             TextUtil.appendCharacterAsSVG(character, gridUnits[i], svg, d, i, padding, displayText, displayBounds,
-                TEXT_SIZE_MULTIPLIER, font, TextToSVG);
+                TEXT_SIZE_MULTIPLIER, font, textToSVG);
         }
     }
 }
