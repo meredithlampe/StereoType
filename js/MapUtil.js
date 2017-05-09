@@ -12,7 +12,6 @@ export function setMapOpacityStrong() {
     d3.selectAll(".neighborhood").attr("opacity", "1.0");
 }
 
-
 export function setLegend(d, i) {
     var poly = d3.select(this);
 
@@ -55,7 +54,6 @@ export function setLegend(d, i) {
     var pathinpoly = poly.select(".neighborhoodOutline");
     pathinpoly.classed("neighborhoodUnFocus", false);
     pathinpoly.classed("neighborhoodFocus", true);
-
 
     // set scrolling top so that we don't scroll
     document.body.scrollTop = oldScrollTop;
@@ -101,12 +99,7 @@ export function resetLegend(d, i) {
 export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache,
                             USE_GRID_CACHING, displayRectangles, displayBounds,
                             displayText, TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP,
-                            CHAR_ASPECT_RATIO) {
-
-    console.log("rendering neighborhodd: " + d.properties.name);
-    //if (d.properties.name == "Mount Baker") {
-    //    return;
-    //}
+                            CHAR_ASPECT_RATIO, textToSVG, TextToSVG) {
 
     //get height and width of polygon
     //don't use padding this time (padding = 0)
