@@ -1,6 +1,8 @@
 /**
  * Created by meredith on 5/25/16.
  */
+
+var Paper = require('paper');
 var TextUtil = {
 
     calculateNumLevels: function (aspectRatio, phrase, addtlLevel, forcedHorizontal, orientation) {
@@ -522,7 +524,7 @@ var TextUtil = {
     appendChar: function (startPathX, startPathY,
                           phrase, k, displayText, displayBounds,
                           rectangleId, svg, TEXT_SIZE_MULTIPLIER, font,
-                          rectangle, textToSVG) {
+                          gridUnit, textToSVG, Clipper) {
 
         var textSize = 3;
 
@@ -536,7 +538,7 @@ var TextUtil = {
         var bestPath = textToSVG.getD(phrase.toUpperCase(), options);
         var charToBig = false;
         var shapeG = svg.append("g");
-        while (!charToBig) {
+        //while (!charToBig) {
 
             // if char is normal,
             // convert text to svg
@@ -546,56 +548,34 @@ var TextUtil = {
                 "fontSize": textSize
             };
 
-            //var testCharPath = shapeG.append("path")
-            //    .attr("class", "testChar")
-            //    .attr("d", pathD)
-            //    .style("fill", "gray");
+            // translate 1d array of points into {X:x, Y:y} objects for Clipper
+            var innerArray = [];
+            for (var p = 0; p < gridUnit.polygon.length; p+=2) {
+                innerArray[innerArray.length] =
+                    {"X": gridUnit.polygon[p],"Y": gridUnit.polygon[p + 1]};
+            }
 
+            // do the same translation for the char path
             const pathD = textToSVG.getD(phrase.toUpperCase(), options);
-            var allInside = true;
-            // if char is non-round, use this
-            if (phrase.toUpperCase() != 'O' &&
-                phrase.toUpperCase() != 'R' &&
-                phrase.toUpperCase() != 'P' &&
-                phrase.toUpperCase() != 'B' &&
-                phrase.toUpperCase() != 'S' &&
-                phrase.toUpperCase() != 'C') {
-
-                // check coords of path, make sure they are inside of polygon
-                var pathArray = TextUtil.pathToArray(pathD);
-                for (var curr = 0; curr < pathArray.length; curr += 2) {
-                    var x = pathArray[curr];
-                    var y = pathArray[curr + 1];
-
-                    // is point inside of polygon?
-                    if (!PolyK.ContainsPoint(rectangle.polygon, x, y)) {
-                        allInside = false;
-                        break;
-                    }
-                }
-            } else {
-                // char is weird. use bounding box
-                const shape = textToSVG.getMetrics(phrase.toUpperCase(), options);
-                if (shape.width < rectangle[0].width && shape.height < rectangle[0].height) {
-                    // we're good
-                    bestPath = textToSVG.getD(phrase.toUpperCase(), options);
-                } else {
-                    allInside = false;
-
-                    // do one last increase because these letters look real small
-                    options.fontSize = textSize * TEXT_SIZE_MULTIPLIER;
-                    bestPath = textToSVG.getD(phrase.toUpperCase(), options);
-                }
+            var  flattenedChar = [];
+            var numPoints = 50;
+            var pathLength = pathD.length;
+            for (var i=0; i<numPoints; i++) {
+                var p = pathD.getPointAtLength(i * pathLength / numPoints);
+                flattenedChar[charInnerArray.length] = {"X": p.x, "Y": p.y};
             }
 
-            if (allInside) {
-                bestPath = pathD;
-                textSize += 1;
-            } else {
-                charToBig = true;
-            }
+            // pass enclosing polygon, path for character, true to indicate a closed path
+            var solution = Clipper.Clipper.MinkowskiDiff(innerArray, pathD, true);
 
-        }
+            //if (allInside) {
+            //    bestPath = pathD;
+            //    textSize += 1;
+            //} else {
+            //    charToBig = true;
+            //}
+
+        //}
 
         var path = shapeG.append("path")
             .attr("class", "charSVGThing")
@@ -687,7 +667,7 @@ var TextUtil = {
 
     },
 
-    appendCharacterIntoRectangle: function (char, rectangle, svg, d, tag, padding,
+    appendCharacterIntoRectangle: function (char, gridUnit, svg, d, tag, padding,
                                             displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
                                             font, TextToSVG) {
 
@@ -701,18 +681,18 @@ var TextUtil = {
             heightOfSlice,
             rectangleId;
 
-        if (rectangle[0].angle == 0 || rectangle[0].angle == 180) {
-            startPathX = rectangle[0].cx - (rectangle[0].width / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].height / 2);
-            endPathX = startPathX + rectangle[0].width;
-            widthOfSlice = rectangle[0].width;
-            heightOfSlice = rectangle[0].height;
+        if (gridUnit[0].angle == 0 || gridUnit[0].angle == 180) {
+            startPathX = gridUnit[0].cx - (gridUnit[0].width / 2);
+            startPathY = gridUnit[0].cy + (gridUnit[0].height / 2);
+            endPathX = startPathX + gridUnit[0].width;
+            widthOfSlice = gridUnit[0].width;
+            heightOfSlice = gridUnit[0].height;
         } else { //rectangle angle == 90 || 270
-            startPathX = rectangle[0].cx - (rectangle[0].height / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].width / 2);
-            endPathX = startPathX + rectangle[0].height;
-            widthOfSlice = rectangle[0].height;
-            heightOfSlice = rectangle[0].width;
+            startPathX = gridUnit[0].cx - (gridUnit[0].height / 2);
+            startPathY = gridUnit[0].cy + (gridUnit[0].width / 2);
+            endPathX = startPathX + gridUnit[0].height;
+            widthOfSlice = gridUnit[0].height;
+            heightOfSlice = gridUnit[0].width;
         }
 
         //apply padding
@@ -736,9 +716,9 @@ var TextUtil = {
         return pathAndText;
     },
 
-    appendCharacterAsSVG: function (char, rectangle, svg, d, tag, padding,
+    appendCharacterAsSVG: function (char, gridUnit, svg, d, tag, padding,
                                     displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
-                                    font, textToSVG) {
+                                    font, textToSVG, Clipper) {
 
         var startPathX,
             startPathY,
@@ -746,16 +726,16 @@ var TextUtil = {
             widthOfSlice,
             heightOfSlice;
 
-        if (rectangle[0].angle == 0 || rectangle[0].angle == 180) {
-            startPathX = rectangle[0].cx - (rectangle[0].width / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].height / 2);
-            widthOfSlice = rectangle[0].width;
-            heightOfSlice = rectangle[0].height;
+        if (gridUnit[0].angle == 0 || gridUnit[0].angle == 180) {
+            startPathX = gridUnit[0].cx - (gridUnit[0].width / 2);
+            startPathY = gridUnit[0].cy + (gridUnit[0].height / 2);
+            widthOfSlice = gridUnit[0].width;
+            heightOfSlice = gridUnit[0].height;
         } else { //rectangle angle == 90 || 270
-            startPathX = rectangle[0].cx - (rectangle[0].height / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].width / 2);
-            widthOfSlice = rectangle[0].height;
-            heightOfSlice = rectangle[0].width;
+            startPathX = gridUnit[0].cx - (gridUnit[0].height / 2);
+            startPathY = gridUnit[0].cy + (gridUnit[0].width / 2);
+            widthOfSlice = gridUnit[0].height;
+            heightOfSlice = gridUnit[0].width;
         }
 
         //apply padding
@@ -767,7 +747,7 @@ var TextUtil = {
 
         TextUtil.appendChar(startPathX, startPathY, char, tag, displayText,
             displayBounds, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font,
-            rectangle, textToSVG);
+            gridUnit, textToSVG, Clipper);
 
     }
 
