@@ -235,7 +235,7 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                         }
                         MapUtil.horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
                             USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
-                            font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG, TextToSVG);
+                            font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG, TextToSVG, Clipper);
                     }
                     if (GRID_CACHE_OUTPUT) {
                         console.log(JSON.stringify(getGridCache()) + "end");
