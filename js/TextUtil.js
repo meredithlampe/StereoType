@@ -557,13 +557,16 @@ var TextUtil = {
 
             // do the same translation for the char path
             const pathD = textToSVG.getD(phrase.toUpperCase(), options);
-            var  flattenedChar = [];
-            var numPoints = 50;
-            var pathLength = pathD.length;
-            for (var i=0; i<numPoints; i++) {
-                var p = pathD.getPointAtLength(i * pathLength / numPoints);
-                flattenedChar[charInnerArray.length] = {"X": p.x, "Y": p.y};
-            }
+            var paperPath = new Path();
+
+       // use this http://paperjs.org/examples/path-intersections/
+            //var  flattenedChar = [];
+            //var numPoints = 50;
+            //var pathLength = pathD.length;
+            //for (var i=0; i<numPoints; i++) {
+            //    var p = pathD.getPointAtLength(i * pathLength / numPoints);
+            //    flattenedChar[charInnerArray.length] = {"X": p.x, "Y": p.y};
+            //}
 
             // pass enclosing polygon, path for character, true to indicate a closed path
             var solution = Clipper.Clipper.MinkowskiDiff(innerArray, pathD, true);
