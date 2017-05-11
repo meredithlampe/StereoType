@@ -553,19 +553,21 @@ var TextUtil = {
 
             const pathD = textToSVG.getD(phrase.toUpperCase(), options);
             var allInside = true;
+            debugger;
+            var charPath = d3.select(document.createElement("path"));
+            charPath.attr("d", pathD);
+            var charNode = charPath.node();
+            var point = charNode.getPointAtLength(0);
             // if char is non-round, use this
-            if (phrase.toUpperCase() != 'O' &&
-                phrase.toUpperCase() != 'R' &&
-                phrase.toUpperCase() != 'P' &&
-                phrase.toUpperCase() != 'B' &&
-                phrase.toUpperCase() != 'S' &&
-                phrase.toUpperCase() != 'C') {
+            //if (phrase.toUpperCase() != 'O' &&
+            //    phrase.toUpperCase() != 'R' &&
+            //    phrase.toUpperCase() != 'P' &&
+            //    phrase.toUpperCase() != 'B' &&
+            //    phrase.toUpperCase() != 'S' &&
+            //    phrase.toUpperCase() != 'C') {
 
                 // check coords of path, make sure they are inside of polygon
-                var pathArray = TextUtil.pathToArray(pathD);
                 for (var curr = 0; curr < pathArray.length; curr += 2) {
-                    var x = pathArray[curr];
-                    var y = pathArray[curr + 1];
 
                     // is point inside of polygon?
                     if (!PolyK.ContainsPoint(rectangle.polygon, x, y)) {
@@ -573,20 +575,20 @@ var TextUtil = {
                         break;
                     }
                 }
-            } else {
-                // char is weird. use bounding box
-                const shape = textToSVG.getMetrics(phrase.toUpperCase(), options);
-                if (shape.width < rectangle[0].width && shape.height < rectangle[0].height) {
-                    // we're good
-                    bestPath = textToSVG.getD(phrase.toUpperCase(), options);
-                } else {
-                    allInside = false;
-
-                    // do one last increase because these letters look real small
-                    options.fontSize = textSize * TEXT_SIZE_MULTIPLIER;
-                    bestPath = textToSVG.getD(phrase.toUpperCase(), options);
-                }
-            }
+            //} else {
+            //    // char is weird. use bounding box
+            //    const shape = textToSVG.getMetrics(phrase.toUpperCase(), options);
+            //    if (shape.width < rectangle[0].width && shape.height < rectangle[0].height) {
+            //        // we're good
+            //        bestPath = textToSVG.getD(phrase.toUpperCase(), options);
+            //    } else {
+            //        allInside = false;
+            //
+            //        // do one last increase because these letters look real small
+            //        options.fontSize = textSize * TEXT_SIZE_MULTIPLIER;
+            //        bestPath = textToSVG.getD(phrase.toUpperCase(), options);
+            //    }
+            //}
 
             if (allInside) {
                 bestPath = pathD;
