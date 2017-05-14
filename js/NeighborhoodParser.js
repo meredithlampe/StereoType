@@ -533,7 +533,7 @@ var NeighborhoodParser = {
                                     if (displayRectangles) {
                                         DebugTool.appendRect(svg, inscribed, d);
                                     }
-                                    inscribed.polygon = PolygonGenerator.twoToOneDimensional(twoDPath);
+                                    inscribed.polygon = currVertSlice[k];
                                     grid[grid.length] = inscribed; // one dimensional array representing largest inscribed rectangle
                                 }
                             }
