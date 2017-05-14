@@ -1,6 +1,7 @@
 /**
  * Created by meredith on 5/25/16.
  */
+
 var TextUtil = {
 
     calculateNumLevels: function (aspectRatio, phrase, addtlLevel, forcedHorizontal, orientation) {
@@ -522,18 +523,18 @@ var TextUtil = {
     appendChar: function (startPathX, startPathY,
                           phrase, k, displayText, displayBounds,
                           rectangleId, svg, TEXT_SIZE_MULTIPLIER, font,
-                          rectangle, textToSVG) {
+                          rectangle, textToSVG, raphael) {
 
-        var textSize = 3;
+        var textSize = 5;
 
-        var options = {
+        var defaultOptions = {
             "x": startPathX,
             "y": startPathY,
             "fontSize": textSize
         };
 
         // just use this one for now
-        var bestPath = textToSVG.getD(phrase.toUpperCase(), options);
+        var bestPath = textToSVG.getD(phrase.toUpperCase(), defaultOptions);
         var charToBig = false;
         var shapeG = svg.append("g");
         while (!charToBig) {
@@ -553,42 +554,28 @@ var TextUtil = {
 
             const pathD = textToSVG.getD(phrase.toUpperCase(), options);
             var allInside = true;
-            debugger;
-            var charPath = d3.select(document.createElement("path"));
-            charPath.attr("d", pathD);
-            var charNode = charPath.node();
-            var point = charNode.getPointAtLength(0);
-            // if char is non-round, use this
-            //if (phrase.toUpperCase() != 'O' &&
-            //    phrase.toUpperCase() != 'R' &&
-            //    phrase.toUpperCase() != 'P' &&
-            //    phrase.toUpperCase() != 'B' &&
-            //    phrase.toUpperCase() != 'S' &&
-            //    phrase.toUpperCase() != 'C') {
+            var paper = raphael(10, 50, 320, 200);
+            var charPath = paper.path(pathD);
+            //var polyPath = TextUtil.arrayToPath(rectangle.polygon);
+            //var hood = paper.path(polyPath);
 
-                // check coords of path, make sure they are inside of polygon
-                for (var curr = 0; curr < pathArray.length; curr += 2) {
+            var numHitTestPoints = 20;
+            var totalLength = charPath.getTotalLength();
+            var lengthIncrement = totalLength * 1.0 / numHitTestPoints;
 
-                    // is point inside of polygon?
-                    if (!PolyK.ContainsPoint(rectangle.polygon, x, y)) {
-                        allInside = false;
-                        break;
-                    }
+            // check coords of char path, make sure they are inside of polygon
+            for (var curr = 0; curr < numHitTestPoints; curr++) {
+                var point = charPath.getPointAtLength(lengthIncrement * curr);
+                if (!point) {
+                    console.log("found undefined point in appendChar");
                 }
-            //} else {
-            //    // char is weird. use bounding box
-            //    const shape = textToSVG.getMetrics(phrase.toUpperCase(), options);
-            //    if (shape.width < rectangle[0].width && shape.height < rectangle[0].height) {
-            //        // we're good
-            //        bestPath = textToSVG.getD(phrase.toUpperCase(), options);
-            //    } else {
-            //        allInside = false;
-            //
-            //        // do one last increase because these letters look real small
-            //        options.fontSize = textSize * TEXT_SIZE_MULTIPLIER;
-            //        bestPath = textToSVG.getD(phrase.toUpperCase(), options);
-            //    }
-            //}
+
+                // is point inside of polygon?
+                if (!point || !PolyK.ContainsPoint(rectangle.polygon, point.x, point.y)) {
+                    allInside = false;
+                    break;
+                }
+            }
 
             if (allInside) {
                 bestPath = pathD;
@@ -740,7 +727,7 @@ var TextUtil = {
 
     appendCharacterAsSVG: function (char, rectangle, svg, d, tag, padding,
                                     displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
-                                    font, textToSVG) {
+                                    font, textToSVG, raphael) {
 
         var startPathX,
             startPathY,
@@ -769,8 +756,20 @@ var TextUtil = {
 
         TextUtil.appendChar(startPathX, startPathY, char, tag, displayText,
             displayBounds, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font,
-            rectangle, textToSVG);
+            rectangle, textToSVG, raphael);
 
+    },
+
+    arrayToPath: function(oneDArray) {
+        var result = "M";
+        if (oneDArray.length > 0)  {
+            result += oneDArray[0] + "," + oneDArray[1];
+            for (var i = 2; i < oneDArray.length; i += 2) {
+                result += "L" + oneDArray[i] + "," + oneDArray[i+1];
+            }
+            result += 'Z';
+        }
+        return result;
     }
 
 

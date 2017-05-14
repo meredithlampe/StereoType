@@ -100,7 +100,7 @@ export function resetLegend(d, i) {
 export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCache,
                             USE_GRID_CACHING, displayRectangles, displayBounds,
                             displayText, TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP,
-                            CHAR_ASPECT_RATIO, textToSVG, TextToSVG) {
+                            CHAR_ASPECT_RATIO, textToSVG, TextToSVG, raphael) {
 
     //get height and width of polygon
     //don't use padding this time (padding = 0)
@@ -128,7 +128,7 @@ export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCa
         for (var i = 0; i < gridUnits.length; i++) {
             var character = phrase.charAt(i);
             TextUtil.appendCharacterAsSVG(character, gridUnits[i], svg, d, i, padding, displayText, displayBounds,
-                TEXT_SIZE_MULTIPLIER, font, textToSVG);
+                TEXT_SIZE_MULTIPLIER, font, textToSVG, raphael);
         }
     }
 }

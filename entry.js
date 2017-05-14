@@ -9,8 +9,10 @@ var scaleSVG = require("scale-svg-path");
 var parseSVG = require('parse-svg-path');
 var serializeSVG = require('serialize-svg-path');
 var Offset = require('polygon-offset');
+const raphael = require('raphael');
 
 require("./js/NeighborhoodGeolocation.js");
+require("./js/TextUtil.js");
 const Clipper = require("./Javascript_Clipper_6.2.1.2/clipper.js");
 var MapUtil = require("./js/MapUtil.js");
 //require("./js/SampleBestPlaces");
@@ -223,6 +225,7 @@ d3.json("json/neighborhoods.json", function (error, topology) {
 
             neighborhoodGroup.selectAll(".neighborhood")
                 .each(function (d) {
+                    console.log("rendering " + d.properties.name);
                     var neighborhoodBoundsString = this.getAttribute("neighborhoodBounds");
                     var pathCoords3d = NeighborhoodParser.pathArray(neighborhoodBoundsString);
                     //var pathCoords3d = NeighborhoodParser.get3dPathArray(neighborhoodBoundsString, d.type == "MultiPolygon");
@@ -235,7 +238,7 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                         }
                         MapUtil.horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
                             USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
-                            font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG, TextToSVG);
+                            font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG, TextToSVG, raphael);
                     }
                     if (GRID_CACHE_OUTPUT) {
                         console.log(JSON.stringify(getGridCache()) + "end");
