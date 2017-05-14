@@ -486,7 +486,8 @@ var TextUtil = {
             };
 
             const charPath = textToSVG.getD(phrase.toUpperCase(), options);
-            var allInside = true;
+            var countOutOfBounds = 0; // count num points found to be outside of the containing polygon
+            var stopIterating = false;
             var charPaperPath = paper.path(charPath);
             var numHitTestPoints = 20;
             var totalLength = charPaperPath.getTotalLength();
@@ -501,12 +502,15 @@ var TextUtil = {
 
                 // is point inside of polygon?
                 if (!point || !PolyK.ContainsPoint(rectangle.polygon, point.x, point.y)) {
-                    allInside = false;
-                    break;
+                    countOutOfBounds++;
+                    if (countOutOfBounds > 2) {
+                        stopIterating = true;
+                        break;
+                    }
                 }
             }
 
-            if (allInside) {
+            if (!stopIterating) {
                 bestPath = charPath;
                 textSize += 1;
             } else {
@@ -539,6 +543,8 @@ var TextUtil = {
         return result;
     },
 
+
+    // used in testGrid
     appendPathAndText: function (startPathX, startPathY, endPathX, endPathY,
                                  phrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
                                  heightOfSlice, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font) {
@@ -605,56 +611,8 @@ var TextUtil = {
 
     },
 
-    appendCharacterIntoRectangle: function (char, rectangle, svg, d, tag, padding,
-                                            displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
-                                            font, TextToSVG) {
 
-
-        var startPathX,
-            startPathY,
-            endPathX,
-            endPathY,
-            verticalText,
-            widthOfSlice,
-            heightOfSlice,
-            rectangleId;
-
-        if (rectangle[0].angle == 0 || rectangle[0].angle == 180) {
-            startPathX = rectangle[0].cx - (rectangle[0].width / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].height / 2);
-            endPathX = startPathX + rectangle[0].width;
-            widthOfSlice = rectangle[0].width;
-            heightOfSlice = rectangle[0].height;
-        } else { //rectangle angle == 90 || 270
-            startPathX = rectangle[0].cx - (rectangle[0].height / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].width / 2);
-            endPathX = startPathX + rectangle[0].height;
-            widthOfSlice = rectangle[0].height;
-            heightOfSlice = rectangle[0].width;
-        }
-
-        //apply padding
-        var paddingScaledWidth = padding * widthOfSlice;
-        var paddingScaledHeight = padding * heightOfSlice;
-        startPathX += paddingScaledWidth;
-        startPathY -= paddingScaledHeight;
-        endPathX -= paddingScaledWidth;
-        widthOfSlice -= 2 * paddingScaledWidth;
-        heightOfSlice -= paddingScaledHeight;
-
-
-        endPathY = startPathY;
-        verticalText = false;
-        rectangleId = d.properties.name + "_inner";
-
-        var pathAndText = TextUtil.appendPathAndText(startPathX, startPathY, endPathX, endPathY, char, d, tag, displayText,
-            displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font);
-
-        //return character that you just appended
-        return pathAndText;
-    },
-
-    appendCharacterAsSVG: function (char, rectangle, svg, d, tag, padding,
+    appendCharacterAsSVG: function (char, gridUnit, svg, d, tag, padding,
                                     displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
                                     font, textToSVG, raphael) {
 
@@ -664,16 +622,16 @@ var TextUtil = {
             widthOfSlice,
             heightOfSlice;
 
-        if (rectangle[0].angle == 0 || rectangle[0].angle == 180) {
-            startPathX = rectangle[0].cx - (rectangle[0].width / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].height / 2);
-            widthOfSlice = rectangle[0].width;
-            heightOfSlice = rectangle[0].height;
+        if (gridUnit[0].angle == 0 || gridUnit[0].angle == 180) {
+            startPathX = gridUnit[0].cx - (gridUnit[0].width / 2);
+            startPathY = gridUnit[0].cy + (gridUnit[0].height / 2);
+            widthOfSlice = gridUnit[0].width;
+            heightOfSlice = gridUnit[0].height;
         } else { //rectangle angle == 90 || 270
-            startPathX = rectangle[0].cx - (rectangle[0].height / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].width / 2);
-            widthOfSlice = rectangle[0].height;
-            heightOfSlice = rectangle[0].width;
+            startPathX = gridUnit[0].cx - (gridUnit[0].height / 2);
+            startPathY = gridUnit[0].cy + (gridUnit[0].width / 2);
+            widthOfSlice = gridUnit[0].height;
+            heightOfSlice = gridUnit[0].width;
         }
 
         //apply padding
@@ -685,7 +643,7 @@ var TextUtil = {
 
         TextUtil.appendChar(startPathX, startPathY, char, tag, displayText,
             displayBounds, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font,
-            rectangle, textToSVG, raphael);
+            gridUnit, textToSVG, raphael);
 
     },
 
