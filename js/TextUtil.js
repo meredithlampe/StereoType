@@ -454,71 +454,6 @@ var TextUtil = {
         return newbie;
     },
 
-    formatInscription: function (dimensions, phrase) {
-
-        //var idealLineLength = 12;
-        //var charAspectRatio = 0.4451827;
-        //
-        ////calculate height of idea line
-        //var idealLineAspectRatio = idealLineLength * charAspectRatio; //really not sure about this one
-        //var idealLineWidth = dimensions.right - dimensions.left;
-        //var idealLineHeight = idealLineWidth / idealLineAspectRatio;
-        //var rectHeight = dimensions.max - dimensions.min;
-        //var lineCount = Math.floor(rectHeight / idealLineHeight);
-        //var idealCharPerLine = Math.min(60, Math.max(Math.round(phrase.length / lineCount), 1));
-        //
-        ////segment text into two lines
-        //var preText;
-        //var postText;
-        //var finalText;
-        //var preDiff;
-        //var postDiff;
-        //var charIndex = 0;
-        //var lineText = [];
-        //
-        //var counter = 0;
-        //
-        ////while we still have words left, build the next line
-        //while (charIndex < phrase.length) {
-        //    var postText = "";
-        //
-        //    // build two strings (preText and postText) word by word, with one
-        //    // string always one word behind the other, until
-        //    // the length of one string is less than the ideal number of characters
-        //    // per line, while the length of the other is greater than that ideal
-        //    while (postText.length < idealCharPerLine) {
-        //        preText = postText;
-        //        postText += phrase.charAt(charIndex) + "";
-        //        charIndex++;
-        //        if (charIndex >= phrase.length) {
-        //            break;
-        //        }
-        //    }
-        //
-        //    //calculate the difference between the two strings and the
-        //    //ideal number of chars per line
-        //    preDiff = idealCharPerLine - preText.length;
-        //    postDiff = postText.length - idealCharPerLine;
-        //
-        //    // if the smaller string is closer to the length of the ideal than
-        //    // the longer string, and doesn’t contain just a single space, then
-        //    // use that one for the line
-        //    if ((preDiff < postDiff) && (preText.length > 2)) {
-        //        finalText = preText;
-        //        charIndex--;
-        //    } else { //otherwise, use the longer string for the line
-        //        finalText = postText;
-        //    }
-        //    //kind weird...why taking sub here?
-        //    lineText[lineText.length] = finalText.substring(0, finalText.length - 1);
-        //
-        //}
-        //
-        //debugger;
-
-
-    },
-
     // like append path and text, but using char converted to svg
     appendChar: function (startPathX, startPathY,
                           phrase, k, displayText, displayBounds,
@@ -537,6 +472,9 @@ var TextUtil = {
         var bestPath = textToSVG.getD(phrase.toUpperCase(), defaultOptions);
         var charToBig = false;
         var shapeG = svg.append("g");
+
+        // canvas for trying out char sizes - who even knows if these are the right dimensions
+        var paper = raphael(-500, -500, 320, 200);
         while (!charToBig) {
 
             // if char is normal,
@@ -547,25 +485,16 @@ var TextUtil = {
                 "fontSize": textSize
             };
 
-            //var testCharPath = shapeG.append("path")
-            //    .attr("class", "testChar")
-            //    .attr("d", pathD)
-            //    .style("fill", "gray");
-
-            const pathD = textToSVG.getD(phrase.toUpperCase(), options);
+            const charPath = textToSVG.getD(phrase.toUpperCase(), options);
             var allInside = true;
-            var paper = raphael(10, 50, 320, 200);
-            var charPath = paper.path(pathD);
-            //var polyPath = TextUtil.arrayToPath(rectangle.polygon);
-            //var hood = paper.path(polyPath);
-
+            var charPaperPath = paper.path(charPath);
             var numHitTestPoints = 20;
-            var totalLength = charPath.getTotalLength();
+            var totalLength = charPaperPath.getTotalLength();
             var lengthIncrement = totalLength * 1.0 / numHitTestPoints;
 
             // check coords of char path, make sure they are inside of polygon
             for (var curr = 0; curr < numHitTestPoints; curr++) {
-                var point = charPath.getPointAtLength(lengthIncrement * curr);
+                var point = charPaperPath.getPointAtLength(lengthIncrement * curr);
                 if (!point) {
                     console.log("found undefined point in appendChar");
                 }
@@ -578,7 +507,7 @@ var TextUtil = {
             }
 
             if (allInside) {
-                bestPath = pathD;
+                bestPath = charPath;
                 textSize += 1;
             } else {
                 charToBig = true;
