@@ -5,15 +5,11 @@
  * Created by meredith on 2/20/16.
  */
 
-var scaleSVG = require("scale-svg-path");
-var parseSVG = require('parse-svg-path');
-var serializeSVG = require('serialize-svg-path');
-var Offset = require('polygon-offset');
-const raphael = require('raphael');
 
 require("./js/NeighborhoodGeolocation.js");
 require("./js/TextUtil.js");
 const Clipper = require("./Javascript_Clipper_6.2.1.2/clipper.js");
+const raphael = require('raphael');
 var MapUtil = require("./js/MapUtil.js");
 //require("./js/SampleBestPlaces");
 //require("./js/GridCache.js");
@@ -228,7 +224,6 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                     console.log("rendering " + d.properties.name);
                     var neighborhoodBoundsString = this.getAttribute("neighborhoodBounds");
                     var pathCoords3d = NeighborhoodParser.pathArray(neighborhoodBoundsString);
-                    //var pathCoords3d = NeighborhoodParser.get3dPathArray(neighborhoodBoundsString, d.type == "MultiPolygon");
 
                     if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                         var nameArray = bestplaces[d.properties.name].bestmatch.split(" ");
@@ -243,11 +238,6 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                     if (GRID_CACHE_OUTPUT) {
                         console.log(JSON.stringify(getGridCache()) + "end");
                     }
-                    //} else {
-                    //    return null;
-                    //}
-
-                    //return serializeSVG(polyScaled);
                 });
         }
 
