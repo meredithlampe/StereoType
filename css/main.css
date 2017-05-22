@@ -9,9 +9,14 @@ html {
 }
 
 .my_body {
-    padding: 0px;
+    /*padding: 0px;*/
     background-color: transparent;
     /*margin-top: -20px;*/
+}
+
+.maplegend {
+    position: fixed;
+    margin-left: 40pt;
 }
 
 #page_title {
@@ -62,6 +67,11 @@ footer {
 /*.neighborhood:hover {*/
     /*opacity: 1.0;*/
 /*}*/
+
+.mapcontainer {
+    margin: auto;
+    width: 600px;
+}
 
 .mapinfo {
     width: 100%;
