@@ -41,10 +41,10 @@ export function setLegend(d, i) {
     d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount"));
 
     // set all neighborhoods to dim
-    d3.selectAll(".neighborhood").attr("opacity", "0.5");
-    d3.selectAll(".neighborhood")
-        .select(".neighborhoodOutline")
-        .classed("neighborhoodUnFocus", true);
+    //d3.selectAll(".neighborhood").attr("opacity", "0.5");
+    //d3.selectAll(".neighborhood")
+    //    .select(".neighborhoodOutline")
+    //    .classed("neighborhoodUnFocus", true);
 
     poly.attr("opacity", "1.0");
 

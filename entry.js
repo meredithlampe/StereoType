@@ -5,7 +5,6 @@
  * Created by meredith on 2/20/16.
  */
 
-
 require("./js/NeighborhoodGeolocation.js");
 require("./js/TextUtil.js");
 const Clipper = require("./Javascript_Clipper_6.2.1.2/clipper.js");
@@ -27,11 +26,8 @@ var center = [0, 47.3097];
 var scale = 150000;
 //var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
 var offset = [1141.329833984375 - 400 + width / 2, 142582.609375 + 30];
-//var offset = 0;
 
-//font to be used for text
-var font = "Oswald";
-//var font = "Impact";
+var font = "din-condensed-bold";
 
 var color1 = ['a', 'b', 'c', 'd', 'e', 'f'];
 var color2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -59,7 +55,7 @@ var displayRectangles = false;
 var displayBounds = false;
 var displayText = true;
 var bestplaces;
-var displayPaddedPolygons = false;
+var displayPaddedPolygons = true;
 
 //these are for when we're in server
 //
@@ -68,6 +64,8 @@ var displayPaddedPolygons = false;
 //    bestplaces = JSON.parse(this.responseText);
 
 var bestplaces = sample_bestplaces;
+
+
 
 var svg = d3.select(".mapcontainer")
     .attr("id", "mapContainer")
@@ -122,9 +120,18 @@ var neighborhoodGroup = svg.append("g")
 
 var topoGeometries;
 
+//var oReq = new XMLHttpRequest(); //New request object
+
+//oReq.onload = theMeat
+//
+//function theMeat(response) {
+//    //all that stuff
+//    var bestplaces = JSON.parse(response.text);
+//}
+
 d3.json("json/neighborhoods.json", function (error, topology) {
 
-    TextToSVG.load('./fonts/Oswald-Bold.ttf', function (err, textToSVG) {
+    TextToSVG.load('./css/DIN-Condensed-Bold.ttf', function (err, textToSVG) {
         if (err) {
             console.log(err);
         } else {
@@ -231,9 +238,9 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                         for (var i = 1; i < nameArray.length; i++) {
                             nameNoSpaces += nameArray[i];
                         }
-                        MapUtil.horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
-                            USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
-                            font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG, TextToSVG, raphael);
+                        //MapUtil.horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
+                        //    USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
+                        //    font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG, TextToSVG, raphael);
                     }
                     if (GRID_CACHE_OUTPUT) {
                         console.log(JSON.stringify(getGridCache()) + "end");
@@ -251,7 +258,6 @@ d3.json("json/neighborhoods.json", function (error, topology) {
 //
 //oReq.open("get", "yelp/getyelp.php", true);
 //oReq.send();
-//};
 
 //window.onload = main;
 
