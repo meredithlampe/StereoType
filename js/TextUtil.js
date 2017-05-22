@@ -454,6 +454,55 @@ var TextUtil = {
         return newbie;
     },
 
+    appendCharacterIntoRectangle: function (char, rectangle, svg, d, tag, padding,
+                                            displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
+                                            font, TextToSVG) {
+
+
+        var startPathX,
+            startPathY,
+            endPathX,
+            endPathY,
+            verticalText,
+            widthOfSlice,
+            heightOfSlice,
+            rectangleId;
+
+        if (rectangle[0].angle == 0 || rectangle[0].angle == 180) {
+            startPathX = rectangle[0].cx - (rectangle[0].width / 2);
+            startPathY = rectangle[0].cy + (rectangle[0].height / 2);
+            endPathX = startPathX + rectangle[0].width;
+            widthOfSlice = rectangle[0].width;
+            heightOfSlice = rectangle[0].height;
+        } else { //rectangle angle == 90 || 270
+            startPathX = rectangle[0].cx - (rectangle[0].height / 2);
+            startPathY = rectangle[0].cy + (rectangle[0].width / 2);
+            endPathX = startPathX + rectangle[0].height;
+            widthOfSlice = rectangle[0].height;
+            heightOfSlice = rectangle[0].width;
+        }
+
+        //apply padding
+        var paddingScaledWidth = padding * widthOfSlice;
+        var paddingScaledHeight = padding * heightOfSlice;
+        startPathX += paddingScaledWidth;
+        startPathY -= paddingScaledHeight;
+        endPathX -= paddingScaledWidth;
+        widthOfSlice -= 2 * paddingScaledWidth;
+        heightOfSlice -= paddingScaledHeight;
+
+
+        endPathY = startPathY;
+        verticalText = false;
+        rectangleId = d.properties.name + "_inner";
+
+        var pathAndText = TextUtil.appendPathAndText(startPathX, startPathY, endPathX, endPathY, char, d, tag, displayText,
+            displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font);
+
+        //return character that you just appended
+        return pathAndText;
+    },
+
     // like append path and text, but using char converted to svg
     appendChar: function (startPathX, startPathY,
                           phrase, k, displayText, displayBounds,

@@ -1,8 +1,39 @@
+
+@font-face {
+    font-family: din-condensed-bold;
+    src: url(DIN-Condensed-Bold.ttf);
+}
+
+html {
+    background-color: #efefef;
+}
+
+.my_body {
+    padding: 0px;
+    background-color: transparent;
+    /*margin-top: -20px;*/
+}
+
+#page_title {
+    font-family: din-condensed-bold;
+    font-size: 60pt;
+    letter-spacing: 4px;
+}
+
+#title_container {
+    width: 100%;
+    text-align: center;
+}
+
 .neighborhoodOutline {
     stroke: #282828;
     stroke-width: 1px;
     stroke: black;
     fill: none;
+}
+
+footer {
+    padding-left: 100px;
 }
 
 .neighborhoodUnFocus {
@@ -33,8 +64,10 @@
 /*}*/
 
 .mapinfo {
-    padding-top: 50pt;
-    background-color: #efefef;
+    width: 100%;
+    background-color: transparent;
+    margin-bottom: 30pt;
+    margin-top: 30pt;
 }
 
 .legendterm {
@@ -112,4 +145,8 @@
 .leftPoly {
     stroke: #350452;
     fill: #b376c4;
+}
+
+#my-foot {
+    padding-left: 10px;
 }
