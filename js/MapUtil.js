@@ -13,40 +13,39 @@ export function setMapOpacityStrong() {
 }
 
 export function setLegend(d, i) {
+
+    d3.select("legend").style("visibility", "visible");
+
     var poly = d3.select(this);
 
     // weird scrolling thing -- gotta save scroll top
     var oldScrollTop = document.body.scrollTop;
 
     // set name
-    var name = d3.select("#neighborhoodname");
+    var name = d3.select("#neighborhoodname").style("visibility", "visible");
     name.html(d.properties.name);
 
     // set phrase
-    var phraseBox = d3.select("#neighborhoodphrase");
+    var phraseBox = d3.select("#neighborhoodphrase").style("visibility", "visible");
     var phrase = poly.attr("phrase");
     phraseBox.html(phrase);
 
     // set type
     var categories = JSON.parse(poly.attr("categories"));
-    var categoryBox = d3.select("#neighborhoodcategory");
+    var categoryBox = d3.select("#neighborhoodcategory").style("visibility", "visible");
     if (categories != null) {
         categoryBox.html(categories[0].title);
     }
 
     // set price range
-    d3.select("#neighborhoodprice").html(poly.attr("price"));
+    var price = poly.attr("price");
+    if (!price) {
+       price = "filler";
+    }
+    d3.select("#neighborhoodprice").html(price).style("visibility", "visible");
 
     // set number of ratings
-    d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount"));
-
-    // set all neighborhoods to dim
-    //d3.selectAll(".neighborhood").attr("opacity", "0.5");
-    //d3.selectAll(".neighborhood")
-    //    .select(".neighborhoodOutline")
-    //    .classed("neighborhoodUnFocus", true);
-
-    poly.attr("opacity", "1.0");
+    d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount")).style("visibility", "visible");
 
     //var chars = poly.selectAll(".charSVGThing").attr("stroke", "white");
     var chars = poly.selectAll(".charSVGThing");
@@ -62,26 +61,25 @@ export function setLegend(d, i) {
 
 export function resetLegend(d, i) {
 
+    // set entire legend to be invisible
+    d3.select("#maplegend").style("visibility", "hidden");
+
     var poly = d3.select(this);
 
     // weird scrolling thing -- gotta save scroll top
     var oldScrollTop = document.body.scrollTop;
-    var name = d3.select("#neighborhoodname");
-    name.html("");
+    var name = d3.select("#neighborhoodname").style("visibility", "hidden");
 
-    var phraseBox = d3.select("#neighborhoodphrase");
-    phraseBox.html("");
+    var phraseBox = d3.select("#neighborhoodphrase").style("visibility", "hidden");
 
     // set categories
-    d3.select("#neighborhoodcategory").html("");
+    d3.select("#neighborhoodcategory").style("visibility", "hidden");
 
     // set price range
-    d3.select("#neighborhoodprice").html("");
+    d3.select("#neighborhoodprice").style("visibility", "hidden");
 
     // set number of ratings
-    d3.select("#neighborhoodreviewcount").html("");
-
-    d3.selectAll(".neighborhood").attr("opacity", "1.0");
+    d3.select("#neighborhoodreviewcount").style("visibility", "hidden");
 
     var pathinpoly = poly.select(".neighborhoodOutline");
     pathinpoly.classed("neighborhoodFocus", false);

@@ -25,7 +25,7 @@ var rotate = [122, 0, 0];
 var center = [0, 47.3097];
 var scale = 150000;
 //var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
-var offset = [1141.329833984375 - 400 + width / 2, 142582.609375 + 30];
+var offset = [1141.329833984375 - 450 + width / 2, 142582.609375 + 30];
 
 var font = "din-condensed-bold";
 
@@ -55,7 +55,7 @@ var displayRectangles = false;
 var displayBounds = false;
 var displayText = true;
 var bestplaces;
-var displayPaddedPolygons = true;
+var displayPaddedPolygons = false;
 
 //these are for when we're in server
 //
@@ -238,9 +238,9 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                         for (var i = 1; i < nameArray.length; i++) {
                             nameNoSpaces += nameArray[i];
                         }
-                        //MapUtil.horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
-                        //    USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
-                        //    font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG, TextToSVG, raphael);
+                        MapUtil.horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
+                            USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
+                            font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG, TextToSVG, raphael);
                     }
                     if (GRID_CACHE_OUTPUT) {
                         console.log(JSON.stringify(getGridCache()) + "end");
