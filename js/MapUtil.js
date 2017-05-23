@@ -14,7 +14,7 @@ export function setMapOpacityStrong() {
 
 export function setLegend(d, i) {
 
-    d3.select("legend").style("visibility", "visible");
+    d3.select(".maplegend").style("visibility", "visible");
 
     var poly = d3.select(this);
 
@@ -62,7 +62,7 @@ export function setLegend(d, i) {
 export function resetLegend(d, i) {
 
     // set entire legend to be invisible
-    d3.select("#maplegend").style("visibility", "hidden");
+    d3.select(".maplegend").style("visibility", "hidden");
 
     var poly = d3.select(this);
 
@@ -100,6 +100,7 @@ export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCa
                             displayText, TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP,
                             CHAR_ASPECT_RATIO, textToSVG, TextToSVG, raphael) {
 
+
     //get height and width of polygon
     //don't use padding this time (padding = 0)
     var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords3d, 0);
@@ -118,6 +119,7 @@ export function horizontalSliceAlg(svg, pathCoords3d, d, phrase, padding, gridCa
         }
         gridCache[d.properties.name][phrase.length] = optimalHorizontalSlices;
     }
+
 
     var gridUnits = NeighborhoodParser.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, d, svg,
         phrase, padding, displayRectangles, displayBounds);
