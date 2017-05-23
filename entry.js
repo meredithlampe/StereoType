@@ -155,39 +155,48 @@ d3.json("json/neighborhoods.json", function (error, topology) {
             // fill text
             neighborhoodGroup.selectAll(".neighborhood")
                 .each(function (d) {
-                    if (d.properties.name == "Rainier Beach") {
-                        debugger;
+                    if (d.properties.name == "Industrial District") {
+                        //debugger;
                     }
                     var pathCoords3d = NeighborhoodParser.get3dPathArray(
                         d3.select(this)
                             .attr("neighborhoodBounds"), d.type == "MultiPolygon");
 
-                    var pointslist = "";
-                    for (var point = 0; point < pathCoords3d[0].length; point++) {
-                        var curr = pathCoords3d[0][point];
-                        pointslist += curr[0] + "," + curr[1] + " ";
-                    }
-
                     var subj = new Clipper.Paths();
                     var solution = new Clipper.Paths();
-                    //var scale = 100;
-                    var innerArray = [];
 
+                    for (var poly = 0; poly < pathCoords3d.length; poly++) {
 
-                    for (var p = 0; p < pathCoords3d[0].length; p++) {
-                        innerArray[innerArray.length] = {"X": pathCoords3d[0][p][0], "Y": pathCoords3d[0][p][1]};
+                        //var scale = 100;
+                        var innerArray = [];
+
+                        for (var p = 0; p < pathCoords3d[poly].length; p++) {
+                            innerArray[innerArray.length] = {"X": pathCoords3d[poly][p][0], "Y": pathCoords3d[poly][p][1]};
+                        }
+                        //Clipper.JS.ScaleUpPaths(subj, scale);
+                        subj[poly] = innerArray;
                     }
-                    //Clipper.JS.ScaleUpPaths(subj, scale);
-                    subj[0] = innerArray;
+
                     //subj[0] = [{"X":348,"Y":257},{"X":364,"Y":148},{"X":362,"Y":148},{"X":326,"Y":241},{"X":295,"Y":219},{"X":258,"Y":88},{"X":440,"Y":129},{"X":370,"Y":196},{"X":372,"Y":275}];
                     var co = new Clipper.ClipperOffset(2, 0.25);
                     co.AddPaths(subj, Clipper.JoinType.jtRound, Clipper.EndType.etClosedPolygon);
                     var offset_val = -4.0;
-                    if (d.properties.name == "Rainier Beach") {
-                       offset_val = -2.0;
-                    }
+                    //if (d.properties.name == "Rainier Beach") {
+                    //    offset_val = -2.0;
+                    //}
                     co.Execute(solution, offset_val);
+
                     //Clipper.JS.ScaleDownPaths(subj, scale);
+                    var innerpoints = [];
+
+                    // divide phrase into number of polygons that result from
+                    // the Clipper transform
+                    var nameArray = bestplaces[d.properties.name].bestmatch.split(" ");
+                    var nameNoSpaces = nameArray[0];
+                    for (var i = 1; i < nameArray.length; i++) {
+                        nameNoSpaces += nameArray[i];
+                    }
+                    var slicedNameArray = TextUtil.slicePhrase(solution.length, nameNoSpaces);
                     for (var poly = 0; poly < solution.length; poly++) {
                         var innerPointsList = "";
                         for (var innerPoint = 0; innerPoint < solution[poly].length; innerPoint++) {
@@ -196,15 +205,29 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                                 innerPointsList += curr.X + "," + curr.Y + " ";
                             }
                         }
-                        d3.select(this)
-                            .attr("neighborhoodBounds", innerPointsList)
-                            .append("polygon")
-                            .attr("points", innerPointsList)
-                            .attr("class", "innertest")
-                            .attr("fill", function (d) {
-                                return displayPaddedPolygons ? "pink" : "none";
-                            });
+                        var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
+
+                        if (pathCoords3d != null) { //coordinates are enough to actually make a shape
+                            MapUtil.horizontalSliceAlg(d3.select(this), pathCoords3d, d, slicedNameArray[poly], padding, getGridCache(),
+                                USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
+                                font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG, TextToSVG, raphael);
+                        }
+                        if (GRID_CACHE_OUTPUT) {
+                            console.log(JSON.stringify(getGridCache()) + "end");
+                        }
+                        innerpoints[poly] = innerPointsList;
                     }
+
+                    console.log("rendering " + d.properties.name);
+
+                    //d3.select(this)
+                    //    .attr("neighborhoodBounds", innerpoints[0])
+                    //    .append("polygon")
+                    //    .attr("points", innerpoints[0])
+                    //    .attr("class", "innertest")
+                    //    .attr("fill", function (d) {
+                    //        return displayPaddedPolygons ? "pink" : "none";
+                    //    });
                 })
                 .attr("phrase", function (d) {
                     return bestplaces[d.properties.name].bestmatch;
@@ -220,39 +243,10 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                 })
                 .on("mouseover", MapUtil.setLegend)
                 .on("mouseout", MapUtil.resetLegend);
-            //.attr("transform-origin", function(d) {
-            //    // get center of polygon
-            //    var pathString = this.getAttribute("neighborhoodBounds");
-            //    var pathArray = TextUtil.pathToArray(pathString);
-            //
-            //    var aabb = PolyK.GetAABB(pathArray);
-            //    var xcenter = aabb.x + (aabb.width * 1.0 / 2);
-            //    var ycenter = aabb.y + (aabb.height * 1.0 / 2);
-            //    return xcenter + " " + ycenter;
-            //})
-            //.attr("transform", "scale(" + (1 - padding) + ", " + (1 - padding) + ")");
 
             neighborhoodGroup.selectAll(".neighborhood")
                 .each(function (d) {
 
-                    console.log("rendering " + d.properties.name);
-                    var neighborhoodBoundsString = this.getAttribute("neighborhoodBounds");
-                    var pathCoords3d = NeighborhoodParser.pathArray(neighborhoodBoundsString);
-
-
-                    if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                        var nameArray = bestplaces[d.properties.name].bestmatch.split(" ");
-                        var nameNoSpaces = nameArray[0];
-                        for (var i = 1; i < nameArray.length; i++) {
-                            nameNoSpaces += nameArray[i];
-                        }
-                        MapUtil.horizontalSliceAlg(d3.select(this), pathCoords3d, d, nameNoSpaces, padding, getGridCache(),
-                            USE_GRID_CACHING, displayRectangles, displayBounds, displayText, TEXT_SIZE_MULTIPLIER,
-                            font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, textToSVG, TextToSVG, raphael);
-                    }
-                    if (GRID_CACHE_OUTPUT) {
-                        console.log(JSON.stringify(getGridCache()) + "end");
-                    }
                 });
         }
 
