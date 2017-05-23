@@ -62,10 +62,8 @@ var displayPaddedPolygons = false;
 //var oReq = new XMLHttpRequest(); //New request object
 //oReq.onload = function () {
 //    bestplaces = JSON.parse(this.responseText);
-
+//
 var bestplaces = sample_bestplaces;
-
-
 
 var svg = d3.select(".mapcontainer")
     .attr("id", "mapContainer")
@@ -157,6 +155,9 @@ d3.json("json/neighborhoods.json", function (error, topology) {
             // fill text
             neighborhoodGroup.selectAll(".neighborhood")
                 .each(function (d) {
+                    if (d.properties.name == "Rainier Beach") {
+                        debugger;
+                    }
                     var pathCoords3d = NeighborhoodParser.get3dPathArray(
                         d3.select(this)
                             .attr("neighborhoodBounds"), d.type == "MultiPolygon");
@@ -169,19 +170,24 @@ d3.json("json/neighborhoods.json", function (error, topology) {
 
                     var subj = new Clipper.Paths();
                     var solution = new Clipper.Paths();
-                    var scale = 100;
+                    //var scale = 100;
                     var innerArray = [];
 
-                    Clipper.JS.ScaleUpPaths(subj, scale);
+
                     for (var p = 0; p < pathCoords3d[0].length; p++) {
                         innerArray[innerArray.length] = {"X": pathCoords3d[0][p][0], "Y": pathCoords3d[0][p][1]};
                     }
+                    //Clipper.JS.ScaleUpPaths(subj, scale);
                     subj[0] = innerArray;
                     //subj[0] = [{"X":348,"Y":257},{"X":364,"Y":148},{"X":362,"Y":148},{"X":326,"Y":241},{"X":295,"Y":219},{"X":258,"Y":88},{"X":440,"Y":129},{"X":370,"Y":196},{"X":372,"Y":275}];
                     var co = new Clipper.ClipperOffset(2, 0.25);
                     co.AddPaths(subj, Clipper.JoinType.jtRound, Clipper.EndType.etClosedPolygon);
-                    co.Execute(solution, -4.0);
-                    Clipper.JS.ScaleDownPaths(subj, scale);
+                    var offset_val = -4.0;
+                    if (d.properties.name == "Rainier Beach") {
+                       offset_val = -2.0;
+                    }
+                    co.Execute(solution, offset_val);
+                    //Clipper.JS.ScaleDownPaths(subj, scale);
                     for (var poly = 0; poly < solution.length; poly++) {
                         var innerPointsList = "";
                         for (var innerPoint = 0; innerPoint < solution[poly].length; innerPoint++) {
@@ -228,9 +234,11 @@ d3.json("json/neighborhoods.json", function (error, topology) {
 
             neighborhoodGroup.selectAll(".neighborhood")
                 .each(function (d) {
+
                     console.log("rendering " + d.properties.name);
                     var neighborhoodBoundsString = this.getAttribute("neighborhoodBounds");
                     var pathCoords3d = NeighborhoodParser.pathArray(neighborhoodBoundsString);
+
 
                     if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                         var nameArray = bestplaces[d.properties.name].bestmatch.split(" ");
@@ -252,10 +260,9 @@ d3.json("json/neighborhoods.json", function (error, topology) {
         loadingIndicator.stop();
     });
 });
-
-
-//};
 //
+//
+//};
 //oReq.open("get", "yelp/getyelp.php", true);
 //oReq.send();
 
