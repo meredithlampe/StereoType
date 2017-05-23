@@ -244,25 +244,19 @@ var NeighborhoodParser = {
                        TEXT_SIZE_MULTIPLIER, font, TextToSVG) {
 
         var optimalHorizontalSlices = -1;
-        var optimalHorizontalSlicesArea = -1;
-        var lowestError = Number.MAX_VALUE;
-        var lowestErrorArea = Number.MAX_VALUE;
         var lowestAreaDifference = Number.MAX_VALUE;
 
-        //find total poly area
+        //find total poly area (of all polys in path coords 3d)
         var totalPolyArea = 0;
         for (var poly = 0; poly < pathCoords3d.length; poly++) {
             totalPolyArea += PolyK.GetArea(PolygonGenerator.twoToOneDimensional(pathCoords3d[poly]));
         }
 
+        // for each possible number of horizontal grid rows
         for (var horCount = 1; horCount < HORIZONTAL_SLICE_CAP; horCount++) {
 
             var horLevelError = 0;
-            var horLevelError_Area = 0; //difference between char area and inscribed rectangle area
             var coveredArea = 0; //difference between inscribed rect area and total poly area
-
-            //try this level. compare with optimal aspect ratio.
-            //NeighborhoodParser.divide(pathCoords3d, horCount, dimensions,)
 
             //slice into n levels, where n = number of horizontal levels * number of polygons that make
             //up neighborhood
