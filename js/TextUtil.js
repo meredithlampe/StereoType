@@ -652,10 +652,14 @@ var TextUtil = {
             .attr("startOffset", "50%")
             .text(phrase)
             .attr("font-size", (textSize * TEXT_SIZE_MULTIPLIER) + "pt")
-            .attr("font-family", font);
+            .attr("font-family", font)
+            .attr("class", ".remove-me");
+
+        // remove all of the stuff we used for iterating
+        phantomSvg.remove();
 
         //return path and text
-        var result = [path, text];
+        var result = [path, text]; // these get removed by calling function if they want to
         return result;
 
     },
