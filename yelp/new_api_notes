@@ -1,0 +1,27 @@
+Facebook:
+    Places API: center and radius, just like Twitter.
+
+AirBNB:
+    doesn't exist - no API
+
+Craigstlist: 
+    maybe a home-grown API...npm package
+
+Zillow
+    Promising! 
+   "Zillow Home Value Index, Zestimate distribution, median single family home and condo values, average tax rates, and percentage of flips.
+    Demographic data at the city and neighborhood level"
+
+    Zillow Home Value Index:
+        median Zestimate valuation for a given area on a given day (it changes!) 
+        (we don't want to average because that is sensitive to extreme values)
+
+    Zestimate distribution:
+        Zestimate: zillow's estimate of the current market value for a home
+         
+    
+Seattle open data
+    https://data.seattle.gov/ 
+
+Twitter
+    looks like geolocation search is still the same, using lat/long/radius.. :/
