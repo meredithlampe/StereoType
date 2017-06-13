@@ -130,6 +130,7 @@ var topoGeometries;
 //}
 
 d3.json("json/neighborhoods.json", function (error, topology) {
+   debugger;
 
     TextToSVG.load('./css/DIN-Condensed-Bold.ttf', function (err, textToSVG) {
         if (err) {
@@ -161,9 +162,9 @@ d3.json("json/neighborhoods.json", function (error, topology) {
                         d3.select(this)
                             .attr("neighborhoodBounds"), d.type == "MultiPolygon");
 
-                    console.log("saving " + d.properties.name + " to bounds array");
-                    neighborhood_bounds_output[d.properties.name] =
-                        d3.select(this).attr("neighborhoodBounds");
+                    //console.log("saving " + d.properties.name + " to bounds array");
+                    //neighborhood_bounds_output[d.properties.name] =
+                    //    d3.select(this).attr("neighborhoodBounds");
 
                     var subj = new Clipper.Paths();
                     var solution = new Clipper.Paths();
