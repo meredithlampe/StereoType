@@ -252,8 +252,11 @@ module.exports = {
                        padding, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO,
                        TEXT_SIZE_MULTIPLIER, font, TextToSVG) {
 
+        debugger;
+
         var optimalHorizontalSlices = -1;
-        var lowestAreaDifference = Number.MAX_VALUE;
+        //var lowestAreaDifference = Number.MAX_VALUE;
+        var lowestError = Number.MAX_VALUE;
 
         //find total poly area (of all polys in path coords 3d)
         var totalPolyArea = 0;
@@ -280,7 +283,7 @@ module.exports = {
 
             if (slices != null) {
 
-                //loop through the slices
+                //loop through the horizontal slices
                 for (var i = 0; i < slices.length; i++) {
 
                     //get color for this slice
@@ -290,21 +293,22 @@ module.exports = {
                     //divide phrase for this slice into polys for this slice
                     var phraseSlicePoly = TextUtil.slicePhrase(currSlice.length, phrasePieces[i]);
 
-                    //loop through polys within a slice
+                    //loop through polys within a slice (sometimes slicing horizontally results
+                    // in more than two slices (i.e. more than the top and bottom slices)
                     //slice vertically, but have to keep track of order, left to right
                     for (var j = 0; j < slices[i].length; j++) {
                         var currPolyInSlice = currSlice[j];
 
                         //paint color of whole horizontal slice
-                        var polyInSlicePath = svg.append("path");
-                        polyInSlicePath.attr("d", function() {
-                                var twoDPath = module.exports.oneDToTwoD(currPolyInSlice);
-                                //console.log("twoDPath: " + twoDPath);
-                                var pathString = module.exports.arrayToPath(twoDPath);
-                                //console.log(pathString);
-                                return pathString;
-                            })
-                            .attr("fill", color);
+                        //var polyInSlicePath = svg.append("path");
+                        //polyInSlicePath.attr("d", function() {
+                        //        var twoDPath = module.exports.oneDToTwoD(currPolyInSlice);
+                        //        //console.log("twoDPath: " + twoDPath);
+                        //        var pathString = module.exports.arrayToPath(twoDPath);
+                        //        //console.log(pathString);
+                        //        return pathString;
+                        //    })
+                        //    .attr("fill", color);
 
 
                         //worry about vertical slicing horizontal slice now
@@ -330,7 +334,7 @@ module.exports = {
 
                             //loop through each vertical slice
                             for (var g = 0; g < verticalSlices.length; g++) {
-                                var vertColor = DebugTool.colorfulColors[g];
+                                //var vertColor = DebugTool.colorfulColors[g];
                                 var currVertSlice = verticalSlices[g];
 
                                 var currPhrase = phraseForSlicePiece[g];
@@ -368,17 +372,17 @@ module.exports = {
                                         var inscribedArea = rectangle[1];
 
                                         //do a sample append...doesn't really matter what character it is
-                                        var pathAndText = TextUtil.appendCharacterIntoRectangle('X', rectangle,
-                                            svg, d, "test", 0, false, false, TEXT_SIZE_MULTIPLIER, font, TextToSVG);
-                                        var textBox = pathAndText[1].node().getBoundingClientRect();
-                                        var textArea = textBox.width * textBox.height;
+                                        //var pathAndText = TextUtil.appendCharacterIntoRectangle('X', rectangle,
+                                        //    svg, d, "test", 0, false, false, TEXT_SIZE_MULTIPLIER, font, TextToSVG);
+                                        //var textBox = pathAndText[1].node().getBoundingClientRect();
+                                        //var textArea = textBox.width * textBox.height;
 
                                         //remove path and text
-                                        pathAndText[0].remove();
-                                        pathAndText[1].remove();
+                                        //pathAndText[0].remove();
+                                        //pathAndText[1].remove();
 
                                         //horLevelError_Area += areaError;
-                                        coveredArea += textArea;
+                                        //coveredArea += textArea;
                                     }
 
                                     //the error was what we were really after.
@@ -393,7 +397,7 @@ module.exports = {
                         }
 
                         //remove this poly
-                        polyInSlicePath.remove();
+                        //polyInSlicePath.remove();
                     }
 
                 }
@@ -402,12 +406,12 @@ module.exports = {
                 console.log("slices null for neighborhood: " + d.properties.name);
             }
 
-            //if (horLevelError < lowestError) {
-            //    //this number of horizontal levels is a better
-            //    //fit for our letters
-            //    lowestError = horLevelError;
-            //    optimalHorizontalSlices = horCount;
-            //}
+            if (horLevelError < lowestError) {
+                //this number of horizontal levels is a better
+                //fit for our letters
+                lowestError = horLevelError;
+                optimalHorizontalSlices = horCount;
+            }
 
 
             //if (horLevelError_Area < lowestErrorArea) {
@@ -417,11 +421,11 @@ module.exports = {
             //    optimalHorizontalSlicesArea = horCount;
             //}
 
-            var areaDifference = totalPolyArea - coveredArea;
-            if (areaDifference < lowestAreaDifference) {
-                lowestAreaDifference = areaDifference;
-                optimalHorizontalSlices = horCount;
-            }
+            //var areaDifference = totalPolyArea - coveredArea;
+            //if (areaDifference < lowestAreaDifference) {
+            //    lowestAreaDifference = areaDifference;
+            //    optimalHorizontalSlices = horCount;
+            //}
 
         }
 
