@@ -110,6 +110,7 @@ module.exports = {
         // get number of horizontal slices we should be using for optimal letter fitting
         var optimalHorizontalSlices = NeighborhoodParser.testGrid(pathCoords3d, dimensions, d, svg,
             phrase, padding, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, TEXT_SIZE_MULTIPLIER, font, TextToSVG);
+        console.log("num horizontal slices: " + optimalHorizontalSlices);
 
 
         // get individual grid cells that each letter will be fit into
