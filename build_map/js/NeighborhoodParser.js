@@ -252,8 +252,6 @@ module.exports = {
                        padding, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO,
                        TEXT_SIZE_MULTIPLIER, font, TextToSVG) {
 
-        debugger;
-
         var optimalHorizontalSlices = -1;
         //var lowestAreaDifference = Number.MAX_VALUE;
         var lowestError = Number.MAX_VALUE;

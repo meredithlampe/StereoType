@@ -32,7 +32,7 @@ var TEXT_SIZE_MULTIPLIER = 1.5;
 
 var font = "din-condensed-bold";
 var file = './json/neighborhoods.json';
-var font_for_map = './css/DIN-Condensed-Bold.ttf';
+var font_for_map = './DIN-Condensed-Bold.ttf';
 
 // copied from the yelp stereotype page --> bad
 var rotate = [122, 0, 0];
