@@ -805,7 +805,11 @@ module.exports = {
                 }
 
                 // is point inside of polygon?
-                if (!point || !polyk.ContainsPoint(rectangle.polygon, point.x, point.y)) {
+                //if (!point || !polyk.ContainsPoint(rectangle.polygon, point.x, point.y)) {
+                if (!point || !polyk.ContainsPoint(rectangle.polygon, point[0], point[1])) {
+                    if (!point) {
+                       console.log("point is null");
+                    }
                     countOutOfBounds++;
                     if (countOutOfBounds > 2) {
                         stopIterating = true;
