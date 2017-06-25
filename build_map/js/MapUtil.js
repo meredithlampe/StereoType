@@ -4,6 +4,7 @@
 
 const TextToSVG = require('text-to-svg');
 const NeighborhoodParser = require('./NeighborhoodParser.js');
+const TextUtil = require('./TextUtil.js');
 
 module.exports = {
 
@@ -117,15 +118,19 @@ module.exports = {
         var gridUnits = NeighborhoodParser.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, d, svg,
             phrase, padding);
 
-        console.log(gridUnits[0]);
+        //console.log(gridUnits[0]);
+        var chars = [];
 
-        //if (false) {
-        //    for (var i = 0; i < gridUnits.length; i++) {
-        //        var character = phrase.charAt(i);
-        //        TextUtil.appendCharacterAsSVG(character, gridUnits[i], svg, d, i, padding, displayText, displayBounds,
-        //            TEXT_SIZE_MULTIPLIER, font, textToSVG, raphael);
-        //    }
-        //}
+        for (var i = 0; i < gridUnits.length; i++) {
+            var character = phrase.charAt(i);
+            //TextUtil.appendCharacterAsSVG(character, gridUnits[i], svg, d, i, padding, displayText, displayBounds,
+            //    TEXT_SIZE_MULTIPLIER, font, textToSVG, raphael);
+            chars[chars.length] = TextUtil.getCharacterAsSVG(character, gridUnits[i], svg, d, i, padding,
+                null, null,
+                TEXT_SIZE_MULTIPLIER, font, textToSVG, raphael);
+
+            console.log(chars[chars.length - 1]);
+        }
     },
 
     appendSingleLetter: function (rectangle, letter, d) {
