@@ -131,6 +131,8 @@ module.exports = {
 
             console.log(chars[chars.length - 1]);
         }
+
+        return chars;
     },
 
     appendSingleLetter: function (rectangle, letter, d) {

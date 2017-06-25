@@ -33,6 +33,7 @@ var TEXT_SIZE_MULTIPLIER = 1.5;
 var font = "din-condensed-bold";
 var file = './json/neighborhoods.json';
 var font_for_map = './DIN-Condensed-Bold.ttf';
+var outputfile = './json/neighborhoodChars.json';
 
 // copied from the yelp stereotype page --> bad
 var rotate = [122, 0, 0];
@@ -54,10 +55,33 @@ jsonfile.readFile(file, function (err, topology) {
         var topoGeometries = topojson.feature(topology, topology.objects.neighborhoods)
             .features;
         var bestplaces = sample_bestplaces;
+        var result = {};
 
+        // result will be:
+        /*  {
+                "NeighborhoodName":
+                    [
+                        first char path , // char paths are strings
+                        second char path,
+                        ...
+                        last char path in neighborhood
+                     ]
+                "SecondNeighborhoodName":
+                    [
+                        ""
+                    ]
+
+            }
+        */
+
+        // loop through each neighborhood
         for (var i = 0; i < topoGeometries.length; i++) {
 
             var topo = topoGeometries[i];
+
+            console.log("processing " + topo.properties.name);
+
+            result[topo.properties.name] = []; // to store each sub-polygon for this shape
 
             // convert path array to 3d array of coordinates
             var pathCoords3d = NeighborhoodParser.get3dPathArray(
@@ -72,7 +96,9 @@ jsonfile.readFile(file, function (err, topology) {
             var slicedNameArray = TextUtil.slicePhrase(solution.length, nameNoSpaces);
 
             // for each polygon in the overall shape, fill with text
+            // loop through polygons in result of padding operation
             for (var poly = 0; poly < solution.length; poly++) {
+
                 var innerPointsList = "";
                 for (var innerPoint = 0; innerPoint < solution[poly].length; innerPoint++) {
                     if (!isNaN(solution[poly][innerPoint].X)) {
@@ -83,13 +109,15 @@ jsonfile.readFile(file, function (err, topology) {
                 var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
                 if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                    MapUtil.horizontalSliceAlg(pathCoords3d, topo, slicedNameArray[poly], 0,
+                    result[topo.properties.name][poly] = MapUtil.horizontalSliceAlg(pathCoords3d, topo, slicedNameArray[poly], 0,
                         TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO,
                         textToSVG, TextToSVG, null, svg);
                 }
             }
-
         }
+
+        // write result out to file
+        jsonfile.writeFileSync(outputfile, result);
     });
 });
 
