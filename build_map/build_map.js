@@ -55,7 +55,11 @@ jsonfile.readFile(file, function (err, topology) {
         var topoGeometries = topojson.feature(topology, topology.objects.neighborhoods)
             .features;
         var bestplaces = sample_bestplaces;
+        // to contain result (result of text fitting) and actual text of best matches for neighborhood
+        var output_container = {};
         var result = {};
+        output_container.result = result;
+        output_container.best_places = {};
 
         // result will be:
         /*  {
@@ -82,6 +86,7 @@ jsonfile.readFile(file, function (err, topology) {
             console.log("processing " + topo.properties.name);
 
             result[topo.properties.name] = []; // to store each sub-polygon for this shape
+            output_container.best_places[topo.properties.name] = bestplaces[topo.properties.name];
 
             // convert path array to 3d array of coordinates
             var pathCoords3d = NeighborhoodParser.get3dPathArray(
@@ -117,7 +122,7 @@ jsonfile.readFile(file, function (err, topology) {
         }
 
         // write result out to file
-        jsonfile.writeFileSync(outputfile, result);
+        jsonfile.writeFileSync(outputfile, output_container);
     });
 });
 

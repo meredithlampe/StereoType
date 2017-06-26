@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/meredithlampe/StereoType#readme",
   "dependencies": {
+    "d3": "^4.9.1",
+    "d3plus": "file:d3plus",
     "raphael": "^2.2.7",
     "text-to-svg": "^3.1.0",
     "webpack": "^2.3.3"
