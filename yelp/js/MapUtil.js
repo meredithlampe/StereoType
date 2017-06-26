@@ -3,6 +3,7 @@
  */
 
 const TextToSVG = require('text-to-svg');
+const d3 = require('d3');
 
 export function setMapOpacityFade() {
     d3.selectAll(".neighborhood").attr("opacity", "0.5");
