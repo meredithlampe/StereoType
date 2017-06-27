@@ -1,5 +1,6 @@
 <?php
 
+
 $outputfilename = "../yelp/output.txt";
 $configfilename = "../config.json"
 
