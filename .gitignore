@@ -39,7 +39,6 @@ Thumbs.db
 # WEBSTORM SHIT #
 # ###############
 **/.idea
-
 yelp/bundle.js
 
 # npm stuff #
