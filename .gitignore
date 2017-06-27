@@ -1,4 +1,4 @@
-ompiled source #
+# compiled source #
 ###################
 *.com
 *.class
@@ -38,4 +38,24 @@ Thumbs.db
 
 # WEBSTORM SHIT #
 # ###############
-.idea/*
+**/.idea
+
+yelp/bundle.js
+
+# npm stuff #
+# ###########
+yelp/node_modules/*
+build_map/node_modules
+
+# misc #
+# ######
+build_map/js/d3plus/*
+yelp/d3plus/*
+
+# don't push the config file ! #
+# ##############################
+config.json
+
+# don't push the swap files #
+# ##########################
+**/*.swp
