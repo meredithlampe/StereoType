@@ -1,9 +1,15 @@
 <?php
 
 $outputfilename = "../yelp/output.txt";
+$configfilename = "../config.json"
 
 header("Content-type: application/json");
 // get list of name -> business name (1st in list of 'best match')
+
+// get yelp auth
+$config = fopen($configfilename, "r") or die("Unable to open config file");
+$config_data = json_decode(fread($config, filesize($configfilename)), true);
+fclose($config);
 
 // get neighborhood names
 $neighborhood_locations = fopen("../js/geo.json", "r") or die("Unable to open file!");
@@ -18,7 +24,7 @@ foreach($locations as $name => $location) { //loop through locations
     $curl = curl_init('https://api.yelp.com/v3/businesses/search?location=' . $encodedname);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-        'Authorization: Bearer gizMnc5_0GCIymbtjEzcsbpPbow6WiAtcAk9HaivKu3_kZKX7u5TRsS0i7QrbYQBtVXE19evr63JwVryoTaUpAVNQxYDo-Qmzu4V_ym8i5IDulhK4wMpsxaY1R3pWHYx'
+        $config["yelp"]["auth"]
         ));
     $result = json_decode(curl_exec($curl));
     $response[$name] = array();
