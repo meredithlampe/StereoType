@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 31);
+/******/ 	return __webpack_require__(__webpack_require__.s = 30);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -19263,7 +19263,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
  * Copyright (c) 2016 Hideki Shiro
  */
 
-module.exports = __webpack_require__(49);
+module.exports = __webpack_require__(48);
 
 
 /***/ }),
@@ -19443,7 +19443,7 @@ exports.BoundingBox = BoundingBox;
 
 
 var check = __webpack_require__(1);
-var draw = __webpack_require__(36);
+var draw = __webpack_require__(35);
 var path = __webpack_require__(3);
 
 function getPathDefinition(glyph, path) {
@@ -22984,106 +22984,10 @@ exports.checkArgument = function(expression, message) {
     }
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(33).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(32).Buffer))
 
 /***/ }),
 /* 25 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* unused harmony export getGridCache */
-/**
- * Created by meredith on 6/4/16.
- */
-
-var gridCache = {
-    "Westlake": {"6": 5, "8": 4},
-    "Sand Point": {"9": 2, "32": 5, "39": 5},
-    "South Park": {"7": 2, "9": 3},
-    "Pinehurst": {"9": 4, "17": 5, "19": 5},
-    "Brighton": {"8": 3, "21": 4, "24": 4},
-    "Maple Leaf": {"9": 3, "15": 4, "17": 4},
-    "Sunset Hill": {"10": 4, "21": 5, "25": 5},
-    "Beacon Hill": {"10": 8, "15": 5, "16": 5},
-    "Rainier Beach": {"11": 4, "12": 3},
-    "Broadmoor": {"9": 3, "23": 5, "25": 5},
-    "Madison Park": {"11": 4, "17": 5, "18": 5},
-    "Whittier Heights": {"6": 2, "7": 3, "15": 4},
-    "High Point": {"6": 3, "7": 3, "9": 3},
-    "Interbay": {"8": 4, "12": 4, "14": 4},
-    "View Ridge": {"9": 2, "19": 4, "21": 4},
-    "Matthews Beach": {"13": 4, "17": 5, "18": 5},
-    "Wedgwood": {"8": 2, "18": 2, "20": 3},
-    "South Lake Union": {"10": 2, "13": 2, "15": 2},
-    "Capitol Hill": {"11": 3, "26": 4, "30": 5},
-    "First Hill": {"9": 2, "28": 4, "31": 4},
-    "Arbor Heights": {"9": 3, "10": 3, "12": 3},
-    "Northgate": {"7": 2, "8": 2, "9": 2},
-    "Lower Queen Anne": {"9": 2, "10": 2, "15": 3},
-    "Eastlake": {"8": 4},
-    "Mount Baker": {"10": 3},
-    "Fauntleroy": {"10": 3, "11": 2, "12": 2},
-    "Windermere": {"10": 2, "14": 2, "15": 2},
-    "Haller Lake": {"10": 3, "20": 5, "23": 5},
-    "Meadowbrook": {"11": 4, "15": 4, "17": 5},
-    "Downtown": {"8": 3, "16": 4, "17": 5},
-    "Admiral": {"7": 2, "8": 2},
-    "North College Park": {"14": 4, "15": 4, "17": 4},
-    "Queen Anne": {"9": 2, "23": 5, "25": 5},
-    "Atlantic": {"8": 4, "11": 5, "13": 5},
-    "Loyal Heights": {"6": 2, "7": 2, "12": 3},
-    "North Beach": {"10": 2, "17": 3, "19": 3},
-    "Denny-Blaine": {"11": 4, "12": 4},
-    "Madison Valley": {"13": 3, "14": 3, "16": 3},
-    "Central District": {"15": 4, "22": 5, "24": 5},
-    "International District": {"6": 1, "21": 2},
-    "Industrial District": {"18": 3, "27": 4, "30": 5},
-    "University District": {"6": 2, "18": 4},
-    "Roosevelt": {"9": 3, "15": 4, "17": 4},
-    "Pioneer Square": {"12": 4, "13": 4, "14": 4},
-    "Blue Ridge": {"9": 2, "11": 2, "12": 2},
-    "Ballard": {"7": 2, "10": 2, "11": 2},
-    "Portage Bay": {"10": 3, "11": 3},
-    "Roxhill": {"7": 3, "8": 3, "9": 3},
-    "North Delridge": {"13": 3, "14": 3, "17": 3},
-    "Highland Park": {"12": 3, "20": 4, "23": 4},
-    "Fremont": {"7": 2, "26": 4, "30": 4},
-    "Wallingford": {"11": 3, "12": 3},
-    "Hawthorne Hills": {"14": 2, "24": 3, "27": 3},
-    "Greenwood": {"9": 3, "18": 4, "19": 4},
-    "Leschi": {"6": 3, "11": 3, "13": 4},
-    "Columbia City": {"9": 2, "10": 3, "12": 3},
-    "Riverview": {"9": 3, "21": 5, "23": 5},
-    "Montlake": {"4": 2, "8": 3},
-    "Green Lake": {"9": 2, "13": 3, "15": 3},
-    "Olympic Hills": {"12": 3, "16": 3, "17": 3},
-    "Ravenna": {"7": 2, "8": 3, "15": 3, "16": 4},
-    "Laurelhurst": {"10": 2, "11": 3},
-    "Crown Hill": {"9": 3, "16": 4, "18": 4},
-    "Madrona": {"7": 2, "11": 3},
-    "Broadview": {"9": 3, "11": 3, "12": 4},
-    "Bitter Lake": {"10": 5, "11": 5},
-    "Seward Park": {"10": 3, "23": 4, "26": 5},
-    "Olympic Manor": {"12": 3, "14": 3, "16": 4},
-    "South Delridge": {"11": 4, "12": 4, "13": 4},
-    "Cedar Park": {"9": 3, "10": 3, "11": 4},
-    "Victory Heights": {"14": 5, "19": 5, "21": 5},
-    "Magnolia": {"8": 2, "13": 2, "14": 4},
-    "Phinney Ridge": {"7": 2, "8": 2, "12": 3},
-    "West Seattle": {"11": 5, "15": 5, "17": 5},
-    "Belltown": {"8": 1, "13": 2, "15": 2},
-    "Bryant": {"6": 3, "21": 5, "23": 5},
-    "Alki": {"4": 1, "13": 1, "15": 1},
-    "Georgetown": {"10": 2, "21": 3, "22": 4}
-
-};
-
-function getGridCache() {
-    return gridCache;
-};
-
-/***/ }),
-/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -23316,1446 +23220,9 @@ function appendSingleLetter(rectangle, letter, d) {
 
 
 /***/ }),
-/* 27 */
-/***/ (function(module, exports) {
-
-
-
-/**
- * Created by meredith on 6/5/16.
- *
- * Stores geolocation for neighborhoods in seattle, along with radius values
- */
-
-// note I changed this on 4.11.17
-    // probably broke something
- var locations = {
-
-    "University District":  [
-        {
-            "lat": 47.653700,
-            "long": -122.302706,
-            "radius": 0.5
-        }
-    ],
-"North Beach": [
-            {
-            "lat": 47.696688,
-            "long": -122.390599,
-            "radius": 0.5
-            }
-    ],
-    
-"Broadview": [{
-            "lat": 47.726977,
-            "long": -122.364500,
-            "radius": 0.5
-            },
-            {
-            "lat": 47.716930,
-            "long": -122.366216,
-            "radius": 0.5
-            }
-            ],
-    "View Ridge": [{
-        "lat": 47.683486,
-        "long": -122.273829,
-        "radius": 0.6
-    }],
-"Haller Lake":[{
-            "lat": 47.719685,
-            "long": -122.333860,
-            "radius": 0.5
-            }],
-"Olympic Hills":[{
-            "lat": 47.726800,
-            "long": -122.392573,
-            "radius": 0.5
-            }],
-"Cedar Park":[{
-            "lat": 47.726926,
-            "long": -122.285881,
-            "radius": 0.5
-            }],
-"Northgate":[{
-            "lat": 47.721390,
-            "long": -122.326826,
-            "radius": 0.5
-            },
-            {
-            "lat": 47.701412,
-            "long": -122.3232393,
-            "radius": 0.5
-            }],
-"Blue Ridge":[{
-            "lat": 47.707145,
-            "long": -122.375321,
-            "radius": 0.5
-            }],
-"Maple Leaf":[{
-            "lat": 47.694960,
-            "long": -122.315871,
-            "radius": 0.5
-            }],
-    "Matthews Beach": [{
-        "lat": 47.710099,
-        "long": -122.282763,
-        "radius": 0.4
-    },
-        {
-            "lat": 47.699991,
-            "long": -122.277184,
-            "radius": 0.5
-        }],
-"Sand Point":[{
-            "lat": 47.681645,
-            "long": -122.253911,
-            "radius": 0.5
-            }],
-"Windermere":[{
-            "lat": 47.671325,
-            "long": -122.266615,
-            "radius": 0.5
-            }],
-    "Pinehurst":[{
-        "lat": 47.728822,
-        "long": -122.318290,
-        "radius": 0.5
-    },
-        {
-            "lat": 47.717581,
-            "long": -122.318092,
-            "radius": 0.5
-        },
-        {   "lat": 47.711459,
-            "long": -122.324958,
-            "radius": 0.1},
-        {
-            "lat": 47.710535,
-            "long": -122.315173,
-            "radius": 0.1
-        }],
-"Wedgwood":[{
-            "lat": 47.690557,
-            "long": -122.290732,
-            "radius": 0.5
-            }],
-"Wallingford":[{
-            "lat": 47.665157,
-            "long": -122.331042,
-            "radius": 0.5
-            },
-            {
-            "lat": 47.655098,
-            "long": -122.333102,
-            "radius": 0.5
-            }],
-"Fremont":[{
-            "lat": 47.656315,
-            "long": -122.354226,
-            "radius": 0.5
-            }],
-"Laurelhurst":[{
-            "lat": 47.659627,
-            "long": -122.277163,
-            "radius": 0.5
-            }],
-"Hawthorne Hills":[{
-            "lat": 47.672849,
-            "long": -122.272833,
-            "radius": 0.3
-            },
-            {
-            "lat": 47.671346,
-            "long": -122.280643,
-            "radius": 0.3
-            }],
-"Magnolia":[{
-            "lat": 47.651710,
-            "long": -122.405040,
-            "radius": 1.0
-            }],
-"Queen Anne":[{
-            "lat": 47.637002,
-            "long": -122.357374,
-            "radius": 0.8
-            }],
-"Lower Queen Anne":[{
-            "lat": 47.624282,
-            "long": -122.354136,
-            "radius": 0.5
-            }],
-"Westlake":[{
-            "lat": 47.635396,
-            "long": -122.341545,
-            "radius": 0.1
-            },
-            {
-            "lat": 47.629988,
-            "long": -122.341245,
-            "radius": 0.5
-            }],
-
-"Interbay":[{
-            "lat": 47.660135,
-            "long": -122.387360,
-            "radius": 0.2
-            },
-            {
-            "lat": 47.652735,
-            "long": -122.378949,
-            "radius": 0.2
-            },
-            {
-            "lat": 47.646086,
-            "long": -122.379009,
-            "radius": 0.2
-            },
-            {
-            "lat": 47.637730,
-            "long": -122.381280,
-            "radius": 0.3
-            },
-            {
-            "lat": 47.625489,
-            "long": -122.379359,
-            "radius": 0.3
-            },
-            {
-            "lat": 47.619603,
-            "long": -122.368617,
-            "radius": 0.3
-            }],
-"Eastlake":[{
-            "lat": 47.639346,
-            "long": -122.326038,
-            "radius": 0.3
-            },
-            {
-            "lat": 47.645852,
-            "long": -122.325223,
-            "radius": 0.1
-            }],
-"Portage Bay":[{
-            "lat": 47.648231,
-            "long": -122.319575,
-            "radius": 0.3
-            }],
-"Beacon Hill":[{
-            "lat": 47.551326,
-            "long": -122.300359,
-            "radius": 0.4
-            },
-            {
-            "lat": 47.567486,
-            "long": -122.316924,
-            "radius": 0.1
-            }],
-"Georgetown":[{
-            "lat": 47.546216,
-            "long": -122.324118,
-            "radius": 1.0
-            },
-            {
-            "lat": 47.543512,
-            "long": -122.307724,
-            "radius": 0.7
-            }],
-"Belltown":[ {
-            "lat": 47.615402,
-            "long": -122.348058,
-            "radius": 0.3
-            },
-            {
-            "lat": 47.616559,
-            "long": -122.353355,
-            "radius": 0.1
-            }],
-"West Seattle":[{
-            "lat": 47.566075,
-            "long": -122.386773,
-            "radius": 0.8
-            }],
-"Seward Park":[{
-            "lat": 47.555139,
-            "long": -122.251381,
-            "radius": 0.5
-            }],
-"Alki":[{
-            "lat": 47.565862,
-            "long": -122.403029,
-            "radius": 0.3
-            },
-            {
-            "lat": 47.574954,
-            "long": -122.410411,
-            "radius": 0.5
-            },
-            {
-            "lat": 47.587460,
-            "long": -122.405261,
-            "radius": 0.5
-            },
-            {
-            "lat": 47.595332,
-            "long": -122.386035,
-            "radius": 0.3
-            }],
-"Fauntleroy":[{
-            "lat": 47.531315,
-            "long": -122.393458,
-            "radius": 0.3
-            },
-            {
-            "lat": 47.523201,
-            "long": -122.384789,
-            "radius": 0.5
-            },
-            {
-            "lat": 47.508303,
-            "long": -122.399552,
-            "radius": 0.4
-            }],
-"South Park":[{
-            "lat": 47.526792,
-            "long": -122.323576,
-            "radius": 0.7
-            },
-            {
-            "lat": 47.537049,
-            "long": -122.333275,
-            "radius": 0.2
-            }],
-"Arbor Heights":[{
-            "lat": 47.509386,
-            "long": -122.380079,
-            "radius": 0.8
-            }],
-"Highland Park":[{
-            "lat": 47.527356,
-            "long": -122.343936,
-            "radius": 0.5
-            },
-            {
-            "lat": 47.517792,
-            "long": -122.333207,
-            "radius": 0.1
-            }],
-"Columbia City":[{
-            "lat": 47.559775,
-            "long": -122.282548,
-            "radius": 0.3
-            },
-            {
-            "lat": 47.565393,
-            "long": -122.294307,
-            "radius": 0.2
-            },
-            {
-            "lat": 47.573211,
-            "long": -122.296796,
-            "radius": 0.1
-            }],
-"South Delridge":[{
-            "lat": 47.530444,
-            "long": -122.360405,
-            "radius": 0.4
-            },
-            {
-            "lat": 47.521866,
-            "long": -122.359805,
-            "radius": 0.3
-            }],
-"High Point": [{
-            "lat": 47.548759,
-            "long": -122.368853,
-            "radius": 0.5
-            },
-            {
-            "lat": 47.539953,
-            "long": -122.367308,
-            "radius": 0.4
-            }],
-"Mount Baker": [{
-            "lat": 47.584061,
-            "long": -122.291033,
-            "radius": 0.4
-            },
-            {
-            "lat": 47.576014,
-            "long": -122.287600,
-            "radius": 0.4
-            },
-            {
-            "lat": 47.567154,
-            "long": -122.284167,
-            "radius": 0.2
-            }],
-"Industrial District": [{
-            "lat": 47.581134,
-            "long": -122.331035,
-            "radius": 0.5
-            },
-            {
-            "lat": 47.567352,
-            "long": -122.332580,
-            "radius": 0.5
-            },
-            {
-            "lat": 47.579976,
-            "long": -122.350948,
-            "radius": 0.4
-            },
-            {
-            "lat": 47.578702,
-            "long": -122.363994,
-            "radius": 0.2
-            }],
-"Madison Valley": [{
-            "lat": 47.624619,
-            "long": -122.289729,
-            "radius": 0.5
-            }],
-    "Madison Park": [{
-        "lat": 47.636966,
-        "long": -122.286085,
-        "radius": 0.6
-    }],
-"Denny-Blaine": [{
-            "lat": 47.621443,
-            "long": -122.289939,
-            "radius": 0.2
-            },
-            {
-            "lat": 47.623641,
-            "long": -122.276163,
-            "radius": 0.5
-            }],
-"Downtown": [{
-            "lat": 47.605824,
-            "long": -122.340344,
-            "radius": 1.0
-            }],
-    "Whittier Heights": [{
-        "lat": 47.686643,
-        "long": -122.370952,
-        "radius": 0.3
-    },
-        {
-            "lat": 47.680258,
-            "long": -122.371081,
-            "radius": 0.3
-        }],
-"Broadmoor": [{
-            "lat": 47.635906,
-            "long": -122.289615,
-            "radius": 0.5
-            }],
-    "Brighton": [
-        {   "lat": 47.541623,
-        "long": -122.276692,
-        "radius": 0.4},
-        {"lat": 47.535626,
-            "long": -122.274332,
-            "radius": 0.4}
-    ],
-    "Sunset Hill": [{
-        "lat": 47.671964,
-        "long": -122.403107,
-        "radius": 0.3
-    },
-        {
-            "lat": 47.683002,
-            "long": -122.402850,
-            "radius": 0.5
-        },
-        {
-            "lat": 47.693633,
-            "long": -122.402421,
-            "radius": 0.1
-        }],
-    "Rainier Beach": [{
-        "lat": 47.513373,
-        "long": -122.260001,
-        "radius": 1
-    }],
-"South Lake Union": [{
-            "lat": 47.623077,
-            "long": -122.337105,
-            "radius": 0.3
-            },
-            {
-            "lat": 47.632910,
-            "long": -122.333758,
-            "radius": 0.4
-            }],
-    "Capitol Hill": [{
-        "lat": 47.627731,
-        "long": -122.317181,
-        "radius": 0.6
-    }],
-    "First Hill": [{
-        "lat": 47.609016,
-        "long": -122.325077,
-        "radius": 0.4
-    }],
-    "Meadowbrook": [{
-        "lat": 47.702143,
-        "long": -122.296535,
-        "radius": 0.3
-    },
-        {
-            "lat": 47.711124,
-            "long": -122.295763,
-            "radius": 0.3
-        }],
-    "Admiral": [{
-        "lat": 47.581198,
-        "long": -122.385528,
-        "radius": 0.1
-    }],
-    "North College Park": [{
-        "lat": 47.695875,
-        "long": -122.336834,
-        "radius": 0.5
-    },
-        {
-            "lat": 47.705002,
-            "long": -122.336749,
-            "radius": 0.4
-        }],
-    "Atlantic": [{
-        "lat": 47.596667,
-        "long": -122.305542,
-        "radius": 0.4
-    },
-        {
-            "lat": 47.587406,
-            "long": -122.301336,
-            "radius": 0.2
-        },
-        {
-            "lat": 47.581848,
-            "long": -122.299362,
-            "radius": 0.1
-        },
-        {
-            "lat": 47.579372,
-            "long": -122.297433,
-            "radius": 0.2
-        }],
-    "Loyal Heights": [{
-        "lat": 47.683318,
-        "long": -122.384374,
-        "radius": 0.4
-    }],
-    "Central District": [{
-        "lat": 47.606342,
-        "long": -122.282172,
-        "radius": 2.2
-    }],
-    "International District": [{
-        "lat": 47.598943,
-        "long": -122.324872,
-        "radius": 0.2
-    },
-        {
-            "lat": 47.597670,
-            "long": -122.317276,
-            "radius": 0.2
-        }],
-    "Roosevelt": [{
-        "lat": 47.679659,
-        "long": -122.316267,
-        "radius": 0.2
-    },
-        {
-            "lat": 47.673244,
-            "long": -122.315066,
-            "radius": 0.15
-        }],
-    "Pioneer Square": [
-        {
-        "lat": 47.600855,
-        "long": -122.332273,
-        "radius": 0.2
-    },
-        {
-            "lat": 47.603285,
-            "long": -122.329054,
-            "radius": 0.1
-        }],
-    "Ballard": [{
-        "lat": 47.676345,
-        "long": -122.388039,
-        "radius": 1.2
-    }],
-    "Roxhill": [{
-        "lat": 47.522857,
-        "long": -122.371232,
-        "radius": 0.4
-    },
-        {
-            "lat": 47.533115,
-            "long": -122.371104,
-            "radius": 0.25
-        }],
-    "North Delridge": [{
-        "lat": 47.563064,
-        "long": -122.363358,
-        "radius": 0.8
-    }],
-    "Greenwood": [{
-        "lat": 47.694669,
-        "long": -122.354564,
-        "radius": 0.8
-    }],
-    "Leschi": [{
-        "lat": 47.602414,
-        "long": -122.290351,
-        "radius": 0.35
-    },
-        {
-            "lat": 47.592950,
-            "long": -122.291638,
-            "radius": 0.2
-        }],
-    "Riverview": [{
-        "lat": 47.550774,
-        "long": -122.353223,
-        "radius": 0.6
-    },
-        {
-            "lat": 47.536695,
-            "long": -122.352193,
-            "radius": 0.3
-        }],
-    "Montlake": [{
-        "lat": 47.641211,
-        "long": -122.304351,
-        "radius": 0.4
-    }],
-    "Green Lake": [{
-        "lat": 47.681777,
-        "long": -122.333332,
-        "radius": 1.4
-    },
-        {
-            "lat": 47.668138,
-            "long": -122.344061,
-            "radius": 0.2
-        }],
-    "Ravenna": [{
-        "lat": 47.678981,
-        "long": -122.307090,
-        "radius": 0.8
-    }],
-    "Crown Hill": [{
-        "lat": 47.700922,
-        "long": -122.371123,
-        "radius": 0.3
-    },
-        {
-            "lat": 47.694192,
-            "long": -122.371252,
-            "radius": 0.3
-        },
-        {
-            "lat": 47.692748,
-            "long": -122.379878,
-            "radius": 0.1
-        }],
-    "Madrona": [{
-        "lat": 47.613357,
-        "long": -122.288264,
-        "radius": 0.5
-    }],
-    "Bitter Lake": [{
-        "lat": 47.729606,
-        "long": -122.350447,
-        "radius": 0.3
-    },
-        {
-            "lat": 47.720080,
-            "long": -122.349932,
-            "radius": 0.3
-        },
-        {
-            "lat": 47.710551,
-            "long": -122.394760,
-            "radius": 0.3
-        }],
-    "Olympic Manor": [{ //this place was just one spot...
-        "lat": 47.689922,
-        "long": -122.385390,
-        "radius": 0.3
-    }],
-    "Victory Heights": [{
-        "lat": 47.714114,
-        "long": -122.305320,
-        "radius": 0.5
-    },
-        {
-            "lat": 47.703805,
-            "long": -122.306908,
-            "radius": 0.3
-        }],
-    "Phinney Ridge": [{
-        "lat": 47.679529,
-        "long": -122.355152,
-        "radius": 0.6
-    },
-        {
-            "lat": 47.668491,
-            "long": -122.354551,
-            "radius": 0.8
-        },
-        {
-            "lat": 47.670514,
-            "long": -122.363563,
-            "radius": 0.1
-        }],
-    "Bryant": [{
-        "lat": 47.665372,
-        "long": -122.286601,
-        "radius": 0.25
-    },
-        {
-            "lat": 47.672539,
-            "long": -122.284970,
-            "radius": 0.3
-        },
-        {
-            "lat": 47.679474,
-            "long": -122.287888,
-            "radius": 0.25
-        }]
-
-};
-
-/***/ }),
+/* 26 */,
+/* 27 */,
 /* 28 */
-/***/ (function(module, exports) {
-
-/**
- * Created by meredith on 5/25/16.
- */
-
-var TextUtil = {
-
-    calculateNumLevels: function (aspectRatio, phrase, addtlLevel, forcedHorizontal, orientation) {
-
-        var numLevels;
-
-        if (forcedHorizontal && aspectRatio > 1.2) { //flat and wide, but horizontal text orientation (left to right)
-            numLevels = 1;
-            numLevels += Math.floor(phrase.length / 10);
-
-            if (aspectRatio < 1.5) {
-                //square-ish...add more levels
-                numLevels += Math.floor(phrase.length / 8);
-            }
-
-        } else {
-            numLevels = Math.ceil(aspectRatio + addtlLevel);
-            numLevels += Math.floor(phrase.length / 12);
-        }
-
-        return numLevels;
-
-    },
-
-    insertSpaces: function (phrase) {
-        var spaceAgumentedPhrase = "";
-        for (var i = 0; i < phrase.length - 1; i++) {
-            spaceAgumentedPhrase += phrase.charAt(i) + " ";
-        }
-        spaceAgumentedPhrase += phrase.charAt(phrase.length - 1);
-        return spaceAgumentedPhrase;
-    },
-
-    fillNeighborhoodText: function (neighborhoodRectangles, phrase, d, displayBounds, displayText, rectDatabase) {
-
-        if (phrase != null && neighborhoodRectangles != null) {
-
-            phrase = phrase.toUpperCase();
-            var viableRectangles;
-
-            viableRectangles = TextUtil.filterViableRectangles(neighborhoodRectangles, d);
-
-            if (viableRectangles != null) {
-                if (rectDatabase[d.properties.name] != null &&
-                    rectDatabase[d.properties.name].manual != null &&
-                    USE_RECTANGLE_DATABASE) {
-                    //fill text in rectangles based on
-                    //instructions delineated in rectangle database
-                    TextUtil.populateTextAlg2(viableRectangles, phrase, displayBounds, displayText, d);
-                } else {
-                    //populateTextAreaRatio(viableRectangles, phrase, displayBounds, displayText, d);
-                    TextUtil.populateTextAlg1(viableRectangles, phrase, displayBounds, displayText, d);
-                }
-            }
-        }
-    },
-
-    //filter rectangles that are unsuitable to be filled with text
-    //i.e. null, too long and skinny, area too small
-    filterViableRectangles: function (neighborhoodRectangles, d) {
-        //keep track of how many rectangles are actually viable, i.e. big enough
-        var nextIndexInViableRectangles = 0;
-        var viableRectangles = [];
-
-        var areaSum = 0;
-
-
-        //compute total area and find viable rectangles
-        for (var i = 0; i < neighborhoodRectangles.length; i++) {
-            if (neighborhoodRectangles[i].rect != null) {
-                var rectArea = neighborhoodRectangles[i].rect[0].width * neighborhoodRectangles[i].rect[0].height;
-                var aspectRatio = neighborhoodRectangles[i].rect[0].width / neighborhoodRectangles[i].rect[0].height;
-                if (rectArea > AREA_CUTOFF && aspectRatio < 20) {
-                    viableRectangles[nextIndexInViableRectangles] = {
-                        rect: neighborhoodRectangles[i].rect,
-                        area: rectArea,
-                        corners: RectangleGenerator.findRectangleCorners(neighborhoodRectangles[i].rect),
-                        aspectRatio: aspectRatio,
-                        id: "rect_" + neighborhoodRectangles[i].num + "_" + neighborhoodRectangles[i].location
-                    };
-                    areaSum += rectArea;
-                    nextIndexInViableRectangles++;
-                }
-            }
-        }
-
-        return viableRectangles;
-    },
-
-
-    //pretty broken
-    populateTextAreaRatio: function (viableRectangles, phrase, displayBounds, displayText, d) {
-
-        var heightOfEachLevel = 10;
-
-        //keep track of next available portion of phrase
-        var currIndexInPhrase = 0;
-
-        for (var i = 0; i < viableRectangles.length; i++) {
-
-            //find area ratio for given rectangle
-            //var areaRatio = (viableRectangles[i][0].width * viableRectangles[i][0].height) / areaSum;
-
-            //use area ratio weighting all rectangles the same
-            var areaRatio = 1 / viableRectangles.length;
-
-            //use area ratio to partition phrase
-            var numChars = Math.floor(areaRatio * phrase.length);
-            var myChars = phrase.substring(currIndexInPhrase, currIndexInPhrase + numChars);
-
-            currIndexInPhrase += numChars;
-
-            var numHorizontalLevels = (viableRectangles[i].rect[0].height / heightOfEachLevel);
-
-            //maybe do this somewhere with greater scope?
-            var rectCoords = RectangleGenerator.findRectangleCorners(viableRectangles[i].rect);
-
-            if (displayBounds) {
-                //for debug: mark corners
-                DebugTool.markFourCorners(rectCoords.topY, rectCoords.lowY, rectCoords.leftX, rectCoords.rightX);
-            }
-
-            //save place in current set of chars
-            var currIndexInMyChars = 0;
-            var charsInEachLevel = Math.floor((1 / numHorizontalLevels) * myChars.length);
-
-            //populate each horizontal level with text
-            for (var j = 1; j <= numHorizontalLevels; j++) {
-
-                //generate path for given horizontal level
-                var startPathX = rectCoords.leftX;
-                var startPathY = rectCoords.topY + (j * heightOfEachLevel);
-
-                var endPathX = rectCoords.rightX;
-                var endPathY = startPathY;
-
-                var levelString
-                if (j == Math.round(numHorizontalLevels)) {
-                    levelString = myChars.substring(currIndexInMyChars, myChars.length);
-                } else {
-                    levelString = myChars.substring(currIndexInMyChars, currIndexInMyChars + charsInEachLevel);
-                }
-                currIndexInMyChars += charsInEachLevel;
-
-                var pathFill;
-                if (displayBounds) {
-                    pathFill = "black";
-                } else {
-                    pathFill = "none";
-                }
-
-                var pathString = "M" + startPathX + "," + startPathY + "L" + endPathX + "," + endPathY;
-                svg.append("path")
-                    .attr("id", "innerPath_" + d.id + "_" + (i + 1) + "_" + j)
-                    .attr("d", pathString)
-                    .style("fill", "none")
-                    .style('stroke', pathFill);
-
-                if (displayText) {
-                    svg.append("text")
-                        .append("textPath")
-                        .attr("xlink:href", "#" + "innerPath_" + d.id + "_" + (i + 1) + "_" + j)
-                        .style("text-anchor", "middle")
-                        .text(levelString)
-                        .attr("font-size", viableRectangles[i].rect[0].width / 5)
-                        .attr("startOffset", "50%")
-                        .attr("startOffset", "50%");
-                }
-
-            }
-        }
-    },
-
-
-    //pre: phrase != null && viableRectangles != null
-    populateTextAlg1: function (viableRectangles, phrase, displayBounds, displayText, d) {
-
-        //first letter goes in first viable rectangle
-        //An angle of zero means that the longer side of the polygon
-        // will be aligned with the x axis. An angle of +90 and/or -90 means that the
-        // longer side of the polygon (the width) will be aligned with the y axis.
-        if (displayText) {
-
-            if (viableRectangles.length > 1) {
-
-                var maxArea = viableRectangles[0].area;
-                var indexOfMaxArea = 0;
-                var aspectRatioBiggestRect = viableRectangles[0].aspectRatio;
-
-                //find biggest rectangle, use for majority of text
-                for (var i = 1; i < viableRectangles.length; i++) {
-                    var currArea = viableRectangles[i].area;
-                    if (currArea > maxArea) {
-                        indexOfMaxArea = i;
-                        maxArea = currArea;
-                        aspectRatioBiggestRect = viableRectangles[i].aspectRatio;
-                    }
-                }
-
-                //apply padding to center rectangle
-                viableRectangles[indexOfMaxArea] = RectangleGenerator.applyPadding(viableRectangles[indexOfMaxArea]);
-
-                //if there are viable rectangles appearing before biggest (i.e. top and left), fill with one letter each
-                var currIndex = 0;
-                var currRectIndex = 0;
-                while (currRectIndex < indexOfMaxArea) {
-
-                    //get current rectangle
-                    var currRect = viableRectangles[currIndex];
-
-                    //if currRect is actually viable
-                    if (currRect.aspectRatio < 4) {
-
-                        //append path and letter
-                        var currLetter = phrase.substring(currIndex, currIndex + 1);
-                        appendSingleLetter(currRect, currLetter, d);
-                        currIndex++;
-                    }
-                    currRectIndex++;
-                }
-
-                var currIndexFromEnd = viableRectangles.length - 1;
-                var countLettersOffEnd = 0;
-
-                while (currIndexFromEnd > indexOfMaxArea) {
-
-                    var currRect = viableRectangles[currIndexFromEnd];
-
-                    if (currRect.aspectRatio < 4) {
-                        //append path and letter
-                        var currLetter = phrase.charAt(phrase.length - 1 - countLettersOffEnd);
-                        appendSingleLetter(currRect, currLetter, d);
-                        countLettersOffEnd++;
-                    }
-                    currIndexFromEnd--;
-                }
-
-                //fill largest rectangle with wrapped text
-                //pass phrase with first letters chopped off (depending on how many got their own rectangles) and
-                //last letter chopped
-                //TextUtil.fillRectWithText(phrase.substring(currIndex, phrase.length - (countLettersOffEnd)), viableRectangles[indexOfMaxArea]);
-                TextUtil.fillRectTextManual(phrase.substring(currIndex,
-                        phrase.length - (countLettersOffEnd)), viableRectangles[indexOfMaxArea],
-                    displayText, displayBounds, d);
-
-            } else if (viableRectangles.length == 1) {
-                //use entire phrase to fill only viable rectangle
-                //TextUtil.fillRectWithText(phrase, viableRectangles[0]);
-                TextUtil.fillRectTextManual(phrase, viableRectangles[0], displayText, displayBounds, d);
-            }
-
-
-        }
-
-        //last letter goes in last viable rectangle
-
-
-    },
-
-
-    populateTextAlg2: function (viableRectangles, phrase, displayBounds, displayText, d) {
-        //use multiple rectangles to fill text
-        if (displayText) {
-
-            var nextAvailableIndex = 0;
-
-            //take them as they come: if rectangle wants one char, give it one char
-            for (var i = 0; i < viableRectangles.length; i++) {
-
-                var phraseChunk;
-
-                if (viableRectangles[i].rect[4] === "singleChar") {
-                    phraseChunk = phrase.charAt(nextAvailableIndex);
-                    nextAvailableIndex++;
-                    appendSingleLetter(viableRectangles[i], phraseChunk, d);
-                } else {
-
-                    //var indexStart = Math.floor(viableRectangles[i].rect[3][0] * phrase.length);
-                    var indexStart = nextAvailableIndex;
-
-                    var indexEnd = Math.floor(viableRectangles[i].rect[3][1] * phrase.length);
-
-                    //special case: last letter as standalone: take from preceding rectangle
-                    if (i == viableRectangles.length - 2 &&
-                        viableRectangles[i + 1].rect[4] == "singleChar") {
-                        indexEnd--;
-                    }
-
-                    if (indexStart <= indexEnd) {
-                        phraseChunk = phrase.substring(indexStart, indexEnd);
-                    } else {
-                        phraseChunk = " ";
-                    }
-
-                    viableRectangles[i] = RectangleGenerator.applyPadding(viableRectangles[i]);
-
-                    nextAvailableIndex = indexEnd;
-
-                    TextUtil.fillRectTextManual(phraseChunk, viableRectangles[i], displayText,
-                        displayBounds, d);
-                }
-
-            }
-        }
-    },
-
-
-    //fill rectangle using svg wrapping from d3Plus
-    fillRectWithText: function (phrase, rectangle) {
-
-
-        //inserting spaces in between letters so that d3plus will wrap text mid-word
-        var spaceAugmentedText = TextUtil.insertSpaces(phrase);
-
-        //middle of phrase goes in big rectangle
-        var newText = svg.append("text")
-            .text(spaceAugmentedText)
-            .attr("font-family", font);
-        //.attr("font-size", "15pt");
-
-        //var newText = phrase.substring(1);
-        //
-        //DebugTool.markFourCorners(
-        //    rectangle.corners.topY,
-        //    rectangle.corners.lowY,
-        //    rectangle.corners.leftX,
-        //    rectangle.corners.rightX
-        //);
-
-        var height = rectangle.corners.lowY - rectangle.corners.topY;
-        var width = rectangle.corners.rightX - rectangle.corners.leftX;
-
-        var text = d3plus.textwrap()
-            .height(height)
-            .width(width)
-            .container(newText)
-            .x(rectangle.corners.leftX)
-            .y(rectangle.corners.topY)
-            //.text(newText)
-            .resize(true)
-            .align("center")
-            .draw();
-
-        //text.attr("letter-spacing", 3);
-    },
-
-
-    fillRectTextManual: function (phrase, rectangle, displayText, displayBounds, d) {
-
-        var verticalDistance = rectangle.corners.lowY - rectangle.corners.topY;
-        var horizontalDistance = rectangle.corners.rightX - rectangle.corners.leftX;
-
-        //true if rectangle is tall and skinny
-        var horizontalOrientation = verticalDistance > horizontalDistance || rectangle.rect[4] == "horizontalText";
-
-        var orientation = horizontalOrientation ? "horizontal" : "vertical";
-
-        var numLevels;
-
-        if (rectangle.rect[4] === "horizontalText") { //force rectangle to use horizontal slicing
-            //find num levels
-            numLevels = TextUtil.calculateNumLevels(rectangle.aspectRatio, phrase, 1, true, orientation);
-        } else {
-            numLevels = TextUtil.calculateNumLevels(rectangle.aspectRatio, phrase, 1, false, orientation); //Math.round(rectangle.aspectRatio) + 1
-        }
-
-        var phrasePieces = [];
-        var indexInPhrase = 0; //next available letter
-
-        for (var i = 0; i < numLevels; i++) {
-            var piece = "";
-            var bound = phrase.length / numLevels;
-
-            while ((indexInPhrase < ((i + 1) * bound)) && (indexInPhrase < phrase.length)) {
-                piece += phrase.charAt(indexInPhrase);
-                indexInPhrase++;
-            }
-
-            phrasePieces[i] = piece;
-        }
-        var rectCoords = RectangleGenerator.findRectangleCorners(rectangle.rect);
-
-        if (orientation == "horizontal") { //taller
-            //split rectangle into four portions and find lower edge of each for text path
-
-            //x coords don't change
-            var startPathX = rectCoords.leftX;
-            var endPathX = rectCoords.rightX;
-            var verticalText = false;
-
-            var widthOfSlice = horizontalDistance;
-            var heightOfSlice = verticalDistance / numLevels;
-
-            for (var k = 1; k <= numLevels; k++) {
-
-                //current phrase piece
-                var currPhrase = phrasePieces[k - 1];
-
-                //find y coords
-                var startPathY = rectCoords.topY + (k * (verticalDistance / numLevels));
-                var endPathY = startPathY;
-
-                appendPathAndText(startPathX, startPathY, endPathX, endPathY,
-                    currPhrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
-                    heightOfSlice, rectangle.id);
-            }
-        } else { //wider and flatter: make vertical slices
-
-            //y coords don't change
-            var startPathY = rectCoords.topY;
-            var endPathY = rectCoords.lowY;
-            var verticalText = true;
-
-            var widthOfSlice = verticalDistance;
-            var heightOfSlice = horizontalDistance / numLevels;
-
-            for (var k = numLevels; k >= 1; k--) {
-
-                //current phrase piece
-                var currPhrase = phrasePieces[numLevels - k];
-
-                //find x coords
-                var startPathX = rectCoords.leftX + ((k - 1) * (horizontalDistance / numLevels));
-                var endPathX = startPathX;
-
-                appendPathAndText(startPathX, startPathY, endPathX, endPathY,
-                    currPhrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
-                    heightOfSlice, rectangle.id);
-            }
-        }
-
-
-    },
-
-    slicePhrase: function (numPieces, phrase) {
-        var newbie = [];
-        var pieceLength = phrase.length / numPieces;
-        for (var i = 0; i < numPieces; i++) {
-            newbie[i] = phrase.substring(i * pieceLength, (i + 1) * pieceLength);
-        }
-
-        //pick up extras. put them in last slot.
-        if (numPieces * pieceLength < phrase.length) {
-            var leftovers = phrase.length - numPieces * pieceLength;
-            for (var i = numPieces * pieceLength; i < phrase.length; i++) {
-                newbie[numPieces - 1] += phrase.charAt(i);
-            }
-        }
-
-        return newbie;
-    },
-
-    appendCharacterIntoRectangle: function (char, rectangle, svg, d, tag, padding,
-                                            displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
-                                            font, TextToSVG) {
-
-
-        var startPathX,
-            startPathY,
-            endPathX,
-            endPathY,
-            verticalText,
-            widthOfSlice,
-            heightOfSlice,
-            rectangleId;
-
-        if (rectangle[0].angle == 0 || rectangle[0].angle == 180) {
-            startPathX = rectangle[0].cx - (rectangle[0].width / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].height / 2);
-            endPathX = startPathX + rectangle[0].width;
-            widthOfSlice = rectangle[0].width;
-            heightOfSlice = rectangle[0].height;
-        } else { //rectangle angle == 90 || 270
-            startPathX = rectangle[0].cx - (rectangle[0].height / 2);
-            startPathY = rectangle[0].cy + (rectangle[0].width / 2);
-            endPathX = startPathX + rectangle[0].height;
-            widthOfSlice = rectangle[0].height;
-            heightOfSlice = rectangle[0].width;
-        }
-
-        //apply padding
-        var paddingScaledWidth = padding * widthOfSlice;
-        var paddingScaledHeight = padding * heightOfSlice;
-        startPathX += paddingScaledWidth;
-        startPathY -= paddingScaledHeight;
-        endPathX -= paddingScaledWidth;
-        widthOfSlice -= 2 * paddingScaledWidth;
-        heightOfSlice -= paddingScaledHeight;
-
-
-        endPathY = startPathY;
-        verticalText = false;
-        rectangleId = d.properties.name + "_inner";
-
-        var pathAndText = TextUtil.appendPathAndText(startPathX, startPathY, endPathX, endPathY, char, d, tag, displayText,
-            displayBounds, verticalText, widthOfSlice, heightOfSlice, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font);
-
-        //return character that you just appended
-        return pathAndText;
-    },
-
-    // like append path and text, but using char converted to svg
-    appendChar: function (startPathX, startPathY,
-                          phrase, k, displayText, displayBounds,
-                          rectangleId, svg, TEXT_SIZE_MULTIPLIER, font,
-                          rectangle, textToSVG, raphael) {
-
-        var textSize = 5;
-
-        var defaultOptions = {
-            "x": startPathX,
-            "y": startPathY,
-            "fontSize": textSize
-        };
-
-        // just use this one for now
-        var bestPath = textToSVG.getD(phrase.toUpperCase(), defaultOptions);
-        var charToBig = false;
-        var shapeG = svg.append("g");
-
-        // canvas for trying out char sizes - who even knows if these are the right dimensions
-        var paper = raphael(-500, -500, 320, 200);
-        while (!charToBig) {
-
-            // if char is normal,
-            // convert text to svg
-            var options = {
-                "x": startPathX,
-                "y": startPathY,
-                "fontSize": textSize
-            };
-
-            const charPath = textToSVG.getD(phrase.toUpperCase(), options);
-            var countOutOfBounds = 0; // count num points found to be outside of the containing polygon
-            var stopIterating = false;
-            var charPaperPath = paper.path(charPath);
-            var numHitTestPoints = 20;
-            var totalLength = charPaperPath.getTotalLength();
-            var lengthIncrement = totalLength * 1.0 / numHitTestPoints;
-
-            // check coords of char path, make sure they are inside of polygon
-            for (var curr = 0; curr < numHitTestPoints; curr++) {
-                var point = charPaperPath.getPointAtLength(lengthIncrement * curr);
-                if (!point) {
-                    console.log("found undefined point in appendChar");
-                }
-
-                // is point inside of polygon?
-                if (!point || !PolyK.ContainsPoint(rectangle.polygon, point.x, point.y)) {
-                    countOutOfBounds++;
-                    if (countOutOfBounds > 2) {
-                        stopIterating = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!stopIterating) {
-                bestPath = charPath;
-                textSize += 1;
-            } else {
-                charToBig = true;
-            }
-
-        }
-
-        var path = shapeG.append("path")
-            .attr("class", "charSVGThing")
-            .attr("d", bestPath)
-            .style("fill", "black");
-    },
-
-    // only works with single polygons
-    pathToArray: function (path) {
-        var pathCoords = path.substring(1).split('L');
-        var result = [];
-
-        for (var i = 0; i < pathCoords.length; i++) {
-            var bothCoords;
-            if (pathCoords[i].indexOf(',') != -1) {
-                bothCoords = pathCoords[i].split(',');
-            } else {
-                bothCoords = pathCoords[i].split(' ');
-            }
-            result[i * 2] = parseFloat(bothCoords[0]);
-            result[(i * 2) + 1] = parseFloat(bothCoords[1]);
-        }
-        return result;
-    },
-
-
-    // used in testGrid
-    appendPathAndText: function (startPathX, startPathY, endPathX, endPathY,
-                                 phrase, d, k, displayText, displayBounds, verticalText, widthOfSlice,
-                                 heightOfSlice, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font) {
-
-        var pathStroke = displayBounds ? "black" : "none";
-
-        var pathString = "M" + startPathX + "," + startPathY + "L" + endPathX + "," + endPathY;
-        var path = svg.append("path")
-            .attr("id", "innerPath_" + rectangleId + "_" + k)
-            .attr("d", pathString)
-            .style("fill", "none")
-            .style('stroke', pathStroke);
-
-        var textSize = 1;
-
-        var phantomSvg = d3.select("body").append("svg");
-        var text = phantomSvg.append("text")
-            .text(phrase)
-            .attr("font-size", textSize + "pt");
-        var bbox = text.node().getBoundingClientRect();
-
-        var widthTransform = bbox.width;
-        var heightTransform = bbox.height;
-
-        var eBrake = true;
-
-        while (widthTransform < widthOfSlice && heightTransform < heightOfSlice && eBrake) {
-
-            textSize++;
-
-            text = phantomSvg.append("text")
-                .text(phrase)
-                .attr("font-size", textSize + "pt");
-
-            //var textNode = document.getElementById("t1");
-            bbox = text.node().getBBox();
-            widthTransform = bbox.width;
-            heightTransform = bbox.height;
-
-            if (textSize > 25) {
-                eBrake = false;
-            }
-
-        }
-
-        //use length of bbox, amt of characters on line and length of rectangle to
-        //determine spacing in between rectangles
-        //var extraSpace = widthOfSlice - widthTransform;
-        //var spacePerChar = extraSpace / phrase.length;
-        //.attr("letter-spacing", spacePerChar + "pt")
-
-        var text = svg.append("text")
-            .append("textPath")
-            .attr("xlink:href", "#" + "innerPath_" + rectangleId + "_" + k)
-            .style("text-anchor", "middle")
-            .attr("startOffset", "50%")
-            .text(phrase)
-            .attr("font-size", (textSize * TEXT_SIZE_MULTIPLIER) + "pt")
-            .attr("font-family", font)
-            .attr("class", ".remove-me");
-
-        // remove all of the stuff we used for iterating
-        phantomSvg.remove();
-
-        //return path and text
-        var result = [path, text]; // these get removed by calling function if they want to
-        return result;
-
-    },
-
-
-    appendCharacterAsSVG: function (char, gridUnit, svg, d, tag, padding,
-                                    displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
-                                    font, textToSVG, raphael) {
-
-        var startPathX,
-            startPathY,
-            rectangleId,
-            widthOfSlice,
-            heightOfSlice;
-
-        if (gridUnit[0].angle == 0 || gridUnit[0].angle == 180) {
-            startPathX = gridUnit[0].cx - (gridUnit[0].width / 2);
-            startPathY = gridUnit[0].cy + (gridUnit[0].height / 2);
-            widthOfSlice = gridUnit[0].width;
-            heightOfSlice = gridUnit[0].height;
-        } else { //rectangle angle == 90 || 270
-            startPathX = gridUnit[0].cx - (gridUnit[0].height / 2);
-            startPathY = gridUnit[0].cy + (gridUnit[0].width / 2);
-            widthOfSlice = gridUnit[0].height;
-            heightOfSlice = gridUnit[0].width;
-        }
-
-        //apply padding
-        var paddingScaledWidth = padding * widthOfSlice;
-        var paddingScaledHeight = padding * heightOfSlice;
-        startPathX += paddingScaledWidth;
-        startPathY -= paddingScaledHeight;
-        rectangleId = d.properties.name + "_inner";
-
-        TextUtil.appendChar(startPathX, startPathY, char, tag, displayText,
-            displayBounds, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font,
-            gridUnit, textToSVG, raphael);
-
-    },
-
-    arrayToPath: function(oneDArray) {
-        var result = "M";
-        if (oneDArray.length > 0)  {
-            result += oneDArray[0] + "," + oneDArray[1];
-            for (var i = 2; i < oneDArray.length; i += 2) {
-                result += "L" + oneDArray[i] + "," + oneDArray[i+1];
-            }
-            result += 'Z';
-        }
-        return result;
-    }
-
-
-};
-
-/***/ }),
-/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/topojson/topojson Version 3.0.0. Copyright 2017 Mike Bostock.
@@ -26543,227 +25010,117 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
+/* 29 */,
 /* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;// http://spin.js.org/#v2.3.2
-!function(a,b){"object"==typeof module&&module.exports?module.exports=b(): true?!(__WEBPACK_AMD_DEFINE_FACTORY__ = (b),
-				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
-				__WEBPACK_AMD_DEFINE_FACTORY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):a.Spinner=b()}(this,function(){"use strict";function a(a,b){var c,d=document.createElement(a||"div");for(c in b)d[c]=b[c];return d}function b(a){for(var b=1,c=arguments.length;c>b;b++)a.appendChild(arguments[b]);return a}function c(a,b,c,d){var e=["opacity",b,~~(100*a),c,d].join("-"),f=.01+c/d*100,g=Math.max(1-(1-a)/b*(100-f),a),h=j.substring(0,j.indexOf("Animation")).toLowerCase(),i=h&&"-"+h+"-"||"";return m[e]||(k.insertRule("@"+i+"keyframes "+e+"{0%{opacity:"+g+"}"+f+"%{opacity:"+a+"}"+(f+.01)+"%{opacity:1}"+(f+b)%100+"%{opacity:"+a+"}100%{opacity:"+g+"}}",k.cssRules.length),m[e]=1),e}function d(a,b){var c,d,e=a.style;if(b=b.charAt(0).toUpperCase()+b.slice(1),void 0!==e[b])return b;for(d=0;d<l.length;d++)if(c=l[d]+b,void 0!==e[c])return c}function e(a,b){for(var c in b)a.style[d(a,c)||c]=b[c];return a}function f(a){for(var b=1;b<arguments.length;b++){var c=arguments[b];for(var d in c)void 0===a[d]&&(a[d]=c[d])}return a}function g(a,b){return"string"==typeof a?a:a[b%a.length]}function h(a){this.opts=f(a||{},h.defaults,n)}function i(){function c(b,c){return a("<"+b+' xmlns="urn:schemas-microsoft.com:vml" class="spin-vml">',c)}k.addRule(".spin-vml","behavior:url(#default#VML)"),h.prototype.lines=function(a,d){function f(){return e(c("group",{coordsize:k+" "+k,coordorigin:-j+" "+-j}),{width:k,height:k})}function h(a,h,i){b(m,b(e(f(),{rotation:360/d.lines*a+"deg",left:~~h}),b(e(c("roundrect",{arcsize:d.corners}),{width:j,height:d.scale*d.width,left:d.scale*d.radius,top:-d.scale*d.width>>1,filter:i}),c("fill",{color:g(d.color,a),opacity:d.opacity}),c("stroke",{opacity:0}))))}var i,j=d.scale*(d.length+d.width),k=2*d.scale*j,l=-(d.width+d.length)*d.scale*2+"px",m=e(f(),{position:"absolute",top:l,left:l});if(d.shadow)for(i=1;i<=d.lines;i++)h(i,-2,"progid:DXImageTransform.Microsoft.Blur(pixelradius=2,makeshadow=1,shadowopacity=.3)");for(i=1;i<=d.lines;i++)h(i);return b(a,m)},h.prototype.opacity=function(a,b,c,d){var e=a.firstChild;d=d.shadow&&d.lines||0,e&&b+d<e.childNodes.length&&(e=e.childNodes[b+d],e=e&&e.firstChild,e=e&&e.firstChild,e&&(e.opacity=c))}}var j,k,l=["webkit","Moz","ms","O"],m={},n={lines:12,length:7,width:5,radius:10,scale:1,corners:1,color:"#000",opacity:.25,rotate:0,direction:1,speed:1,trail:100,fps:20,zIndex:2e9,className:"spinner",top:"50%",left:"50%",shadow:!1,hwaccel:!1,position:"absolute"};if(h.defaults={},f(h.prototype,{spin:function(b){this.stop();var c=this,d=c.opts,f=c.el=a(null,{className:d.className});if(e(f,{position:d.position,width:0,zIndex:d.zIndex,left:d.left,top:d.top}),b&&b.insertBefore(f,b.firstChild||null),f.setAttribute("role","progressbar"),c.lines(f,c.opts),!j){var g,h=0,i=(d.lines-1)*(1-d.direction)/2,k=d.fps,l=k/d.speed,m=(1-d.opacity)/(l*d.trail/100),n=l/d.lines;!function o(){h++;for(var a=0;a<d.lines;a++)g=Math.max(1-(h+(d.lines-a)*n)%l*m,d.opacity),c.opacity(f,a*d.direction+i,g,d);c.timeout=c.el&&setTimeout(o,~~(1e3/k))}()}return c},stop:function(){var a=this.el;return a&&(clearTimeout(this.timeout),a.parentNode&&a.parentNode.removeChild(a),this.el=void 0),this},lines:function(d,f){function h(b,c){return e(a(),{position:"absolute",width:f.scale*(f.length+f.width)+"px",height:f.scale*f.width+"px",background:b,boxShadow:c,transformOrigin:"left",transform:"rotate("+~~(360/f.lines*k+f.rotate)+"deg) translate("+f.scale*f.radius+"px,0)",borderRadius:(f.corners*f.scale*f.width>>1)+"px"})}for(var i,k=0,l=(f.lines-1)*(1-f.direction)/2;k<f.lines;k++)i=e(a(),{position:"absolute",top:1+~(f.scale*f.width/2)+"px",transform:f.hwaccel?"translate3d(0,0,0)":"",opacity:f.opacity,animation:j&&c(f.opacity,f.trail,l+k*f.direction,f.lines)+" "+1/f.speed+"s linear infinite"}),f.shadow&&b(i,e(h("#000","0 0 4px #000"),{top:"2px"})),b(d,b(i,h(g(f.color,k),"0 0 1px rgba(0,0,0,.1)")));return d},opacity:function(a,b,c){b<a.childNodes.length&&(a.childNodes[b].style.opacity=c)}}),"undefined"!=typeof document){k=function(){var c=a("style",{type:"text/css"});return b(document.getElementsByTagName("head")[0],c),c.sheet||c.styleSheet}();var o=e(a("group"),{behavior:"url(#default#VML)"});!d(o,"transform")&&o.adj?i():j=d(o,"animation")}return h});
-
-/***/ }),
-/* 31 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__js_GridCache_js__ = __webpack_require__(25);
-/**
- * Created by meredith on 4/11/17.
- */
 /**
  * Created by meredith on 2/20/16.
  */
 
-__webpack_require__(27);
-__webpack_require__(28);
-//const Clipper = require("./Javascript_Clipper_6.2.1.2/clipper.js");
-//const raphael = require('raphael');
-var MapUtil = __webpack_require__(26);
-//require("./js/SampleBestPlaces");
-//require("./js/GridCache.js");
-const Spinner = __webpack_require__(30);
+var MapUtil = __webpack_require__(25);
 const TextToSVG = __webpack_require__(9);
-//const d3plus = require('d3plus');
 const d3 = __webpack_require__(8);
-const topojson = __webpack_require__(29);
+const topojson = __webpack_require__(28);
 
-
-
-//function main() {
 var width = 900;
 var height = 1000;
 var rotate = [122, 0, 0];
-var center = [0, 47.3097];
 var scale = 150000;
-//var offset = [1141.329833984375 - 263 + width / 2, 142582.609375 + 30];
 var offset = [1141.329833984375 - 450 + width / 2, 142582.609375 + 30];
 
-var font = "din-condensed-bold";
+const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
 
-var color1 = ['a', 'b', 'c', 'd', 'e', 'f'];
-var color2 = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
-//padding to be given between text and inscribed rectangle
-var padding = 0.0; //given as percentage of total rectangle space
-
-//any rectangles having area smaller than 40 pixels removed from
-//text-filling algorithm
-var AREA_CUTOFF = 40;
-
-//use rectangle mods made in database
-var USE_RECTANGLE_DATABASE = false;
-var USE_GRID_CACHING = true;
-var HORIZONTAL_SLICE_CAP = 6;
-var CHAR_ASPECT_RATIO = .5;
-var TEXT_SIZE_MULTIPLIER = 1.5;
-var GRID_CACHE_OUTPUT = false;
-
-var SEATTLE_OUTLINE_COLOR = "black";
-
-//display various steps in text append process
-var displayPolygons = false;
-var displayRectangles = false;
-var displayBounds = false;
-var displayText = true;
-var bestplaces;
-var displayPaddedPolygons = false;
-
-//these are for when we're in server
-//
-//var oReq = new XMLHttpRequest(); //New request object
-//oReq.onload = function () {
-//    bestplaces = JSON.parse(this.responseText);
-
-var neighborhood_bounds_output = {};
-
+// make container for map
 var svg = d3.select(".mapcontainer")
-.attr("id", "mapContainer")
-.append("svg")
-.attr("id", "mapSVG")
-.attr("height", height);
-//.attr("width", parentWidth)
+    .attr("id", "mapContainer")
+    .append("svg")
+    .attr("id", "mapSVG")
+    .attr("height", height);
 
-//create loader - spinny guy
-var opts = {
-    lines: 13 // The number of lines to draw
-        , length: 28 // The length of each line
-        , width: 14 // The line thickness
-        , radius: 42 // The radius of the inner circle
-        , scale: 1 // Scales overall size of the spinner
-        , corners: 1 // Corner roundness (0..1)
-        , color: '#000' // #rgb or #rrggbb or array of colors
-        , opacity: 0.25 // Opacity of the lines
-        , rotate: 0 // The rotation offset
-        , direction: 1 // 1: clockwise, -1: counterclockwise
-        , speed: 1 // Rounds per second
-        , trail: 60 // Afterglow percentage
-        , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
-        , zIndex: 2e9 // The z-index (defaults to 2000000000)
-        , className: 'spinner' // The CSS class to assign to the spinner
-        , top: '50%' // Top position relative to parent
-        , left: '50%' // Left position relative to parent
-        , shadow: false // Whether to render a shadow
-        , hwaccel: false // Whether to use hardware acceleration
-        , position: 'absolute' // Element positioning
-};
-
-var loadingIndicator = new Spinner(opts);
-loadingIndicator.spin(document.getElementById('mapContainer'));
-
-    var projection = d3.geoMercator()
+// project map - mercatorjjj
+var projection = d3.geoMercator()
     .rotate(rotate)
     .scale(scale)
-.translate(offset)
+    .translate(offset)
     .precision(.5);
-
 var path = d3.geoPath()
     .projection(projection);
 
-    var neighborhoodGroup = svg.append("g")
+var neighborhoodGroup = svg.append("g")
     .attr('id', 'neighborhoodGroup');
 
+/*parses json, call back function selects all paths (none exist yet)
+  and joins data (all neighborhoods) with each path. since there are no
+  paths, all data points are waiting in 'update.enter'. calling
+  'enter()' gives us these points, and appends a path for each of them,
+  attributing a path and id to each.*/
 
-    /*parses json, call back function selects all paths (none exist yet)
-      and joins data (all neighborhoods) with each path. since there are no
-      paths, all data points are waiting in 'update.enter'. calling
-      'enter()' gives us these points, and appends a path for each of them,
-      attributing a path and id to each.*/
+var topoGeometries;
 
-    var topoGeometries;
+d3.json("json/neighborhoods.json", function (error, topology) {
+    d3.json("build_map/json/neighborhoodChars.json", function (error, chars) {
+        d3.json("yelp_api/output.txt", function (error, bestplaces) {
+            TextToSVG.load(MAP_FONT, function (err, textToSVG) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
+                    //generate paths around each neighborhood
+                    var binding = neighborhoodGroup.selectAll(".neighborhood")
+                        .data(topoGeometries);
 
-    //var oReq = new XMLHttpRequest(); //New request object
+                    binding.enter()
+                        .append("g")
+                        .attr("neighborhoodBounds", path)
+                        .attr("class", "neighborhood")
+                        .append("path")
+                        .attr("d", path)
+                        .attr("class", "neighborhoodUnFocus")
+                        .attr("class", "neighborhoodOutline")
+                        .attr("id", function (d) {
+                            return "n_" + d.id
+                        });
 
-    //oReq.onload = theMeat
-    //
-    //function theMeat(response) {
-    //    //all that stuff
-    //    var bestplaces = JSON.parse(response.text);
-    //}
-
-    d3.json("json/neighborhoods.json", function (error, topology) {
-        d3.json("build_map/json/neighborhoodChars.json", function (error, chars) {
-            d3.json("yelp_api/output.txt", function (error, bestplaces) {
-                TextToSVG.load('./css/DIN-Condensed-Bold.ttf', function (err, textToSVG) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
-                        //generate paths around each neighborhood
-                        var binding = neighborhoodGroup.selectAll(".neighborhood")
-                            .data(topoGeometries);
-
-                        binding.enter()
-                            .append("g")
-                            .attr("neighborhoodBounds", path)
-                            .attr("class", "neighborhood")
-                            .append("path")
-                            .attr("d", path)
-                            .attr("class", "neighborhoodUnFocus")
-                            .attr("class", "neighborhoodOutline")
-                            .attr("id", function (d) {
-                                return "n_" + d.id
-                            });
-
-                        // fill text
-                        neighborhoodGroup.selectAll(".neighborhood")
-                            .each(function (d) {
-                                // get chars for neighborhood from file
-                                var chars_for_neighborhood = chars.result[d.properties.name];
-                                for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
-                                    for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
-                                        d3.select(this).append("path")
-                                            .attr("d", chars_for_neighborhood[poly][i])
-                                            .classed("charSVGThing", true);
-                                    }
+                    // fill text
+                    neighborhoodGroup.selectAll(".neighborhood")
+                        .each(function (d) {
+                            // get chars for neighborhood from file
+                            var chars_for_neighborhood = chars.result[d.properties.name];
+                            for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
+                                for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
+                                    d3.select(this).append("path")
+                                        .attr("d", chars_for_neighborhood[poly][i])
+                                        .classed("charSVGThing", true);
                                 }
-                            })
-                        .attr("phrase", function (d) {
-                            return bestplaces[d.properties.name].bestmatch;
+                            }
                         })
-                        .attr("categories", function (d) {
-                            return JSON.stringify(bestplaces[d.properties.name].categories);
-                        })
-                        .attr("price", function (d) {
-                            return bestplaces[d.properties.name].price;
-                        })
-                        .attr("reviewcount", function (d) {
-                            return bestplaces[d.properties.name].review_count;
-                        })
-                        .on("mouseover", MapUtil.setLegend)
-                            .on("mouseout", MapUtil.resetLegend);
-                    }
-                });
+                    .attr("phrase", function (d) {
+                        return bestplaces[d.properties.name].bestmatch;
+                    })
+                    .attr("categories", function (d) {
+                        return JSON.stringify(bestplaces[d.properties.name].categories);
+                    })
+                    .attr("price", function (d) {
+                        return bestplaces[d.properties.name].price;
+                    })
+                    .attr("reviewcount", function (d) {
+                        return bestplaces[d.properties.name].review_count;
+                    })
+                    .on("mouseover", MapUtil.setLegend)
+                        .on("mouseout", MapUtil.resetLegend);
+                }
             });
         });
-
     });
 
-//stop spinner--we're done!
-loadingIndicator.stop();
-//};
-//oReq.open("get", "yelp/getyelp.php", true);
-//oReq.send();
-
-//window.onload = main;
+});
 
 
 
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26884,7 +25241,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26898,9 +25255,9 @@ function fromByteArray (uint8) {
 
 
 
-var base64 = __webpack_require__(32)
-var ieee754 = __webpack_require__(34)
-var isArray = __webpack_require__(35)
+var base64 = __webpack_require__(31)
+var ieee754 = __webpack_require__(33)
+var isArray = __webpack_require__(34)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -28678,10 +27035,10 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(51)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(50)))
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -28771,7 +27128,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -28782,7 +27139,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28802,7 +27159,7 @@ exports.line = line;
 
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28811,10 +27168,10 @@ exports.line = line;
 
 
 var path = __webpack_require__(3);
-var sfnt = __webpack_require__(46);
+var sfnt = __webpack_require__(45);
 var encoding = __webpack_require__(4);
 var glyphset = __webpack_require__(6);
-var Substitution = __webpack_require__(40);
+var Substitution = __webpack_require__(39);
 var util = __webpack_require__(24);
 
 /**
@@ -29337,7 +27694,7 @@ exports.Font = Font;
 
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29626,7 +27983,7 @@ module.exports = Layout;
 
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29639,10 +27996,10 @@ module.exports = Layout;
 
 
 
-var inflate = __webpack_require__(50);
+var inflate = __webpack_require__(49);
 
 var encoding = __webpack_require__(4);
-var _font = __webpack_require__(37);
+var _font = __webpack_require__(36);
 var glyph = __webpack_require__(11);
 var parse = __webpack_require__(0);
 var bbox = __webpack_require__(10);
@@ -29651,16 +28008,16 @@ var util = __webpack_require__(24);
 
 var cmap = __webpack_require__(13);
 var cff = __webpack_require__(12);
-var fvar = __webpack_require__(41);
-var glyf = __webpack_require__(42);
-var gpos = __webpack_require__(43);
+var fvar = __webpack_require__(40);
+var glyf = __webpack_require__(41);
+var gpos = __webpack_require__(42);
 var gsub = __webpack_require__(14);
 var head = __webpack_require__(15);
 var hhea = __webpack_require__(16);
 var hmtx = __webpack_require__(17);
-var kern = __webpack_require__(44);
+var kern = __webpack_require__(43);
 var ltag = __webpack_require__(18);
-var loca = __webpack_require__(45);
+var loca = __webpack_require__(44);
 var maxp = __webpack_require__(19);
 var _name = __webpack_require__(21);
 var os2 = __webpack_require__(22);
@@ -30023,7 +28380,7 @@ exports.loadSync = loadSync;
 
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30033,7 +28390,7 @@ exports.loadSync = loadSync;
 
 
 var check = __webpack_require__(1);
-var Layout = __webpack_require__(38);
+var Layout = __webpack_require__(37);
 
 /**
  * @exports opentype.Substitution
@@ -30331,7 +28688,7 @@ module.exports = Substitution;
 
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30477,7 +28834,7 @@ exports.parse = parseFvarTable;
 
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30819,7 +29176,7 @@ exports.parse = parseGlyfTable;
 
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31063,7 +29420,7 @@ exports.parse = parseGposTable;
 
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31141,7 +29498,7 @@ exports.parse = parseKernTable;
 
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31181,7 +29538,7 @@ exports.parse = parseLocaTable;
 
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31530,7 +29887,7 @@ exports.fontToTable = fontToSfntTable;
 
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -31758,10 +30115,10 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(48)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(47)))
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -31947,7 +30304,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31961,7 +30318,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Copyright (c) 2016 Hideki Shiro
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _opentype = __webpack_require__(39);
+var _opentype = __webpack_require__(38);
 
 var _opentype2 = _interopRequireDefault(_opentype);
 
@@ -31969,7 +30326,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var DEFAULT_FONT = __webpack_require__(47).join(__dirname, '../fonts/ipag.ttf');
+var DEFAULT_FONT = __webpack_require__(46).join(__dirname, '../fonts/ipag.ttf');
 
 // Private method
 
@@ -32188,7 +30545,7 @@ module.exports = exports.default;
 /* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports) {
 
 var TINF_OK = 0;
@@ -32569,7 +30926,7 @@ module.exports = tinf_uncompress;
 
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports) {
 
 var g;

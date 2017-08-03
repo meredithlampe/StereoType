@@ -1,10 +1,9 @@
 <?php
 
+$outputfilename = "output.txt";
+$configfilename = "config.json";
 
-$outputfilename = "../yelp/output.txt";
-$configfilename = "../config.json"
-
-header("Content-type: application/json");
+//header("Content-type: application/json");
 // get list of name -> business name (1st in list of 'best match')
 
 // get yelp auth
@@ -20,14 +19,17 @@ fclose($neighborhood_locations);
 $response = array();
 
 foreach($locations as $name => $location) { //loop through locations
-    echo "querying for " + $name + "\n";
+
+    // for each neighborhood, query yelp for best match business
     $encodedname = urlencode($name . ', Seattle, WA');
     $curl = curl_init('https://api.yelp.com/v3/businesses/search?location=' . $encodedname);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($curl, CURLOPT_HTTPHEADER, array(
-        $config["yelp"]["auth"]
+        $config_data["yelp"]["auth"]
         ));
     $result = json_decode(curl_exec($curl));
+
+    // save result
     $response[$name] = array();
     $response[$name]["bestmatch"] = $result->businesses[0]->name;
     $response[$name]["categories"] = array();

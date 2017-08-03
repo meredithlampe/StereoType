@@ -50,12 +50,13 @@ footer {
 
 .neighborhoodFocus {
     fill: black;
+    stroke: white;
 }
 
-/*.neighborhoodFocus.charSVGThing {*/
-    /*stroke: white;*/
-    /*fill: white;*/
-/*}*/
+.neighborhoodFocus.charSVGThing {
+    stroke: white;
+    fill: white;
+}
 
 
 .neighborhoodOutlineBorder {
