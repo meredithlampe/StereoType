@@ -44,7 +44,6 @@ yelp/bundle.js
 # npm stuff #
 # ###########
 yelp/node_modules/*
-build_map/node_modules
 
 # misc #
 # ######

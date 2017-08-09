@@ -25056,7 +25056,7 @@ var neighborhoodGroup = svg.append("g")
 var topoGeometries;
 
 d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
-    d3.json("../build_map/json/neighborhoodChars.json", function (error_chars, chars) {
+    d3.json("outputfile.json", function (error_chars, chars) {
         d3.json("yelp_api/output.txt", function (error_output, bestplaces) {
             TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
                 if (error_neighborhoods || error_chars || error_output || error_font) {

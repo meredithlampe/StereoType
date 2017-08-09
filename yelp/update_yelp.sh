@@ -8,7 +8,7 @@ cd ..
 
 # build map with new phrases
 echo "fitting characters of new phrases into map..."
-cd ../build_map
-node build_map.js # TODO: add output file location param
+cd ../map
+node build_map.js ./json/neighborhoods.json ../yelp/outputfile.json
 echo "finished"
 
