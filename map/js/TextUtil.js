@@ -119,7 +119,6 @@ module.exports = {
             for (var curr = 0; curr < numHitTestPoints; curr++) {
                 //var point = charPaperPath.getPointAtLength(lengthIncrement * curr);
                 var point = point_at_length_instance.at(lengthIncrement * curr);
-                debugger;
 
                 if (!point) {
                     console.log("found undefined point in appendChar");

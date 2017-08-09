@@ -8,10 +8,10 @@
 
 /*
  USAGE:
- node build_map.js <input_file> <output_file>
+ node build_map.js <phrases_for_map_file> <output_file>
  */
 if (!process.argv[2] || !process.argv[3]) {
-    console.log("usage: node build_map.js <input_file> <output_file>");
+    console.log("usage: node build_map.js <phrases_for_map_file> <output_file>");
     process.exit(1); // failure
 }
 
@@ -36,16 +36,20 @@ var HORIZONTAL_SLICE_CAP = 6;
 var CHAR_ASPECT_RATIO = .5;
 var TEXT_SIZE_MULTIPLIER = 1.5;
 
-
 var font = "din-condensed-bold";
 var font_for_map = './DIN-Condensed-Bold.ttf';
 
-//var file = './json/neighborhoods.json';
+var seattle_topology = './json/neighborhoods.json';
 //var outputfile = './json/build_map_output.json';
-var file = process.argv[2]; // input_file
+//var file = process.argv[2]; // input_file
+//var bestplaces = require(process.argv[2]);
+//console.log("best places");
+//console.log(bestplaces_file);
+//console.log("sample best places");
+//console.log(sample_bestplaces);
 var outputfile = process.argv[3];
 
-console.log("running build_map with input file " + file + " and output file " + outputfile);
+//console.log("running build_map with input file " + bestplaces + " and output file " + outputfile);
 
 // copied from the yelp stereotype page --> bad
 var rotate = [122, 0, 0];
@@ -62,79 +66,87 @@ var projection = d3.geoMercator()
 var path = d3.geoPath()
     .projection(projection);
 
-jsonfile.readFile(file, function (err, topology) {
-    TextToSVG.load(font_for_map, function (err, textToSVG) {
-        var topoGeometries = topojson.feature(topology, topology.objects.neighborhoods)
-            .features;
-        var bestplaces = sample_bestplaces;
-        // to contain result (result of text fitting) and actual text of best matches for neighborhood
-        var output_container = {};
-        var result = {};
-        output_container.result = result;
-        output_container.best_places = {};
-
-        // result will be:
-        /*  {
-                "NeighborhoodName":
-                    [
-                        first char path , // char paths are strings
-                        second char path,
-                        ...
-                        last char path in neighborhood
-                     ]
-                "SecondNeighborhoodName":
-                    [
-                        ""
-                    ]
-
+jsonfile.readFile(seattle_topology, function (err_topo, topology) {
+    jsonfile.readFile(process.argv[2], function(err_best, bestplaces) {
+        TextToSVG.load(font_for_map, function (err_font, textToSVG) {
+            if (err_topo || err_best || err_font) {
+                if (err_topo) { console.log(err_topo); }
+                if (err_best) { console.log(err_best); }
+                if (err_font) { console.log(err_font); }
+                process.exit(1);
             }
-        */
+            var topoGeometries = topojson.feature(topology, topology.objects.neighborhoods)
+                .features;
+            //var bestplaces = sample_bestplaces;
+            // to contain result (result of text fitting) and actual text of best matches for neighborhood
+            var output_container = {};
+            var result = {};
+            output_container.result = result;
+            output_container.best_places = {};
 
-        // loop through each neighborhood
-        for (var i = 0; i < topoGeometries.length; i++) {
+            // result will be:
+            /*  {
+             "NeighborhoodName":
+             [
+             first char path , // char paths are strings
+             second char path,
+             ...
+             last char path in neighborhood
+             ]
+             "SecondNeighborhoodName":
+             [
+             ""
+             ]
 
-            var topo = topoGeometries[i];
+             }
+             */
 
-            console.log("processing " + topo.properties.name);
+            // loop through each neighborhood
+            for (var i = 0; i < topoGeometries.length; i++) {
 
-            result[topo.properties.name] = []; // to store each sub-polygon for this shape
-            output_container.best_places[topo.properties.name] = bestplaces[topo.properties.name];
+                var topo = topoGeometries[i];
 
-            // convert path array to 3d array of coordinates
-            var pathCoords3d = NeighborhoodParser.get3dPathArray(
-                path(topo.geometry), topo.geometry.type == "MultiPolygon");
+                console.log("processing " + topo.properties.name);
 
-            // pad polygon between letters and border of shape
-            var solution = pad_polygon(pathCoords3d);
+                result[topo.properties.name] = []; // to store each sub-polygon for this shape
+                output_container.best_places[topo.properties.name] = bestplaces[topo.properties.name];
 
-            // divide phrase into number of polygons that result from
-            // the padding transform
-            var nameNoSpaces = TextUtil.removeSpaces(bestplaces[topo.properties.name].bestmatch);
-            var slicedNameArray = TextUtil.slicePhrase(solution.length, nameNoSpaces);
+                // convert path array to 3d array of coordinates
+                var pathCoords3d = NeighborhoodParser.get3dPathArray(
+                    path(topo.geometry), topo.geometry.type == "MultiPolygon");
 
-            // for each polygon in the overall shape, fill with text
-            // loop through polygons in result of padding operation
-            for (var poly = 0; poly < solution.length; poly++) {
+                // pad polygon between letters and border of shape
+                var solution = pad_polygon(pathCoords3d);
 
-                var innerPointsList = "";
-                for (var innerPoint = 0; innerPoint < solution[poly].length; innerPoint++) {
-                    if (!isNaN(solution[poly][innerPoint].X)) {
-                        var curr = solution[poly][innerPoint];
-                        innerPointsList += curr.X + "," + curr.Y + " ";
+                // divide phrase into number of polygons that result from
+                // the padding transform
+                var nameNoSpaces = TextUtil.removeSpaces(bestplaces[topo.properties.name].bestmatch);
+                var slicedNameArray = TextUtil.slicePhrase(solution.length, nameNoSpaces);
+
+                // for each polygon in the overall shape, fill with text
+                // loop through polygons in result of padding operation
+                for (var poly = 0; poly < solution.length; poly++) {
+
+                    var innerPointsList = "";
+                    for (var innerPoint = 0; innerPoint < solution[poly].length; innerPoint++) {
+                        if (!isNaN(solution[poly][innerPoint].X)) {
+                            var curr = solution[poly][innerPoint];
+                            innerPointsList += curr.X + "," + curr.Y + " ";
+                        }
+                    }
+                    var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
+
+                    if (pathCoords3d != null) { //coordinates are enough to actually make a shape
+                        result[topo.properties.name][poly] = MapUtil.horizontalSliceAlg(pathCoords3d, topo, slicedNameArray[poly], 0,
+                            TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO,
+                            textToSVG, TextToSVG, null, svg);
                     }
                 }
-                var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
-
-                if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                    result[topo.properties.name][poly] = MapUtil.horizontalSliceAlg(pathCoords3d, topo, slicedNameArray[poly], 0,
-                        TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO,
-                        textToSVG, TextToSVG, null, svg);
-                }
             }
-        }
 
-        // write result out to file
-        jsonfile.writeFileSync(outputfile, output_container);
+            // write result out to file
+            jsonfile.writeFileSync(outputfile, output_container);
+        });
     });
 });
 

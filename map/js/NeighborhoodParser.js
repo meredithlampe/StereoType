@@ -272,7 +272,6 @@ module.exports = {
         //find total poly area (of all polys in path coords 3d)
         var totalPolyArea = 0;
         for (var poly = 0; poly < pathCoords3d.length; poly++) {
-            debugger;
             totalPolyArea += PolyK.GetArea(module.exports.twoToOneDimensional(pathCoords3d[poly]));
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-$outputfilename = "output.txt";
+$outputfilename = "output.json";
 $configfilename = "config.json";
 
 //header("Content-type: application/json");
