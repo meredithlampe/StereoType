@@ -21,6 +21,7 @@ $response = array();
 foreach($locations as $name => $location) { //loop through locations
 
     // for each neighborhood, query yelp for best match business
+    echo "querying for " . $name . "\n";
     $encodedname = urlencode($name . ', Seattle, WA');
     $curl = curl_init('https://api.yelp.com/v3/businesses/search?location=' . $encodedname);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
@@ -29,21 +30,26 @@ foreach($locations as $name => $location) { //loop through locations
         ));
     $result = json_decode(curl_exec($curl));
 
-    // save result
-    $response[$name] = array();
-    $response[$name]["bestmatch"] = $result->businesses[0]->name;
-    $response[$name]["categories"] = array();
-    foreach($result->businesses[0]->categories as $category) {
-        array_push($response[$name]["categories"], $category);
+    if (is_null($result)) {
+        // bad
+        echo "\tunsuccessful query for " . $name . "\n";
+    } else {
+        // save result
+        $response[$name] = array();
+        $response[$name]["bestmatch"] = $result->businesses[0]->name;
+        $response[$name]["categories"] = array();
+        foreach($result->businesses[0]->categories as $category) {
+            array_push($response[$name]["categories"], $category);
+        }
+        $response[$name]["review_count"] = $result->businesses[0]->review_count;
+        $response[$name]["rating"] = $result->businesses[0]->rating;
+        $response[$name]["price"] = $result->businesses[0]->price;
     }
-    $response[$name]["review_count"] = $result->businesses[0]->review_count;
-    $response[$name]["rating"] = $result->businesses[0]->rating;
-    $response[$name]["price"] = $result->businesses[0]->price;
     curl_close($curl);
 }
 $outputfile = fopen($outputfilename, "w") or die ("Unable to open file");
 fwrite($outputfile, json_encode($response));
 fclose($outputfile);
-echo json_encode($response);
+echo json_encode($response) . "\n";
 
 ?>

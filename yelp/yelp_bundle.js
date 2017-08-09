@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 30);
+/******/ 	return __webpack_require__(__webpack_require__.s = 27);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -19263,7 +19263,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
  * Copyright (c) 2016 Hideki Shiro
  */
 
-module.exports = __webpack_require__(48);
+module.exports = __webpack_require__(45);
 
 
 /***/ }),
@@ -19443,7 +19443,7 @@ exports.BoundingBox = BoundingBox;
 
 
 var check = __webpack_require__(1);
-var draw = __webpack_require__(35);
+var draw = __webpack_require__(32);
 var path = __webpack_require__(3);
 
 function getPathDefinition(glyph, path) {
@@ -22984,7 +22984,7 @@ exports.checkArgument = function(expression, message) {
     }
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(32).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29).Buffer))
 
 /***/ }),
 /* 25 */
@@ -23220,9 +23220,7 @@ function appendSingleLetter(rectangle, letter, d) {
 
 
 /***/ }),
-/* 26 */,
-/* 27 */,
-/* 28 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/topojson/topojson Version 3.0.0. Copyright 2017 Mike Bostock.
@@ -25010,8 +25008,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
-/* 29 */,
-/* 30 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -25021,7 +25018,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 var MapUtil = __webpack_require__(25);
 const TextToSVG = __webpack_require__(9);
 const d3 = __webpack_require__(8);
-const topojson = __webpack_require__(28);
+const topojson = __webpack_require__(26);
 
 var width = 900;
 var height = 1000;
@@ -25058,11 +25055,11 @@ var neighborhoodGroup = svg.append("g")
 
 var topoGeometries;
 
-d3.json("json/neighborhoods.json", function (error, topology) {
-    d3.json("build_map/json/neighborhoodChars.json", function (error, chars) {
-        d3.json("yelp_api/output.txt", function (error, bestplaces) {
-            TextToSVG.load(MAP_FONT, function (err, textToSVG) {
-                if (err) {
+d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
+    d3.json("../build_map/json/neighborhoodChars.json", function (error_chars, chars) {
+        d3.json("yelp_api/output.txt", function (error_output, bestplaces) {
+            TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
+                if (error_neighborhoods || error_chars || error_output || error_font) {
                     console.log(err);
                 } else {
                     topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
@@ -25120,7 +25117,7 @@ d3.json("json/neighborhoods.json", function (error, topology) {
 
 
 /***/ }),
-/* 31 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25241,7 +25238,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 32 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25255,9 +25252,9 @@ function fromByteArray (uint8) {
 
 
 
-var base64 = __webpack_require__(31)
-var ieee754 = __webpack_require__(33)
-var isArray = __webpack_require__(34)
+var base64 = __webpack_require__(28)
+var ieee754 = __webpack_require__(30)
+var isArray = __webpack_require__(31)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -27035,10 +27032,10 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(50)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(47)))
 
 /***/ }),
-/* 33 */
+/* 30 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -27128,7 +27125,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 34 */
+/* 31 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -27139,7 +27136,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 35 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27159,7 +27156,7 @@ exports.line = line;
 
 
 /***/ }),
-/* 36 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27168,10 +27165,10 @@ exports.line = line;
 
 
 var path = __webpack_require__(3);
-var sfnt = __webpack_require__(45);
+var sfnt = __webpack_require__(42);
 var encoding = __webpack_require__(4);
 var glyphset = __webpack_require__(6);
-var Substitution = __webpack_require__(39);
+var Substitution = __webpack_require__(36);
 var util = __webpack_require__(24);
 
 /**
@@ -27694,7 +27691,7 @@ exports.Font = Font;
 
 
 /***/ }),
-/* 37 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27983,7 +27980,7 @@ module.exports = Layout;
 
 
 /***/ }),
-/* 38 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27996,10 +27993,10 @@ module.exports = Layout;
 
 
 
-var inflate = __webpack_require__(49);
+var inflate = __webpack_require__(46);
 
 var encoding = __webpack_require__(4);
-var _font = __webpack_require__(36);
+var _font = __webpack_require__(33);
 var glyph = __webpack_require__(11);
 var parse = __webpack_require__(0);
 var bbox = __webpack_require__(10);
@@ -28008,16 +28005,16 @@ var util = __webpack_require__(24);
 
 var cmap = __webpack_require__(13);
 var cff = __webpack_require__(12);
-var fvar = __webpack_require__(40);
-var glyf = __webpack_require__(41);
-var gpos = __webpack_require__(42);
+var fvar = __webpack_require__(37);
+var glyf = __webpack_require__(38);
+var gpos = __webpack_require__(39);
 var gsub = __webpack_require__(14);
 var head = __webpack_require__(15);
 var hhea = __webpack_require__(16);
 var hmtx = __webpack_require__(17);
-var kern = __webpack_require__(43);
+var kern = __webpack_require__(40);
 var ltag = __webpack_require__(18);
-var loca = __webpack_require__(44);
+var loca = __webpack_require__(41);
 var maxp = __webpack_require__(19);
 var _name = __webpack_require__(21);
 var os2 = __webpack_require__(22);
@@ -28380,7 +28377,7 @@ exports.loadSync = loadSync;
 
 
 /***/ }),
-/* 39 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28390,7 +28387,7 @@ exports.loadSync = loadSync;
 
 
 var check = __webpack_require__(1);
-var Layout = __webpack_require__(37);
+var Layout = __webpack_require__(34);
 
 /**
  * @exports opentype.Substitution
@@ -28688,7 +28685,7 @@ module.exports = Substitution;
 
 
 /***/ }),
-/* 40 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28834,7 +28831,7 @@ exports.parse = parseFvarTable;
 
 
 /***/ }),
-/* 41 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29176,7 +29173,7 @@ exports.parse = parseGlyfTable;
 
 
 /***/ }),
-/* 42 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29420,7 +29417,7 @@ exports.parse = parseGposTable;
 
 
 /***/ }),
-/* 43 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29498,7 +29495,7 @@ exports.parse = parseKernTable;
 
 
 /***/ }),
-/* 44 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29538,7 +29535,7 @@ exports.parse = parseLocaTable;
 
 
 /***/ }),
-/* 45 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29887,7 +29884,7 @@ exports.fontToTable = fontToSfntTable;
 
 
 /***/ }),
-/* 46 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -30115,10 +30112,10 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(47)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44)))
 
 /***/ }),
-/* 47 */
+/* 44 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -30304,7 +30301,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 48 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30318,7 +30315,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Copyright (c) 2016 Hideki Shiro
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _opentype = __webpack_require__(38);
+var _opentype = __webpack_require__(35);
 
 var _opentype2 = _interopRequireDefault(_opentype);
 
@@ -30326,7 +30323,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var DEFAULT_FONT = __webpack_require__(46).join(__dirname, '../fonts/ipag.ttf');
+var DEFAULT_FONT = __webpack_require__(43).join(__dirname, '../fonts/ipag.ttf');
 
 // Private method
 
@@ -30545,7 +30542,7 @@ module.exports = exports.default;
 /* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }),
-/* 49 */
+/* 46 */
 /***/ (function(module, exports) {
 
 var TINF_OK = 0;
@@ -30926,7 +30923,7 @@ module.exports = tinf_uncompress;
 
 
 /***/ }),
-/* 50 */
+/* 47 */
 /***/ (function(module, exports) {
 
 var g;
