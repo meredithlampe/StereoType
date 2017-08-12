@@ -15,7 +15,7 @@ const outputfile = process.argv[3];
 
 var xml = process.argv[2];
 var parser = new xml2js.Parser();
-fs.readFile(__dirname + '/sample_response.xml', function(error_output, data) {
+fs.readFile(__dirname + '/zillow_response.xml', function(error_output, data) {
     parser.parseString(data, function (error_parse, zillow) {
 
     if (error_output) {
@@ -28,7 +28,6 @@ fs.readFile(__dirname + '/sample_response.xml', function(error_output, data) {
         process.exit(1); //failure
     }
 
-    debugger;
 
     // get data from cached zillow api stuff
     var neighborhoods = zillow['RegionChildren:regionchildren']
@@ -40,24 +39,13 @@ fs.readFile(__dirname + '/sample_response.xml', function(error_output, data) {
     //    .getElementsByTagName("region");
 
     var zindexes_all = {};
-
     for (var i = 0; i < neighborhoods.length; i++) {
-        var neighborhood = neighborhoods[i];
-
-        //var name = neighborhood
-        //    .getElementsByTagName("name")[0]
-        //    .childNodes[0].data;
-        var name = neighborhood;
-
-
-        var zindex = neighborhood
-            .getElementsByTagName("zindex")[0];
-
-        if (!zindex) {
-            continue;
+        var name = neighborhoods[i].name[0];
+        if (neighborhoods[i].zindex) {
+            var zindex = neighborhoods[i].zindex[0]._;
+            zindexes_all[name] = {};
+            zindexes_all[name].bestmatch = zindex;
         }
-        var zindex_value = zindex.childNodes[0].data;
-        zindexes_all[name] = zindex_value;
     }
 
     // write json to file

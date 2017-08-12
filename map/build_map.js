@@ -105,6 +105,12 @@ jsonfile.readFile(seattle_topology, function (err_topo, topology) {
             for (var i = 0; i < topoGeometries.length; i++) {
 
                 var topo = topoGeometries[i];
+                debugger;
+
+                if (!bestplaces[topo.properties.name] ||
+                    !bestplaces[topo.properties.name].bestmatch) {
+                    continue;
+                }
 
                 console.log("processing " + topo.properties.name);
 

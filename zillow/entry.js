@@ -44,7 +44,7 @@ var topoGeometries;
 
 d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
     d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
-        d3.json("zillow_api/zillow_response_clean", function (error_output, zillow) {
+        d3.json("zillow_api/zillow_response_trimmed.json", function (error_output, zillow) {
             TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
                 if (error_neighborhoods || error_chars || error_output || error_font) {
                     console.log("error"); // lol bad
@@ -72,16 +72,22 @@ d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
                         .each(function (d) {
                             // get chars for neighborhood from file
                             var chars_for_neighborhood = chars.result[d.properties.name];
-                            for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
-                                for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
-                                    d3.select(this).append("path")
-                                        .attr("d", chars_for_neighborhood[poly][i])
-                                        .classed("charSVGThing", true);
+                            if (chars_for_neighborhood) {
+                                for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
+                                    for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
+                                        d3.select(this).append("path")
+                                            .attr("d", chars_for_neighborhood[poly][i])
+                                            .classed("charSVGThing", true);
+                                    }
                                 }
                             }
                         })
                     .attr("phrase", function (d) {
-                        return zindexes_all[d.properties.name];
+                        if (zillow[d.properties.name]) {
+                            return zillow[d.properties.name].bestmatch;
+                        } else {
+                            return "";
+                        }
                     })
                     .on("mouseover", MapUtil.setLegend)
                     .on("mouseout", MapUtil.resetLegend);
