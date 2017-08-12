@@ -3,6 +3,7 @@
  */
 
 const jsonfile = require('jsonfile');
+const d3 = require('d3');
 
 if (!process.argv[2] || !process.argv[3]) {
     console.log("usage: node prep_zillow_data.js <zillow_response_file> <output_file>");
@@ -11,7 +12,13 @@ if (!process.argv[2] || !process.argv[3]) {
 
 const outputfile = process.argv[3];
 
-d3.xml("zillow_api/sample_response", function (error_output, zillow) {
+d3.xml(process.argv[2], function (error_output, zillow) {
+
+    debugger;
+    if (error_output) {
+        console.log(error_output);
+        process.exit(1); //failure
+    }
 
     // get data from cached zillow api stuff
     var neighborhoods = zillow
@@ -21,7 +28,7 @@ d3.xml("zillow_api/sample_response", function (error_output, zillow) {
 
     var zindexes_all = {};
 
-    for(var i = 0; i < neighborhoods.length; i++) {
+    for (var i = 0; i < neighborhoods.length; i++) {
         var neighborhood = neighborhoods[i];
         var name = neighborhood
             .getElementsByTagName("name")[0]
@@ -38,4 +45,4 @@ d3.xml("zillow_api/sample_response", function (error_output, zillow) {
 
     // write json to file
     jsonfile.writeFileSync(outputfile, zindexes_all);
-};
+});
