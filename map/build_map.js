@@ -6,6 +6,7 @@
 //const d3n = new d3node(); // initializes D3 with container element
 //const d3 = d3n.d3;
 
+
 /*
  USAGE:
  node build_map.js <phrases_for_map_file> <output_file>
@@ -30,7 +31,8 @@ const jsonfile = require('jsonfile'),
     MapUtil = require("./js/MapUtil.js"),
     TextToSVG = require('text-to-svg'),
     topojson = require('topojson'),
-    sample_bestplaces = require('./json/SampleBestPlaces.js');
+    sample_bestplaces = require('./json/SampleBestPlaces.js'),
+    TextPoly = require('./js/TextPoly.js');
 
 var HORIZONTAL_SLICE_CAP = 6;
 var CHAR_ASPECT_RATIO = .5;
@@ -105,7 +107,6 @@ jsonfile.readFile(seattle_topology, function (err_topo, topology) {
             for (var i = 0; i < topoGeometries.length; i++) {
 
                 var topo = topoGeometries[i];
-                debugger;
 
                 if (!bestplaces[topo.properties.name] ||
                     !bestplaces[topo.properties.name].bestmatch) {
@@ -143,7 +144,7 @@ jsonfile.readFile(seattle_topology, function (err_topo, topology) {
                     var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
                     if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                        result[topo.properties.name][poly] = MapUtil.horizontalSliceAlg(pathCoords3d, topo, slicedNameArray[poly], 0,
+                        result[topo.properties.name][poly] = TextPoly.execute(pathCoords3d, topo, slicedNameArray[poly], 0,
                             TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO,
                             textToSVG, TextToSVG, null, svg);
                     }

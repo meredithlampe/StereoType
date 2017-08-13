@@ -96,44 +96,6 @@ module.exports = {
         document.body.scrollTop = oldScrollTop;
     },
 
-    //slice neighborhood horizontally, then vertically
-    //according to length of phrase to get grid over neighborhood.
-    //Use inscribed rectangles to fill each grid slot with a letter
-    horizontalSliceAlg: function (pathCoords3d, d, phrase, padding,
-                                  TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP,
-                                  CHAR_ASPECT_RATIO, textToSVG, TextToSVG, raphael,
-                                    svg) {
-
-        //get height and width of polygon
-        //don't use padding this time (padding = 0)
-        var dimensions = NeighborhoodParser.getNeighborhoodDimensions(pathCoords3d, 0);
-
-        // get number of horizontal slices we should be using for optimal letter fitting
-        var optimalHorizontalSlices = NeighborhoodParser.testGrid(pathCoords3d, dimensions, d, svg,
-            phrase, padding, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, TEXT_SIZE_MULTIPLIER, font, TextToSVG);
-        console.log("num horizontal slices: " + optimalHorizontalSlices);
-
-
-        // get individual grid cells that each letter will be fit into
-        var gridUnits = NeighborhoodParser.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, d, svg,
-            phrase, padding);
-
-        //console.log(gridUnits[0]);
-        var chars = [];
-
-        for (var i = 0; i < gridUnits.length; i++) {
-            var character = phrase.charAt(i);
-            //TextUtil.appendCharacterAsSVG(character, gridUnits[i], svg, d, i, padding, displayText, displayBounds,
-            //    TEXT_SIZE_MULTIPLIER, font, textToSVG, raphael);
-            chars[chars.length] = TextUtil.getCharacterAsSVG(character, gridUnits[i], svg, d, i, padding,
-                null, null,
-                TEXT_SIZE_MULTIPLIER, font, textToSVG, raphael);
-
-            console.log(chars[chars.length - 1]);
-        }
-
-        return chars;
-    },
 
     appendSingleLetter: function (rectangle, letter, d) {
 

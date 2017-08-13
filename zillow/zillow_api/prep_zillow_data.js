@@ -13,6 +13,8 @@ if (!process.argv[2] || !process.argv[3]) {
 
 const outputfile = process.argv[3];
 
+//var all_cities_debug = [];
+
 var xml = process.argv[2];
 var parser = new xml2js.Parser();
 fs.readFile(__dirname + '/zillow_response.xml', function(error_output, data) {
@@ -41,6 +43,12 @@ fs.readFile(__dirname + '/zillow_response.xml', function(error_output, data) {
     var zindexes_all = {};
     for (var i = 0; i < neighborhoods.length; i++) {
         var name = neighborhoods[i].name[0];
+
+        //all_cities_debug[all_cities_debug.length] = name;
+        if (name == "South Lake Union") {
+            debugger;
+        }
+
         if (neighborhoods[i].zindex) {
             var zindex = neighborhoods[i].zindex[0]._;
             zindexes_all[name] = {};
@@ -50,6 +58,7 @@ fs.readFile(__dirname + '/zillow_response.xml', function(error_output, data) {
 
     // write json to file
     jsonfile.writeFileSync(outputfile, zindexes_all);
+    //jsonfile.writeFileSync("all_cities_zillow.json", all_cities_debug.sort());
 
     });
 });
