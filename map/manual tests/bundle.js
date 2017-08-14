@@ -6839,14 +6839,70 @@ const phinney = [
     [ 250.89612881715993, 279.5418525536079 ],
     [ 250.89612881715993, 280.8004541749833 ],
     [ 250.89612881715993, 282.0590479892853 ] ] ];
+const phinney_grid_1 = [[
+    [203.25,
+    268.5],
+    [200,
+    268.5],
+    [200,
+    257],
+    [199,
+    254],
+    [196,
+    253],
+    [187,
+    253],
+    [187,
+    232],
+    [203.25,
+    232]] ];
+const phinney_grid_2 = [[
+    [ 219.5, 268.5], [203.25, 268.5], [203.25, 232], [219.5, 232]] ];
+const phinney_grid_3 = [[
+    [ 219.5,
+    232],
+    [235,
+    232],
+    [235,
+    235],
+    [234,
+    238],
+    [234,
+    239],
+    [232,
+    244],
+    [232,
+    251],
+    [231,
+    251],
+    [231,
+    251],
+    [229,
+    254],
+    [229,
+    258],
+    [231,
+    261],
+    [232,
+    264],
+    [235,
+    267],
+    [235.75,
+    268.5],
+    [219.5,
+    268.5 ] ] ];
+
+var test = phinney;
+var testb = phinney_grid_3;
+
 const TextToSVG = __webpack_require__(38);
 const TextPoly = __webpack_require__(25);
 
-var path = "M" + phinney[0][0][0] + "," + phinney[0][0][1];
-for (var i = 0; i < phinney.length; i++) {
-   for (var j = 0;j < phinney[i].length; j++) {
+var path = "M" + test[0][0][0] + "," + test[0][0][1];
+for (var i = 0; i < test.length; i++) {
+   for (var j = 0;j < test[i].length; j++) {
         // append coords to SVG path
-       path += "L" + phinney[i][j][0] + "," + phinney[i][j][1];
+       path += "L" + test[i][j][0] + "," + test[i][j][1];
    }
 }
 path += "Z";
@@ -6860,10 +6916,30 @@ svg.attr("height", 1000)
     .attr("stroke", "black")
     .attr("d", path);
 
-TextToSVG.load(font_for_map, function (err_font, textToSVG) {
-    TextPoly.execute(phinney, "testtesttest", 0, font, textToSVG, svg);
-});
+var path_b = "M" + testb[0][0][0] + "," + testb[0][0][1];
+for (var i = 0; i < testb.length; i++) {
+    for (var j = 0;j < testb[i].length; j++) {
+        // append coords to SVG path
+        path_b += "L" + testb[i][j][0] + "," + testb[i][j][1];
+    }
+}
+path_b += "Z";
 
+var svg = d3.select("#map");
+
+svg.attr("height", 1000)
+    .attr("width","100%")
+    .append("path")
+    .attr("fill", "white")
+    .attr("stroke", "black")
+    .attr("d", path_b);
+
+svg.append("path")
+    .attr("fill", "white")
+    .attr("stroke", "black")
+    .attr("d", 'M205.80 261.66L205.80 246.62L205.80 246.62Q205.80 244.90 206.40 243.58L206.40 243.58L206.40 243.58Q207.00 242.26 207.98 241.40L207.98 241.40L207.98 241.40Q208.96 240.54 210.18 240.10L210.18 240.10L210.18 240.10Q211.40 239.66 212.64 239.66L212.64 239.66L212.64 239.66Q213.88 239.66 215.10 240.10L215.10 240.10L215.10 240.10Q216.32 240.54 217.30 241.40L217.30 241.40L217.30 241.40Q218.28 242.26 218.88 243.58L218.88 243.58L218.88 243.58Q219.48 244.90 219.48 246.62L219.48 246.62L219.48 261.66L219.48 261.66Q219.48 263.42 218.88 264.72L218.88 264.72L218.88 264.72Q218.28 266.02 217.30 266.88L217.30 266.88L217.30 266.88Q216.32 267.74 215.10 268.18L215.10 268.18L215.10 268.18Q213.88 268.62 212.64 268.62L212.64 268.62L212.64 268.62Q211.40 268.62 210.18 268.18L210.18 268.18L210.18 268.18Q208.96 267.74 207.98 266.88L207.98 266.88L207.98 266.88Q207.00 266.02 206.40 264.72L206.40 264.72L206.40 264.72Q205.80 263.42 205.80 261.66L205.80 261.66ZM209.88 246.62L209.88 261.66L209.88 261.66Q209.88 263.14 210.70 263.84L210.70 263.84L210.70 263.84Q211.52 264.54 212.64 264.54L212.64 264.54L212.64 264.54Q213.76 264.54 214.58 263.84L214.58 263.84L214.58 263.84Q215.40 263.14 215.40 261.66L215.40 261.66L215.40 246.62L215.40 246.62Q215.40 245.14 214.58 244.44L214.58 244.44L214.58 244.44Q213.76 243.74 212.64 243.74L212.64 243.74L212.64 243.74Q211.52 243.74 210.70 244.44L210.70 244.44L210.70 244.44Q209.88 245.14 209.88 246.62L209.88 246.62Z');
+//TextToSVG.load(font_for_map, function (err_font, textToSVG) {
+TextPoly.execute(test, "testtesttest", 0, font, textToSVG, svg);
 
 
 /***/ }),
@@ -6955,7 +7031,7 @@ const point_at_length = __webpack_require__(6);
 // constants to control alg
 var HORIZONTAL_SLICE_CAP = 10; // max number of horizontal rows we'll attempt to use per shape
 var CHAR_ASPECT_RATIO = .5;
-var TEXT_SIZE_MULTIPLIER = 1.5;
+var TEXT_SIZE_MULTIPLIER = 1;
 
 module.exports = {
 
@@ -6973,14 +7049,18 @@ module.exports = {
         console.log("num horizontal slices: " + optimalHorizontalSlices);
 
         // get individual grid cells that each letter will be fit into
+        // TODO: sometimes this doesn't return enough grid cells!
         var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, svg, phrase, padding);
+        if (gridUnits.length != phrase.length) {
+            console.log("number of cells != phrase length for phrase: " + phrase);
+        }
 
         var chars = [];
 
         // for each unit of the grid, fit a letter into it
         for (var i = 0; i < gridUnits.length; i++) {
             chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, padding, font, textToSVG);
-            console.log(chars[chars.length - 1]);
+            //console.log(chars[chars.length - 1]);
         }
 
         return chars;
@@ -7314,21 +7394,21 @@ module.exports = {
         //to be filled with rectangles that make up grid units
         var grid = [];
 
-        var phrasePieces = module.exports.slicePhrase(numLevels * pathCoords3d.length, phrase, padding);
-
-        if (numLevels * pathCoords3d.length != phrasePieces.length) {
-            console.log("ERROR: error splitting phrase " + phrase);
-        }
-
         //get horizontal slices that are viable
         var slices = module.exports.divide(pathCoords3d, numLevels, dimensions, svg, true);
 
         if (slices != null) {
 
+            var phrasePieces = module.exports.slicePhrase(slices.length * pathCoords3d.length, phrase, padding);
+
             //assert that everything is still working
             if (slices.length != numLevels || numLevels != phrasePieces.length) {
-                console.log("slice error--number of slices != computed number of levels or num levels "
-                    + " != number of phrase pieces");
+                if (slices.length != numLevels) {
+                    console.log("ERROR: number of slices != computed number of levels");
+                } else {
+                    console.log("ERROR: num levels "
+                        + " != number of phrase pieces");
+                }
             }
 
             //loop through the slices
@@ -7402,12 +7482,6 @@ module.exports = {
                                 //    .attr("fill", vertColor)
                                 //    .attr("opacity", ".50");
 
-                                //get largest inscribed rectangle for this slice
-                                //TODO: WHAT ABOUT MULTIPOLYGONS HEYYYY
-                                //var inscribed = d3plus.geom.largestRect(twoDPath, {
-                                //    angle: [90, 270], nTries: 50, tolerance: 0.02
-                                //});
-
                                 var inscribed = largestRect(twoDPath, {
                                     angle: [90, 270], nTries: 50, tolerance: 0.02
                                 });
@@ -7415,7 +7489,12 @@ module.exports = {
                                 if (inscribed != null && inscribed[0] != null) {
                                     //append inscribed rectangle
                                     inscribed.polygon = currVertSlice[k];
+
+                                    // package inscribed rectangle and original polygon
+                                    // for this cell into grid
                                     grid[grid.length] = inscribed; // one dimensional array representing largest inscribed rectangle
+                                } else {
+                                    console.log("ERROR: null inscribed rectangle");
                                 }
                             }
                         }
@@ -7610,7 +7689,7 @@ module.exports = {
 
         }
 
-        console.log("while loop executed " + whileLoopCount + " times");
+        //console.log("while loop executed " + whileLoopCount + " times");
 
         return bestPath;
     }

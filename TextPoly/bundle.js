@@ -83,7 +83,7 @@ const point_at_length = __webpack_require__(6);
 // constants to control alg
 var HORIZONTAL_SLICE_CAP = 10; // max number of horizontal rows we'll attempt to use per shape
 var CHAR_ASPECT_RATIO = .5;
-var TEXT_SIZE_MULTIPLIER = 1.5;
+var TEXT_SIZE_MULTIPLIER = 1;
 
 module.exports = {
 
@@ -101,14 +101,18 @@ module.exports = {
         console.log("num horizontal slices: " + optimalHorizontalSlices);
 
         // get individual grid cells that each letter will be fit into
+        // TODO: sometimes this doesn't return enough grid cells!
         var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, svg, phrase, padding);
+        if (gridUnits.length != phrase.length) {
+            console.log("number of cells != phrase length for phrase: " + phrase);
+        }
 
         var chars = [];
 
         // for each unit of the grid, fit a letter into it
         for (var i = 0; i < gridUnits.length; i++) {
             chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, padding, font, textToSVG);
-            console.log(chars[chars.length - 1]);
+            //console.log(chars[chars.length - 1]);
         }
 
         return chars;
@@ -442,21 +446,21 @@ module.exports = {
         //to be filled with rectangles that make up grid units
         var grid = [];
 
-        var phrasePieces = module.exports.slicePhrase(numLevels * pathCoords3d.length, phrase, padding);
-
-        if (numLevels * pathCoords3d.length != phrasePieces.length) {
-            console.log("ERROR: error splitting phrase " + phrase);
-        }
-
         //get horizontal slices that are viable
         var slices = module.exports.divide(pathCoords3d, numLevels, dimensions, svg, true);
 
         if (slices != null) {
 
+            var phrasePieces = module.exports.slicePhrase(slices.length * pathCoords3d.length, phrase, padding);
+
             //assert that everything is still working
             if (slices.length != numLevels || numLevels != phrasePieces.length) {
-                console.log("slice error--number of slices != computed number of levels or num levels "
-                    + " != number of phrase pieces");
+                if (slices.length != numLevels) {
+                    console.log("ERROR: number of slices != computed number of levels");
+                } else {
+                    console.log("ERROR: num levels "
+                        + " != number of phrase pieces");
+                }
             }
 
             //loop through the slices
@@ -530,12 +534,6 @@ module.exports = {
                                 //    .attr("fill", vertColor)
                                 //    .attr("opacity", ".50");
 
-                                //get largest inscribed rectangle for this slice
-                                //TODO: WHAT ABOUT MULTIPOLYGONS HEYYYY
-                                //var inscribed = d3plus.geom.largestRect(twoDPath, {
-                                //    angle: [90, 270], nTries: 50, tolerance: 0.02
-                                //});
-
                                 var inscribed = largestRect(twoDPath, {
                                     angle: [90, 270], nTries: 50, tolerance: 0.02
                                 });
@@ -543,7 +541,12 @@ module.exports = {
                                 if (inscribed != null && inscribed[0] != null) {
                                     //append inscribed rectangle
                                     inscribed.polygon = currVertSlice[k];
+
+                                    // package inscribed rectangle and original polygon
+                                    // for this cell into grid
                                     grid[grid.length] = inscribed; // one dimensional array representing largest inscribed rectangle
+                                } else {
+                                    console.log("ERROR: null inscribed rectangle");
                                 }
                             }
                         }
@@ -738,7 +741,7 @@ module.exports = {
 
         }
 
-        console.log("while loop executed " + whileLoopCount + " times");
+        //console.log("while loop executed " + whileLoopCount + " times");
 
         return bestPath;
     }
