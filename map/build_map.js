@@ -110,10 +110,6 @@ jsonfile.readFile(seattle_topology, function (err_topo, topology) {
                     continue;
                 }
 
-                // steal shape for testing
-                if (topo.properties.name == "Phinney Ridge") {
-                    debugger;
-                }
 
                 console.log("processing " + topo.properties.name);
 
@@ -145,6 +141,10 @@ jsonfile.readFile(seattle_topology, function (err_topo, topology) {
                     }
                     var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
+                    // steal shape for testing
+                    if (topo.properties.name == "Phinney Ridge") {
+                        debugger;
+                    }
                     if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                         result[topo.properties.name][poly] = TextPoly.execute(pathCoords3d, slicedNameArray[poly], 0,
                             font,

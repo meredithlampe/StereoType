@@ -67,7 +67,8 @@ const phinney = [
     [ 250.89612881715993, 279.5418525536079 ],
     [ 250.89612881715993, 280.8004541749833 ],
     [ 250.89612881715993, 282.0590479892853 ] ] ];
-
+const TextToSVG = require('text-to-svg');
+const TextPoly = require('../../TextPoly/bundle.js');
 
 var path = "M" + phinney[0][0][0] + "," + phinney[0][0][1];
 for (var i = 0; i < phinney.length; i++) {
@@ -78,8 +79,9 @@ for (var i = 0; i < phinney.length; i++) {
 }
 path += "Z";
 
-d3.select("#map")
-    .attr("height", 1000)
+var svg = d3.select("#map");
+
+svg.attr("height", 1000)
     .attr("width","100%")
     .append("path")
     .attr("fill", "white")
@@ -87,6 +89,6 @@ d3.select("#map")
     .attr("d", path);
 
 TextToSVG.load(font_for_map, function (err_font, textToSVG) {
-    TextPoly.execute(phinney, "testtesttest", 0, font, textToSVG);
+    TextPoly.execute(phinney, "testtesttest", 0, font, textToSVG, svg);
 });
 

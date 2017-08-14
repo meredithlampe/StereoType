@@ -36,7 +36,7 @@ module.exports = {
         // for each unit of the grid, fit a letter into it
         for (var i = 0; i < gridUnits.length; i++) {
             chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, padding, font, textToSVG);
-            console.log(chars[chars.length - 1]);
+            //console.log(chars[chars.length - 1]);
         }
 
         return chars;
