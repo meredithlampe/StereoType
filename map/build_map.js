@@ -32,7 +32,7 @@ const jsonfile = require('jsonfile'),
     TextToSVG = require('text-to-svg'),
     topojson = require('topojson'),
     sample_bestplaces = require('./json/SampleBestPlaces.js'),
-    TextPoly = require('./js/TextPoly.js');
+    TextPoly = require('../TextPoly/TextPoly.js');
 
 var HORIZONTAL_SLICE_CAP = 6;
 var CHAR_ASPECT_RATIO = .5;
@@ -144,9 +144,9 @@ jsonfile.readFile(seattle_topology, function (err_topo, topology) {
                     var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
                     if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                        result[topo.properties.name][poly] = TextPoly.execute(pathCoords3d, topo, slicedNameArray[poly], 0,
+                        result[topo.properties.name][poly] = TextPoly.execute(pathCoords3d, slicedNameArray[poly], 0,
                             TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO,
-                            textToSVG, TextToSVG, null, svg);
+                            textToSVG, TextToSVG, svg);
                     }
                 }
             }

@@ -5,13 +5,6 @@
  */
 
 //const PolyK = require('./polyk.js');
-    const PolyK = require('polyk');
-const TextUtil = require('./TextUtil.js');
-const DebugTool = require('./DebugTool.js');
-
-// stole single function from the d3plus library
-const largestRect = require('./largestRect.js');
-
 module.exports = {
 
     /*

@@ -10,21 +10,21 @@ module.exports = {
 //slice neighborhood horizontally, then vertically
 //according to length of phrase to get grid over neighborhood.
 //Use inscribed rectangles to fill each grid slot with a letter
-    execute: function (pathCoords3d, d, phrase, padding,
+    execute: function (pathCoords3d, phrase, padding,
                                   TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP,
-                                  CHAR_ASPECT_RATIO, textToSVG, TextToSVG, raphael,
+                                  CHAR_ASPECT_RATIO, textToSVG, TextToSVG,
                                   svg) {
 
         //get height and width of polygon
         var dimensions = module.exports.getShapeDimensions(pathCoords3d);
 
         // get number of horizontal slices we should be using for optimal letter fitting
-        var optimalHorizontalSlices = module.exports.testGrid(pathCoords3d, dimensions, d, svg,
-            phrase, padding, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO, TEXT_SIZE_MULTIPLIER, font, TextToSVG);
+        var optimalHorizontalSlices = module.exports.testGrid(pathCoords3d,
+            dimensions, svg, phrase, padding, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO);
         console.log("num horizontal slices: " + optimalHorizontalSlices);
 
         // get individual grid cells that each letter will be fit into
-        var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, d, svg,
+        var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, null, svg,
             phrase, padding);
 
         //console.log(gridUnits[0]);
@@ -34,8 +34,8 @@ module.exports = {
             var character = phrase.charAt(i);
             //TextUtil.appendCharacterAsSVG(character, gridUnits[i], svg, d, i, padding, displayText, displayBounds,
             //    TEXT_SIZE_MULTIPLIER, font, textToSVG, raphael);
-            chars[chars.length] = module.exports.getCharacterAsSVG(character, gridUnits[i], svg, d, i, padding,
-                null, null, TEXT_SIZE_MULTIPLIER, font, textToSVG, raphael);
+            chars[chars.length] = module.exports.getCharacterAsSVG(character, gridUnits[i], svg, null, i, padding,
+                null, null, TEXT_SIZE_MULTIPLIER, font, textToSVG);
 
             console.log(chars[chars.length - 1]);
         }
@@ -66,9 +66,8 @@ module.exports = {
         return results;
     },
 
-    testGrid: function(pathCoords3d, dimensions, d, svg, phrase,
-                       padding, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO,
-                       TEXT_SIZE_MULTIPLIER, font, TextToSVG) {
+    testGrid: function (pathCoords3d, dimensions, svg, phrase, padding,
+                        HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO) {
 
         var optimalHorizontalSlices = -1;
         //var lowestAreaDifference = Number.MAX_VALUE;
@@ -209,7 +208,7 @@ module.exports = {
 
                             }
                         } else {
-                            console.log("error: vertical slices null for neighborhood: " + d.properties.name);
+                            console.log("error: vertical slices null for shape with phrase: " + phrase);
                         }
 
                         //remove this poly
@@ -219,7 +218,7 @@ module.exports = {
                 }
 
             } else {
-                console.log("slices null for neighborhood: " + d.properties.name);
+                console.log("slices null for shape: " + phrase);
             }
 
             if (horLevelError < lowestError) {
@@ -376,8 +375,7 @@ module.exports = {
         var phrasePieces = module.exports.slicePhrase(numLevels * pathCoords3d.length, phrase, padding);
 
         if (numLevels * pathCoords3d.length != phrasePieces.length) {
-            console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name + ", expected: " + numLevels * pathCoords3d.length
-                + ", actual: " + phrasePieces.length);
+            console.log("ERROR: error splitting phrase " + phrase);
         }
 
         //get horizontal slices that are viable
@@ -480,13 +478,13 @@ module.exports = {
                             }
                         }
                     } else {
-                        console.log("error: vertical slices null for neighborhood: " + d.properties.name);
+                        console.log("error: vertical slices null for shape with phrase: " + phrase);
                     }
                 }
             }
 
         } else {
-            console.log("slices null for neighborhood: " + d.properties.name);
+            console.log("slices null for shape with phrase: " + phrase);
         }
 
         return grid;
@@ -506,11 +504,10 @@ module.exports = {
 
     getCharacterAsSVG: function (char, gridUnit, svg, d, tag, padding,
                                  displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
-                                 font, textToSVG, raphael) {
+                                 font, textToSVG) {
 
         var startPathX,
             startPathY,
-            rectangleId,
             widthOfSlice,
             heightOfSlice;
 
@@ -531,11 +528,8 @@ module.exports = {
         var paddingScaledHeight = padding * heightOfSlice;
         startPathX += paddingScaledWidth;
         startPathY -= paddingScaledHeight;
-        rectangleId = d.properties.name + "_inner";
 
-        return module.exports.getChar(startPathX, startPathY, char, tag, displayText,
-            displayBounds, rectangleId, svg, TEXT_SIZE_MULTIPLIER, font,
-            gridUnit, textToSVG, raphael);
+        return module.exports.getChar(startPathX, startPathY, char, tag, displayText, displayBounds, svg, TEXT_SIZE_MULTIPLIER, font, gridUnit, textToSVG);
 
     },
 
@@ -605,8 +599,8 @@ module.exports = {
 
     getChar: function (startPathX, startPathY,
                        phrase, k, displayText, displayBounds,
-                       rectangleId, svg, TEXT_SIZE_MULTIPLIER, font,
-                       rectangle, textToSVG, raphael) {
+                       svg, TEXT_SIZE_MULTIPLIER, font, rectangle,
+                       textToSVG) {
 
         var textSize = 5;
 
@@ -622,7 +616,6 @@ module.exports = {
 
         var whileLoopCount = 0;
         // canvas for trying out char sizes - who even knows if these are the right dimensions
-        //var paper = raphael(-500, -500, 320, 200);
         while (!charToBig) {
             whileLoopCount++;
 
