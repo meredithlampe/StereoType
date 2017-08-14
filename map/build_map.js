@@ -34,9 +34,6 @@ const jsonfile = require('jsonfile'),
     sample_bestplaces = require('./json/SampleBestPlaces.js'),
     TextPoly = require('../TextPoly/TextPoly.js');
 
-var HORIZONTAL_SLICE_CAP = 6;
-var CHAR_ASPECT_RATIO = .5;
-var TEXT_SIZE_MULTIPLIER = 1.5;
 
 var font = "din-condensed-bold";
 var font_for_map = './DIN-Condensed-Bold.ttf';
@@ -113,6 +110,11 @@ jsonfile.readFile(seattle_topology, function (err_topo, topology) {
                     continue;
                 }
 
+                // steal shape for testing
+                if (topo.properties.name == "Phinney Ridge") {
+                    debugger;
+                }
+
                 console.log("processing " + topo.properties.name);
 
                 result[topo.properties.name] = []; // to store each sub-polygon for this shape
@@ -145,8 +147,8 @@ jsonfile.readFile(seattle_topology, function (err_topo, topology) {
 
                     if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                         result[topo.properties.name][poly] = TextPoly.execute(pathCoords3d, slicedNameArray[poly], 0,
-                            TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO,
-                            textToSVG, TextToSVG, svg);
+                            font,
+                            textToSVG, svg);
                     }
                 }
             }

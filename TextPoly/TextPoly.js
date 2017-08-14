@@ -5,38 +5,37 @@ const PolyK = require('polyk');
 const debug_colors = ["#DCDCDD", "#C5C3C6", "#46494C", "#4C5C68", "#1985A1", "#114B5F"];
 const largestRect = require('./largestRect.js');
 const point_at_length = require('point-at-length');
+// mock browser
+// text to svg
+
+// constants to control alg
+var HORIZONTAL_SLICE_CAP = 10; // max number of horizontal rows we'll attempt to use per shape
+var CHAR_ASPECT_RATIO = .5;
+var TEXT_SIZE_MULTIPLIER = 1.5;
 
 module.exports = {
-//slice neighborhood horizontally, then vertically
-//according to length of phrase to get grid over neighborhood.
-//Use inscribed rectangles to fill each grid slot with a letter
-    execute: function (pathCoords3d, phrase, padding,
-                                  TEXT_SIZE_MULTIPLIER, font, HORIZONTAL_SLICE_CAP,
-                                  CHAR_ASPECT_RATIO, textToSVG, TextToSVG,
-                                  svg) {
+
+    //slice neighborhood horizontally, then vertically
+    //according to length of phrase to get grid over neighborhood.
+    //Use inscribed rectangles to fill each grid slot with a letter
+    execute: function (pathCoords3d, phrase, padding, font, textToSVG, svg) {
 
         //get height and width of polygon
         var dimensions = module.exports.getShapeDimensions(pathCoords3d);
 
         // get number of horizontal slices we should be using for optimal letter fitting
-        var optimalHorizontalSlices = module.exports.testGrid(pathCoords3d,
-            dimensions, svg, phrase, padding, HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO);
+        var optimalHorizontalSlices = module.exports.testGrid(pathCoords3d, dimensions, svg, phrase, padding);
+
         console.log("num horizontal slices: " + optimalHorizontalSlices);
 
         // get individual grid cells that each letter will be fit into
-        var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, null, svg,
-            phrase, padding);
+        var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, svg, phrase, padding);
 
-        //console.log(gridUnits[0]);
         var chars = [];
 
+        // for each unit of the grid, fit a letter into it
         for (var i = 0; i < gridUnits.length; i++) {
-            var character = phrase.charAt(i);
-            //TextUtil.appendCharacterAsSVG(character, gridUnits[i], svg, d, i, padding, displayText, displayBounds,
-            //    TEXT_SIZE_MULTIPLIER, font, textToSVG, raphael);
-            chars[chars.length] = module.exports.getCharacterAsSVG(character, gridUnits[i], svg, null, i, padding,
-                null, null, TEXT_SIZE_MULTIPLIER, font, textToSVG);
-
+            chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, padding, font, textToSVG);
             console.log(chars[chars.length - 1]);
         }
 
@@ -66,35 +65,34 @@ module.exports = {
         return results;
     },
 
-    testGrid: function (pathCoords3d, dimensions, svg, phrase, padding,
-                        HORIZONTAL_SLICE_CAP, CHAR_ASPECT_RATIO) {
+    testGrid: function (pathCoords3d, dimensions, svg, phrase, padding) {
 
         var optimalHorizontalSlices = -1;
         //var lowestAreaDifference = Number.MAX_VALUE;
         var lowestError = Number.MAX_VALUE;
 
         //find total poly area (of all polys in path coords 3d)
-        var totalPolyArea = 0;
-        for (var poly = 0; poly < pathCoords3d.length; poly++) {
-            totalPolyArea += PolyK.GetArea(module.exports.twoToOneDimensional(pathCoords3d[poly]));
-        }
+        //var totalPolyArea = 0;
+        //for (var poly = 0; poly < pathCoords3d.length; poly++) {
+        //    totalPolyArea += PolyK.GetArea(module.exports.twoToOneDimensional(pathCoords3d[poly]));
+        //}
 
         // for each possible number of horizontal grid rows
         for (var horCount = 1; horCount < HORIZONTAL_SLICE_CAP; horCount++) {
 
             var horLevelError = 0;
-            var coveredArea = 0; //difference between inscribed rect area and total poly area
+            //var coveredArea = 0; //difference between inscribed rect area and total poly area
 
             //slice into n levels, where n = number of horizontal levels * number of polygons that make
             //up neighborhood
             var phrasePieces = module.exports.slicePhrase(horCount * pathCoords3d.length, phrase);
 
             if (horCount * pathCoords3d.length != phrasePieces.length) {
-                console.log("ERROR: phrase splitting for neighborhood: " + d.properties.name);
+                console.log("ERROR: phrase splitting for shape with phrase: " + phrase);
             }
 
             //get horizontal slices that are viable
-            var slices = module.exports.divide(pathCoords3d, horCount, dimensions, svg, d, true);
+            var slices = module.exports.divide(pathCoords3d, horCount, dimensions, svg, true);
 
             if (slices != null) {
 
@@ -143,7 +141,7 @@ module.exports = {
                         //slice vertically
                         var numVerticalSlices = phraseForSlicePiece.length;
                         var verticalSlices = this.divide(currPoly3d, numVerticalSlices,
-                            verDimensions, svg, d, false);
+                            verDimensions, svg, false);
 
                         if (verticalSlices != null) {
 
@@ -251,7 +249,7 @@ module.exports = {
     },
 
 
-    divide: function(pathCoords3d, num, dimensions, svg, d, horizontalSliceFlag) {
+    divide: function(pathCoords3d, num, dimensions, svg, horizontalSliceFlag) {
 
         //slice (height is width if doing vertical slice)
         var heightOfSlice = (dimensions.max - dimensions.min) / num;
@@ -367,7 +365,7 @@ module.exports = {
 
     //same as test grid, but doesn't loop through a bunch of different numbers
     //of horizontal levels...instead, uses known value
-    createGrid: function(pathCoords3d, dimensions, numLevels, d, svg, phrase, padding) {
+    createGrid: function (pathCoords3d, dimensions, numLevels, svg, phrase, padding) {
 
         //to be filled with rectangles that make up grid units
         var grid = [];
@@ -379,7 +377,7 @@ module.exports = {
         }
 
         //get horizontal slices that are viable
-        var slices = module.exports.divide(pathCoords3d, numLevels, dimensions, svg, d, true);
+        var slices = module.exports.divide(pathCoords3d, numLevels, dimensions, svg, true);
 
         if (slices != null) {
 
@@ -437,7 +435,7 @@ module.exports = {
                     var numVerticalSlices = phraseForSlicePiece.length;
 
                     var verticalSlices = this.divide(currPoly3d, numVerticalSlices,
-                        verDimensions, svg, d, false);
+                        verDimensions, svg, false);
 
                     if (verticalSlices != null) {
 
@@ -502,9 +500,8 @@ module.exports = {
     },
 
 
-    getCharacterAsSVG: function (char, gridUnit, svg, d, tag, padding,
-                                 displayText, displayBounds, TEXT_SIZE_MULTIPLIER,
-                                 font, textToSVG) {
+    getCharacterAsSVG: function (char, gridUnit, svg, tag, padding, font,
+                                 textToSVG) {
 
         var startPathX,
             startPathY,
@@ -529,7 +526,8 @@ module.exports = {
         startPathX += paddingScaledWidth;
         startPathY -= paddingScaledHeight;
 
-        return module.exports.getChar(startPathX, startPathY, char, tag, displayText, displayBounds, svg, TEXT_SIZE_MULTIPLIER, font, gridUnit, textToSVG);
+        return module.exports.getChar(startPathX, startPathY, char,
+            tag, svg, TEXT_SIZE_MULTIPLIER, font, gridUnit, textToSVG);
 
     },
 
@@ -554,8 +552,8 @@ module.exports = {
 
 
     getDiffAspectRatio: function(twoDPath, CHAR_ASPECT_RATIO) {
+
         //get largest inscribed rectangle for this slice
-        //TODO: WHAT ABOUT MULTIPOLYGONS HEYYYY
         var inscribed = largestRect(twoDPath, {
             angle: [90, 270], nTries: 10, tolerance: 0.02
         });
@@ -598,9 +596,8 @@ module.exports = {
     },
 
     getChar: function (startPathX, startPathY,
-                       phrase, k, displayText, displayBounds,
-                       svg, TEXT_SIZE_MULTIPLIER, font, rectangle,
-                       textToSVG) {
+                       phrase, k, svg, TEXT_SIZE_MULTIPLIER,
+                       font, rectangle, textToSVG) {
 
         var textSize = 5;
 
