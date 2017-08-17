@@ -16,6 +16,7 @@ module.exports = {
         d3.selectAll(".neighborhood").attr("opacity", "1.0");
     },
 
+    // we maybe don't need this here
     setLegend: function (d, i) {
 
         d3.select(".maplegend").style("visibility", "visible");
@@ -44,7 +45,7 @@ module.exports = {
         // set price range
         var price = poly.attr("price");
         if (!price) {
-            price = "filler";
+            price = "Free";
         }
         d3.select("#neighborhoodprice").html(price);
 
