@@ -1,0 +1,16 @@
+{
+  "name": "text-poly",
+  "version": "1.0.0",
+  "description": "Fits sequence of characters into a polygon of an arbitrary shape.",
+  "main": "TextPoly.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Meredith Lampe",
+  "license": "ISC",
+  "dependencies": {
+    "point-at-length": "^1.0.2",
+    "polyk": "^0.24.0",
+    "simplify-js": "^1.2.1"
+  }
+}
