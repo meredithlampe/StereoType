@@ -25023,8 +25023,8 @@ const topojson = __webpack_require__(26);
 var width = 900;
 var height = 1000;
 var rotate = [122, 0, 0];
-var scale = 150000;
-var offset = [1141.329833984375 - 450 + width / 2, 142582.609375 + 30];
+var scale = 149000;
+var offset = [1141.329833984375 - 450 + width / 2, 141700.609375];
 
 const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
 
@@ -25035,12 +25035,14 @@ var svg = d3.select(".mapcontainer")
     .attr("id", "mapSVG")
     .attr("height", height);
 
+
 // project map - mercator
 var projection = d3.geoMercator()
     .rotate(rotate)
     .scale(scale)
     .translate(offset)
     .precision(.5);
+
 var path = d3.geoPath()
     .projection(projection);
 
@@ -25055,14 +25057,19 @@ var neighborhoodGroup = svg.append("g")
 
 var topoGeometries;
 
-d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
+d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_map) {
     d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
         d3.json("zillow_api/zillow_response_trimmed.json", function (error_output, zillow) {
             TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
                 if (error_neighborhoods || error_chars || error_output || error_font) {
                     console.log("error"); // lol bad
                 } else {
-                    topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
+                    topoGeometries = [];
+                    for (var i = 0; i < zillow_map.features.length; i++) {
+                        if (zillow_map.features[i].properties.City == "Seattle") {
+                            topoGeometries[topoGeometries.length] = zillow_map.features[i];
+                        }
+                    }
                     //generate paths around each neighborhood
                     var binding = neighborhoodGroup.selectAll(".neighborhood")
                         .data(topoGeometries);
@@ -25084,7 +25091,7 @@ d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
                     neighborhoodGroup.selectAll(".neighborhood")
                         .each(function (d) {
                             // get chars for neighborhood from file
-                            var chars_for_neighborhood = chars.result[d.properties.name];
+                            var chars_for_neighborhood = chars.result[d.properties.Name];
                             if (chars_for_neighborhood) {
                                 for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
                                     for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
@@ -25096,8 +25103,8 @@ d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
                             }
                         })
                     .attr("phrase", function (d) {
-                        if (zillow[d.properties.name]) {
-                            return zillow[d.properties.name].bestmatch;
+                        if (zillow[d.properties.Name]) {
+                            return '$' + numberWithCommas(zillow[d.properties.Name].bestmatch);
                         } else {
                             return "";
                         }
@@ -25110,6 +25117,10 @@ d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
     });
 
 });
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 
 
