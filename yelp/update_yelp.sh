@@ -9,6 +9,6 @@ cd ..
 # build map with new phrases
 echo "fitting characters of new phrases into map..."
 cd ../map
-node build_map.js ../yelp/yelp_api/output.json ../yelp/build_map_output/neighborhood_chars.json
+node build_map.js ../yelp/yelp_api/output.json ../yelp/build_map_output/neighborhood_chars.json ../yelp/json/build_map_config.json ../yelp/json/neighborhoods.json
 echo "finished"
 

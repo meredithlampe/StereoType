@@ -7,34 +7,37 @@ const TextToSVG = require('text-to-svg');
 const d3 = require('d3');
 const topojson = require('topojson');
 
-var width = 900;
-var height = 1000;
-var rotate = [122, 0, 0];
-var scale = 149000;
-var offset = [1141.329833984375 - 450 + width / 2, 141700.609375];
+//var width = 900;
+//var height = 1000;
+//var rotate = [122, 0, 0];
+//var scale = 149000;
+//var offset = [1141.329833984375 - 450 + width / 2, 141700.609375];
 
 const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
+var path;
+var neighborhoodGroup;
+d3.json("json/build_map_config.json", function(error_config, config) {
+    var svg = d3.select(".mapcontainer")
+        .attr("id", "mapContainer")
+        .append("svg")
+        .attr("id", "mapSVG")
+        .attr("height", config.height);
 
-// make container for map
-var svg = d3.select(".mapcontainer")
-    .attr("id", "mapContainer")
-    .append("svg")
-    .attr("id", "mapSVG")
-    .attr("height", height);
+    // project map - mercator
+    var projection = d3.geoMercator()
+        .rotate(JSON.parse(config.rotate))
+        .scale(config.scale)
+        .translate(JSON.parse(config.offset))
+        .precision(.5);
+
+    path = d3.geoPath()
+        .projection(projection);
+
+    neighborhoodGroup = svg.append("g")
+        .attr('id', 'neighborhoodGroup');
+});
 
 
-// project map - mercator
-var projection = d3.geoMercator()
-    .rotate(rotate)
-    .scale(scale)
-    .translate(offset)
-    .precision(.5);
-
-var path = d3.geoPath()
-    .projection(projection);
-
-var neighborhoodGroup = svg.append("g")
-    .attr('id', 'neighborhoodGroup');
 
 /*parses json, call back function selects all paths (none exist yet)
   and joins data (all neighborhoods) with each path. since there are no

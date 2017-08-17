@@ -6,6 +6,7 @@
 //const d3n = new d3node(); // initializes D3 with container element
 //const d3 = d3n.d3;
 
+
 /*
  USAGE:
  node build_map.js <phrases_for_map_file> <output_file>
@@ -33,7 +34,6 @@ const jsonfile = require('jsonfile'),
     sample_bestplaces = require('./json/SampleBestPlaces.js'),
     TextPoly = require('../TextPoly/TextPoly.js');
 
-
 var font = "din-condensed-bold";
 var font_for_map = './DIN-Condensed-Bold.ttf';
 
@@ -49,7 +49,6 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
 
     // have to JSON.parse rotate and offset because they're arrays in
     // string form
-
     var projection = d3.geoMercator()
         .rotate(JSON.parse(config.rotate))
         .scale(config.scale)
@@ -61,10 +60,13 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
 
     debugger;
 
-    jsonfile.readFile(seattle_topology, function (err_topo, topology) {
+    jsonfile.readFile(seattle_topology, function (err_topo, map) {
+
         jsonfile.readFile(process.argv[2], function (err_best, bestplaces) {
             TextToSVG.load(font_for_map, function (err_font, textToSVG) {
                 if (err_topo || err_best || err_font) {
+
+
                     if (err_topo) {
                         console.log(err_topo);
                     }
@@ -77,11 +79,13 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                     process.exit(1);
                 }
 
-                debugger;
+                var topoGeometries = [];
+                for (var i = 0; i < map.features.length; i++) {
+                    if (map.features[i].properties.City == "Seattle") {
+                        topoGeometries[topoGeometries.length] = map.features[i];
+                    }
+                }
 
-                var topoGeometries = topojson.feature(topology, topology.objects.neighborhoods)
-                    .features;
-                //var bestplaces = sample_bestplaces;
                 // to contain result (result of text fitting) and actual text of best matches for neighborhood
                 var output_container = {};
                 var result = {};
@@ -104,21 +108,19 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
 
                  }
                  */
-
                 // loop through each neighborhood
                 for (var i = 0; i < topoGeometries.length; i++) {
 
                     var topo = topoGeometries[i];
 
-                    if (!bestplaces[topo.properties.name] || !bestplaces[topo.properties.name].bestmatch) {
+                    if (!bestplaces[topo.properties.Name] || !bestplaces[topo.properties.Name].bestmatch) {
                         continue;
                     }
 
+                    console.log("processing " + topo.properties.Name);
 
-                    console.log("processing " + topo.properties.name);
-
-                    result[topo.properties.name] = []; // to store each sub-polygon for this shape
-                    output_container.best_places[topo.properties.name] = bestplaces[topo.properties.name];
+                    result[topo.properties.Name] = []; // to store each sub-polygon for this shape
+                    output_container.best_places[topo.properties.Name] = bestplaces[topo.properties.Name];
 
                     // convert path array to 3d array of coordinates
                     var pathCoords3d = NeighborhoodParser.get3dPathArray(
@@ -129,7 +131,7 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
 
                     // divide phrase into number of polygons that result from
                     // the padding transform
-                    var nameNoSpaces = TextUtil.removeSpaces(bestplaces[topo.properties.name].bestmatch);
+                    var nameNoSpaces = TextUtil.removeSpaces(bestplaces[topo.properties.Name].bestmatch);
                     var slicedNameArray = TextUtil.slicePhrase(solution.length, nameNoSpaces);
 
                     // for each polygon in the overall shape, fill with text
@@ -146,11 +148,13 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                         var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
                         // steal shape for testing
-                        if (topo.properties.name == "Phinney Ridge") {
+                        if (topo.properties.Name == "Phinney Ridge") {
                             debugger;
                         }
+
+                        debugger;
                         if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                            result[topo.properties.name][poly] = TextPoly.execute(pathCoords3d, slicedNameArray[poly], 0,
+                            result[topo.properties.Name][poly] = TextPoly.execute(pathCoords3d, slicedNameArray[poly], 0,
                                 font,
                                 textToSVG, svg);
                         }
