@@ -1,0 +1,5 @@
+#announcements {display: hidden; text-align: center; background: #ee5f5b; position: absolute; height: auto; text-align: center;padding: 5px; width:100%; background: #ee5f5b;color: #fff;font-family: 'Georgia';font-size: 20px;text-shadow: 0 1px rgba(0,0,0,.2);border-bottom: 1px solid #fff;}
+#announcements .wrapper {width: 1000px; text-align: left; margin: 0 auto; padding: 5px 0;}
+#announcements .wrapper .close {float: right; padding: 0 5px;}
+#announcements .wrapper .close:hover{background: #fff; border-radius: 5px;}
+#announcements .wrapper .jeweltheme_message p{margin: 0; color: #fff;}

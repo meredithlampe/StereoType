@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>City Neighborhood Maps &amp; More by Dork Posters</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
+ 
+      @font-face {
+          font-family: 'DIN';
+          src: url('fonts/din-regular-webfont.eot');
+          src: url('fonts/din-regular-webfont.eot?#iefix') format('embedded-opentype'),
+               url('fonts/din-regular-webfont.woff2') format('woff2'),
+               url('fonts/din-regular-webfont.woff') format('woff'),
+               url('fonts/din-regular-webfont.ttf') format('truetype'),
+               url('fonts/din-regular-webfont.svg#dinregular') format('svg');
+          font-weight: normal;
+          font-style: normal;
+      }
+
+      @font-face {
+          font-family: 'DIN';
+          src: url('fonts/din_bold-webfont.eot');
+          src: url('fonts/din_bold-webfont.eot?#iefix') format('embedded-opentype'),
+               url('fonts/din_bold-webfont.woff2') format('woff2'),
+               url('fonts/din_bold-webfont.woff') format('woff'),
+               url('fonts/din_bold-webfont.ttf') format('truetype'),
+               url('fonts/din_bold-webfont.svg#dinbold') format('svg');
+          font-weight: bold;
+          font-style: normal;
+      }
+
+      @font-face {
+          font-family: 'DIN';
+          src: url('fonts/din-regularitalic-webfont.eot');
+          src: url('fonts/din-regularitalic-webfont.eot?#iefix') format('embedded-opentype'),
+               url('fonts/din-regularitalic-webfont.woff2') format('woff2'),
+               url('fonts/din-regularitalic-webfont.woff') format('woff'),
+               url('fonts/din-regularitalic-webfont.ttf') format('truetype'),
+               url('fonts/din-regularitalic-webfont.svg#din-regularitalicregular') format('svg');
+          font-weight: normal;
+          font-style: italic;
+      }
+
+      @font-face {
+          font-family: 'Futura';
+          src: url('fonts/futura-webfont.eot');
+          src: url('fonts/futura-webfont.eot?#iefix') format('embedded-opentype'),
+               url('fonts/futura-webfont.woff2') format('woff2'),
+               url('fonts/futura-webfont.woff') format('woff'),
+               url('fonts/futura-webfont.ttf') format('truetype'),
+               url('fonts/futura-webfont.svg#futuramedium') format('svg');
+          font-weight: normal;
+          font-style: normal;
+      }
+
+
+      body {
+        font-family: 'DIN';
+      }
+
+
+      .navbar {
+        margin-bottom: 20px;
+        border-radius: 0;
+        
+      }
+      
+      /* Remove the jumbotron's default bottom margin */ 
+       .jumbotron {
+        margin-bottom: 0;
+      }
+     
+      /* Add a gray background color and some padding to the footer */
+      footer {
+        padding: 25px;
+        background-color: #F3F3F3;
+      }
+
+
+      h5 {text-align: center;
+        color: #404146;
+        letter-spacing: 0.1em;
+      }
+      h3 {
+        font-size: 30pt;
+        font-weight: bold;
+      }
+
+      .col-sm-12 {background-color: #CBCCCB;
+      }
+
+      .logo {    
+
+        margin-top: 2.5em;
+        margin-bottom: 2.5em;   
+        text-align: center;
+        display: block; }
+
+      .header{    
+        width: 70%;
+        display: block;
+
+      }
+
+      .header_badge{
+            width: 31%;
+            margin:0 auto;
+            display: inline-block;
+            position:relative;
+            display: inline-block;
+
+      }
+
+      .secondary_nav {
+        display: inline-block;
+        margin-top: 25px;
+        font-size: 12pt;
+      }
+
+      .secondary_nav a{
+        font-weight: 400!important;
+        padding: 1em .875em;
+        color: #9aa0a7!important;
+
+
+      }
+
+.title{
+      font-size: 1.41575em;
+    letter-spacing: 0;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    padding: 0 0 1em;
+    margin-bottom: 1em;
+    font-weight: 300;
+}
+
+      .main {
+        padding: 0 1em 20px;
+        color: #000!important;
+        font-size: 14pt;}
+
+      .carousel-control.left, .carousel-control.right {
+          background-image: none
+      }
+      .carousel-inner > .item > img {
+          margin: 0 auto;
+      }
+
+      .carousel-indicators li {
+          background: #404146;
+          border: none;
+      }
+
+      .carousel-indicators .active {
+          background: #00C1C4;
+          border: none;
+          width: 11px;
+          height: 11px;
+      }
+
+      .carousel-indicators{
+        bottom:-40px;
+      }
+
+      .carousel-control.left {margin-left: -45px;
+        border: none;
+       }
+      .carousel-control.right {margin-right: -45px; 
+
+        border: none;
+      }
+
+      .panel-footer {
+        text-align: center;
+        background: none;
+      }
+
+       .dots{
+
+        background: url('img/header-bk.png') repeat-x bottom left;
+        height: 135px;
+
+      }
+
+
+      .dropdown-menu{
+        background-color: #EEEEEE!important;
+        border: none!important;
+        border-radius: 0 !important;
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        box-shadow: none;
+      }
+
+    
+
+      .nav>li>a:hover, .nav>li>a:focus {
+          background-color: transparent;
+      }
+
+      .dropdown-toggle {background-color: transparent!important;}
+      .dropdown-menu>li>a {
+          color: #828282;
+      }
+
+      .dropdown-menu>li>a:hover {
+        background-color: #EEEEEE;
+      }
+
+      .dotstop {
+        padding-top: 35px;
+        background: url('img/header-bk.png') repeat-x bottom left;
+        height: 117px;
+        margin-bottom: -82px;
+      }
+
+      .announcement{
+        text-align: center;
+        font-family: "Futura";
+        font-weight: 
+        text-transform: uppercase;
+        font-size: 10pt;
+        letter-spacing: 2px;
+        color: #000;
+        position: static;
+        background: #CBCCCB;
+        padding: .9em;
+
+      }
+
+  </style>
+</head>
+
+<body>
+<div class="row">
+ <!--  <div class="col-sm-12"> -->
+    <div class="announcement">
+    DID YOU SEE WE'VE ADDED TSHIRTS FEATURING MANY OF OUR CITY MAP DESIGNS? CHECK THEM OUT HERE.
+  </div>
+  </div>
+<!-- </div> -->
+  <div class="container">
+    <div class="row" >  
+    <div class="logo">
+   
+      <div class="col-sm-4 text-left" >
+         <img src="img/header_badge-new.jpg" class="header_badge"> 
+      </div>
+
+      <div class="col-sm-5 text-center">
+         <img src="img/header-image-new.jpg" class="header"> 
+      </div>
+
+      <div class="col-sm-3 text-right">
+        <div class="secondary_nav">
+        <a href="#">Stockists</a>  <a href="#">Contact</a>
+      </div>
+      </div>
+
+    </div>
+  </div>
+  </div>
+<div class="col-sm-12 dotstop">
+</div>
+
+
+<nav class="navbar">
+  <div class="container">
+ <ul class="nav navbar-nav">
+      <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Shop By Tech<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Yelp</a></li>
+          <li><a href="#">Zillow</a></li>
+          <li><a href="#">Amazon</a></li>
+        </ul>
+      </li>
+      <li class="active"><a class="main" href="#">All Posters</a></li>
+       <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Products For Hanging<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Frames</a></li>
+          <li><a href="#">Modest Magnets</a></li>
+          <li><a href="#">Simple Clips</a></li>
+        </ul>
+      </li>
+      <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Besides Posters<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Seattle Civil Rights and Labor History Project</a></li>
+          <li><a href="#">Tenants Union of Washington State</a></li>
+        </ul>
+      </li>
+    </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a class="main" href="#"><span class="glyphicon glyphicon-shopping-cart"></span> </a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<div class="container">
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      <li data-target="#myCarousel" data-slide-to="1"></li>
+      <li data-target="#myCarousel" data-slide-to="2"></li>
+    </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" role="listbox">
+      <div class="item active">
+        <img src="img/tshirt_banner-new.jpg" alt="T Shirts">
+      </div>
+
+      <div class="item">
+        <img src="img/Mockup_SPDCGW-new.jpg" alt="Zillow">
+       
+      </div>
+    
+      <div class="item">
+        <img src="img/Mockup_SPTRSE-new-2.jpg" alt="Yelp Car2Go" >
+      </div>
+
+    </div>
+
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+</div>
+</div>
+
+
+<div class="col-sm-12 dots">
+</div>
+
+<div class="container">    
+  <h3>TECH CITY</h3>
+      <div class="row">
+
+            <div class="col-sm-4 thumb">
+                    <figure class="figure">
+                    <img class="figure-img img-fluid rounded"src="img/Mockup_BSRED-500x538.jpg"   style="width:100%" alt="Image">
+                    <figcaption class="figure-caption text-center">Atlanta</figcaption>
+                    </figure>
+            </div>
+           <div class="col-sm-4 thumb">
+                    <figure class="figure">
+                    <img class="figure-img img-fluid rounded"src="img/Mockup_BSRED-500x538.jpg"   style="width:100%" alt="Image">
+                    <figcaption class="figure-caption text-center">Atlanta</figcaption>
+                    </figure>
+            </div>
+            <div class="col-sm-4 thumb">
+                    <figure class="figure">
+                    <img class="figure-img img-fluid rounded"src="img/Mockup_BSRED-500x538.jpg"   style="width:100%" alt="Image">
+                    <figcaption class="figure-caption text-center">Atlanta</figcaption>
+                    </figure>
+            </div>
+            
+          </div>
+</div>
+<br>
+
+</div>
+<footer class="container-fluid text-center">
+
+  <div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-3" >
+</div>
+
+
+    <div class="col-sm-2" >
+      <p class="title">More Info</p> 
+      <hr />
+      <p>HOW IT’S MADE</p>
+      <p> WHO IS ORK?</p>
+      <p> ORDERING & SHIPPING</p>
+      <p> RETURNS & EXCHANGES</p>
+      <p> GIFT CERTIFICATE</p>
+      <p> T’S & C’S</p>
+      <p> PAY CUSTOM AMOUNT</p>
+    </div>
+    <div class="col-sm-2" >
+      <p class="title">Visit Our Flagship Shop</p>
+          <hr />
+          Located at 2003 W Montrose in Chicago. Find Ork Posters’ maps, postcards and select T-shirts, as well as home goods, gifts and artwork from many other independent makers. Check it out at neighborlyshop.com.
+    </div>
+
+    <div class="col-sm-2" >
+      <form class="form-inline">
+        <p class="title">Keep in Touch!</p>
+              <hr />
+
+        <input type="email" class="form-control" size="20" placeholder="Email Address">
+        <br/>
+        <br/>
+        <button type="button" class="btn btn-danger">Subscribe</button>
+      </form>
+    </div>
+     <div class="col-sm-3" >
+</div>
+  </div>
+
+
+</footer>
+
+</body>
+</html>
