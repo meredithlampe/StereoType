@@ -24,29 +24,12 @@ export function setLegend(d, i) {
 
     // set name
     var name = d3.select("#neighborhoodname");
-    name.html(d.properties.name);
+    name.html(d.properties.Name);
 
     // set phrase
     var phraseBox = d3.select("#neighborhoodphrase");
     var phrase = poly.attr("phrase");
     phraseBox.html(phrase);
-
-    // set type
-    var categories = JSON.parse(poly.attr("categories"));
-    var categoryBox = d3.select("#neighborhoodcategory");
-    if (categories != null) {
-        categoryBox.html(categories[0].title);
-    }
-
-    // set price range
-    var price = poly.attr("price");
-    if (!price) {
-       price = "filler";
-    }
-    d3.select("#neighborhoodprice").html(price);
-
-    // set number of ratings
-    d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount"));
 
     //var chars = poly.selectAll(".charSVGThing").attr("stroke", "white");
     var chars = poly.selectAll(".charSVGThing");

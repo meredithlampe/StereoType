@@ -28,29 +28,12 @@ module.exports = {
 
         // set name
         var name = d3.select("#neighborhoodname");
-        name.html(d.properties.name);
+        name.html(d.properties.Name);
 
         // set phrase
         var phraseBox = d3.select("#neighborhoodphrase");
         var phrase = poly.attr("phrase");
         phraseBox.html(phrase);
-
-        // set type
-        var categories = JSON.parse(poly.attr("categories"));
-        var categoryBox = d3.select("#neighborhoodcategory");
-        if (categories != null) {
-            categoryBox.html(categories[0].title);
-        }
-
-        // set price range
-        var price = poly.attr("price");
-        if (!price) {
-            price = "Free";
-        }
-        d3.select("#neighborhoodprice").html(price);
-
-        // set number of ratings
-        d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount"));
 
         //var chars = poly.selectAll(".charSVGThing").attr("stroke", "white");
         var chars = poly.selectAll(".charSVGThing");
@@ -76,15 +59,6 @@ module.exports = {
         var name = d3.select("#neighborhoodname");
 
         var phraseBox = d3.select("#neighborhoodphrase");
-
-        // set categories
-        d3.select("#neighborhoodcategory");
-
-        // set price range
-        d3.select("#neighborhoodprice");
-
-        // set number of ratings
-        d3.select("#neighborhoodreviewcount");
 
         var pathinpoly = poly.select(".neighborhoodOutline");
         pathinpoly.classed("neighborhoodFocus", false);
