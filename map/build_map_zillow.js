@@ -58,10 +58,7 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
     var path = d3.geoPath()
         .projection(projection);
 
-    debugger;
-
     jsonfile.readFile(seattle_topology, function (err_topo, map) {
-
         jsonfile.readFile(process.argv[2], function (err_best, bestplaces) {
             TextToSVG.load(font_for_map, function (err_font, textToSVG) {
                 if (err_topo || err_best || err_font) {
@@ -113,6 +110,7 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
 
                     var topo = topoGeometries[i];
 
+
                     if (!bestplaces[topo.properties.Name] || !bestplaces[topo.properties.Name].bestmatch) {
                         continue;
                     }
@@ -152,7 +150,10 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                             debugger;
                         }
 
-                        debugger;
+                        if (topo.properties.Name == "Capitol Hill") {
+                            debugger;
+                        }
+
                         if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                             result[topo.properties.Name][poly] = TextPoly.execute(pathCoords3d, slicedNameArray[poly], 0,
                                 font,

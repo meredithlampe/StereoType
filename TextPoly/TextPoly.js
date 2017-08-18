@@ -98,7 +98,7 @@ module.exports = {
             //get horizontal slices that are viable
             var slices = module.exports.divide(pathCoords3d, horCount, dimensions, svg, true);
 
-            if (slices != null) {
+            if (slices != null && slices.length != 0 && slices[0].length != 0) {
 
                 //loop through the horizontal slices
                 for (var i = 0; i < slices.length; i++) {
@@ -219,16 +219,17 @@ module.exports = {
 
                 }
 
+                if (horLevelError < lowestError) {
+                    //this number of horizontal levels is a better
+                    //fit for our letters
+                    lowestError = horLevelError;
+                    optimalHorizontalSlices = horCount;
+                }
+
             } else {
                 console.log("slices null for shape: " + phrase);
             }
 
-            if (horLevelError < lowestError) {
-                //this number of horizontal levels is a better
-                //fit for our letters
-                lowestError = horLevelError;
-                optimalHorizontalSlices = horCount;
-            }
         }
         return optimalHorizontalSlices;
 
