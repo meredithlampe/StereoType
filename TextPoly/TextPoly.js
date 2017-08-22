@@ -46,7 +46,7 @@ module.exports = {
         return chars;
     },
 
-    getShapeDimensions: function(pathCoords3d) {
+    getShapeDimensions: function (pathCoords3d) {
 
         //find max and min y coords
         var firstCoord = pathCoords3d[0][0];
@@ -72,20 +72,17 @@ module.exports = {
     testGrid: function (pathCoords3d, dimensions, svg, phrase, padding) {
 
         var optimalHorizontalSlices = -1;
-        //var lowestAreaDifference = Number.MAX_VALUE;
         var lowestError = Number.MAX_VALUE;
-
-        //find total poly area (of all polys in path coords 3d)
-        //var totalPolyArea = 0;
-        //for (var poly = 0; poly < pathCoords3d.length; poly++) {
-        //    totalPolyArea += PolyK.GetArea(module.exports.twoToOneDimensional(pathCoords3d[poly]));
-        //}
 
         // for each possible number of horizontal grid rows
         for (var horCount = 1; horCount < HORIZONTAL_SLICE_CAP; horCount++) {
 
             var horLevelError = 0;
-            //var coveredArea = 0; //difference between inscribed rect area and total poly area
+
+            // if we run into an issue creating a grid with this
+            // number of horizontal rows, we flip this
+            // so that we know that that number of horizontal slices is invalid
+            var valid = true;
 
             //slice into n levels, where n = number of horizontal levels * number of polygons that make
             //up neighborhood
@@ -167,7 +164,7 @@ module.exports = {
 
                                     var twoDPath = module.exports.oneDToTwoD(currPoly);
                                     var vertSlicePath = svg.append("path")
-                                        .attr("d", function() {
+                                        .attr("d", function () {
                                             //console.log("twoDPath: " + twoDPath);
                                             var pathString = module.exports.arrayToPath(twoDPath);
                                             //console.log(pathString);
@@ -211,10 +208,17 @@ module.exports = {
                             }
                         } else {
                             console.log("error: vertical slices null for shape with phrase: " + phrase);
+                            valid = false;
+                            break;
                         }
 
                         //remove this poly
                         //polyInSlicePath.remove();
+                    }
+
+                    if (!valid) {
+                        horLevelError = Number.MAX_VALUE;
+                        break;
                     }
 
                 }
@@ -254,12 +258,13 @@ module.exports = {
     },
 
 
-    divide: function(pathCoords3d, num, dimensions, svg, horizontalSliceFlag) {
+    divide: function (pathCoords3d, num, dimensions, svg, horizontalSliceFlag) {
 
         //slice (height is width if doing vertical slice)
         var heightOfSlice = (dimensions.max - dimensions.min) / num;
         var slices = [];
 
+        // loop through distinct polygons
         for (var currPathCoord = 0; currPathCoord < pathCoords3d.length; currPathCoord++) {
             //format polygon for polySlice
             var pathCoords1d = module.exports.twoToOneDimensional(pathCoords3d[currPathCoord]);
@@ -303,7 +308,7 @@ module.exports = {
                 //nudge endpoints of line to outside of the polygon, or else PolyK complains
                 var pathArrayTop;
                 if (horizontalSliceFlag) {
-                    pathArrayTop = [[dimensions.right + 10, maxVal],[dimensions.left - 10, maxVal]];
+                    pathArrayTop = [[dimensions.right + 10, maxVal], [dimensions.left - 10, maxVal]];
                 } else { //have to flip x and y if vertical slices.
                     pathArrayTop = [[maxVal, dimensions.right + 10], [maxVal, dimensions.left - 10]];
                 }
@@ -316,7 +321,6 @@ module.exports = {
 
                 for (var g = 0; g < unfilledPolys.length; g++) {
                     try {
-
                         var polysAfterTopSlice = PolyK.Slice(unfilledPolys[g], pathArrayTop[0][0], pathArrayTop[0][1],
                             pathArrayTop[1][0], pathArrayTop[1][1]);
 
@@ -327,7 +331,7 @@ module.exports = {
                             var comparisonVal = horizontalSliceFlag ? AABB.y : AABB.x;
 
                             //test what bucket poly should go into according to bounding box
-                            if (comparisonVal < midVal && (comparisonVal + heightOfSlice) > midVal ) {
+                            if (comparisonVal < midVal && (comparisonVal + heightOfSlice) > midVal) {
                                 //this poly belongs in this slice
                                 polysInSlice[polysInSlice.length] = testPoly;
                             } else {
@@ -337,9 +341,13 @@ module.exports = {
                         }
 
                     } catch (e) {
-                        console.log("exception exception Hayyyyy: " + e);
-                        slices[slices.length] = polysOutOfSlice;
-                        return slices;
+                        console.log("PolyK Exception: " + e);
+                        // dump all unfilled polys into slices
+                        //for (var h = 0; h < unfilledPolys.length; h++) {
+                        //    slices[slices.length] = unfilledPolys[h];
+                        //}
+                        //return slices;
+                        return null;
                     }
                 }
 
@@ -355,11 +363,14 @@ module.exports = {
             //remember to save the last poly..the one that we didn't slice
             slices[slices.length] = unfilledPolys;
         }
-
-        return slices;
+        if (slices.length == num) {
+            return slices;
+        } else {
+            return null;
+        }
     },
 
-    twoToOneDimensional: function(twoDArray) {
+    twoToOneDimensional: function (twoDArray) {
         var result = [];
         for (var i = 0; i < twoDArray.length; i++) {
             result[2 * i] = twoDArray[i][0];
@@ -412,7 +423,7 @@ module.exports = {
 
                     //paint color of whole horizontal slice
                     var polyInSlicePath = svg.append("path");
-                    polyInSlicePath.attr("d", function() {
+                    polyInSlicePath.attr("d", function () {
                             var twoDPath = module.exports.oneDToTwoD(currPolyInSlice);
                             //console.log("twoDPath: " + twoDPath);
                             var pathString = module.exports.arrayToPath(twoDPath);
@@ -495,7 +506,7 @@ module.exports = {
 
     //returns new 2d coord array from 1d coord array
     //usually to make the stuff that comes out of PolyK play nice with d3
-    oneDToTwoD: function(oneDArray) {
+    oneDToTwoD: function (oneDArray) {
         var twoDArray = [];
         for (var i = 0; i < oneDArray.length / 2; i++) {
             twoDArray[i] = [oneDArray[2 * i], oneDArray[2 * i + 1]];
@@ -535,10 +546,10 @@ module.exports = {
 
     },
 
-    estimateError: function(currPoly, neighborhoodGroup, CHAR_ASPECT_RATIO) {
+    estimateError: function (currPoly, neighborhoodGroup, CHAR_ASPECT_RATIO) {
         var twoDPath = module.exports.oneDToTwoD(currPoly);
         var vertSlicePath = neighborhoodGroup.append("path")
-            .attr("d", function() {
+            .attr("d", function () {
                 //console.log("twoDPath: " + twoDPath);
                 var pathString = module.exports.arrayToPath(twoDPath);
                 //console.log(pathString);
@@ -555,7 +566,7 @@ module.exports = {
     },
 
 
-    getDiffAspectRatio: function(twoDPath, CHAR_ASPECT_RATIO) {
+    getDiffAspectRatio: function (twoDPath, CHAR_ASPECT_RATIO) {
 
         //get largest inscribed rectangle for this slice
         var inscribed = largestRect(twoDPath, {
@@ -585,7 +596,7 @@ module.exports = {
      Inserting move-to and line-to characters as necessary.
      Coordinates must encompass one shape.
      */
-    arrayToPath: function(polyArray) {
+    arrayToPath: function (polyArray) {
 
         //generate path for topPoly
         var pathString = "M" + polyArray[0][0] + "," + polyArray[0][1];
@@ -594,7 +605,7 @@ module.exports = {
         }
 
         //add close path character to draw line back to initial point
-        pathString+= 'Z';
+        pathString += 'Z';
 
         return pathString;
     },

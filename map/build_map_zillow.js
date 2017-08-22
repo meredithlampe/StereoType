@@ -145,14 +145,11 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                         }
                         var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
-                        // steal shape for testing
-                        if (topo.properties.Name == "Phinney Ridge") {
+                        if (topo.properties.Name == "Maple Leaf") {
                             debugger;
                         }
 
-                        if (topo.properties.Name == "Capitol Hill") {
-                            debugger;
-                        }
+                        debugger;
 
                         if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                             result[topo.properties.Name][poly] = TextPoly.execute(pathCoords3d, slicedNameArray[poly], 0,
