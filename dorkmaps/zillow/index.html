@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/main.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
@@ -264,6 +265,10 @@
 
       }
 
+    #cart_button {
+      margin-bottom: 15pt;
+    }
+
   </style>
 </head>
 
@@ -335,10 +340,7 @@
 
 <div class="container map">
   <div class="row">
-    <div class="col-sm-6">
-      <img src="https://placeimg.com/400/600/any">
-
-    </div>
+    <div id="mapContainer" class="col-sm-6"></div>
 
     <div class="col-sm-6">
       <h1>Zillow Neighborhood Map 18″ x 24″</h1>
@@ -348,9 +350,27 @@
 
       <p class="s1">Because we care about impressing you, Dork Posters uses only the highest quality  data. This poster is made with Grade A algorithmically generated content which offers a sharp and clean rendering, saturated stereotypes, and archival properties to be sure the projections won’t fade over time.</p>
 
-      <button type="button" class="btn btn-default">
+      <button id="cart_button" type="button" class="btn btn-default">
            Add to cart
       </button>
+
+      <!--<div class="maplegend">-->
+        <!--<div class="legend col">-->
+
+          <!--<div class="legendterm row" id="zindex">-->
+            <!--<div class="termbox">-->
+              <h1 id="neighborhoodphrase">Hover to see zindex of neighborhood.</h1>
+            <!--</div>-->
+            <h3 class="legendtitle">Zindex</h3>
+          <!--</div>-->
+          <!--<div class="legendterm row" id="name">-->
+            <!--<div class="termbox">-->
+              <h1 id="neighborhoodname">Hover to see name of neighborhood.</h1>
+            <!--</div>-->
+            <h3 class="legendtitle">Neighborhood Name</h3>
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
 
     </div>
 </div>
@@ -403,4 +423,5 @@
 </footer>
 
 </body>
+<script src="../../zillow/zillow_dorkmap_bundle.js"></script>
 </html>

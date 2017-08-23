@@ -15,7 +15,7 @@ export function setMapOpacityStrong() {
 
 export function setLegend(d, i) {
 
-    d3.select(".maplegend").style("visibility", "visible");
+    //d3.select(".maplegend").style("visibility", "visible");
 
     var poly = d3.select(this);
 
@@ -24,12 +24,25 @@ export function setLegend(d, i) {
 
     // set name
     var name = d3.select("#neighborhoodname");
-    name.html(d.properties.Name);
+
+    if (d.properties.Name == "") {
+        name.style("visibility", "hidden");
+        name.html("filler");
+    } else {
+        name.html(d.properties.Name);
+        name.style("visibility", "visible");
+    }
 
     // set phrase
     var phraseBox = d3.select("#neighborhoodphrase");
     var phrase = poly.attr("phrase");
-    phraseBox.html(phrase);
+    if (phrase == "") {
+        phraseBox.style("visibility", "hidden");
+        phraseBox.html("filler");
+    } else {
+        phraseBox.html(phrase);
+        phraseBox.style("visibility", "visible");
+    }
 
     //var chars = poly.selectAll(".charSVGThing").attr("stroke", "white");
     var chars = poly.selectAll(".charSVGThing");
@@ -46,15 +59,19 @@ export function setLegend(d, i) {
 export function resetLegend(d, i) {
 
     // set entire legend to be invisible
-    d3.select(".maplegend").style("visibility", "hidden");
+    //d3.select(".maplegend").style("visibility", "hidden");
 
     var poly = d3.select(this);
 
     // weird scrolling thing -- gotta save scroll top
     var oldScrollTop = document.body.scrollTop;
     var name = d3.select("#neighborhoodname");
+    name.style("visibility", "hidden");
+    name.html("Hover to see name of neighborhood.");
 
     var phraseBox = d3.select("#neighborhoodphrase");
+    phraseBox.style("visibility", "hidden");
+    phraseBox.html("Hover to see zindex of neighborhood.");
 
     // set categories
     d3.select("#neighborhoodcategory");
