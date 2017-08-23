@@ -145,7 +145,7 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                         }
                         var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
-                        if (topo.properties.Name == "Maple Leaf") {
+                        if (topo.properties.Name == "Woodland") {
                             debugger;
                         }
 
