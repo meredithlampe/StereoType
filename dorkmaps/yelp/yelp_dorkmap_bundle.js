@@ -30892,16 +30892,6 @@ d3.json("json/build_map_config.json", function (error_config, config) {
         .attr("height", config.height)
         .attr("width", config.width);
 
-    /*
-    <pattern id="image" x="0" y="0" patternUnits="userSpaceOnUse" height="1" width="1">
-        <image x="0" y="0" xlink:href="url.png"></image>
-        </pattern>
-        */
-    //svg.append("pattern")
-    //    .attr("x", "0")
-    //    .attr("y", "0")
-    //    .attr("patternUnits", "userSpaceOnUse");
-
     // project map - mercator
     var projection = d3.geoMercator()
         .rotate(JSON.parse(config.rotate))
