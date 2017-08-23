@@ -1,0 +1,155 @@
+
+@font-face {
+    font-family: din-condensed-bold;
+    src: url(DIN-Condensed-Bold.ttf);
+}
+
+html {
+    background-color: #efefef;
+}
+
+.my_body {
+    /*padding: 0px;*/
+    background-color: transparent;
+    /*margin-top: -20px;*/
+}
+
+#page_title {
+    font-family: din-condensed-bold;
+    font-size: 60pt;
+    letter-spacing: 4px;
+}
+
+#title_container {
+    width: 100%;
+    text-align: center;
+}
+
+.neighborhoodOutline {
+    stroke: #282828;
+    stroke-width: 1px;
+    stroke: black;
+    fill: white;
+}
+
+footer {
+    padding-left: 100px;
+}
+
+.neighborhoodUnFocus {
+    fill: white;
+}
+
+.neighborhoodFocus {
+    fill: black;
+    stroke: white;
+}
+
+.neighborhoodFocus.charSVGThing {
+    stroke: white;
+    fill: white;
+}
+
+
+.neighborhoodOutlineBorder {
+    stroke: black;
+    stroke-width: 5px;
+}
+
+/*#neighborhoodGroup:hover {*/
+    /*opacity:0.5 ;*/
+/*}*/
+
+/*.neighborhood:hover {*/
+    /*opacity: 1.0;*/
+/*}*/
+
+.mapcontainer {
+    margin: auto;
+    width: 600px;
+}
+
+.mapinfo {
+    width: 100%;
+    background-color: transparent;
+    margin-bottom: 30pt;
+    margin-top: 30pt;
+}
+
+.legendterm {
+    overflow: hidden;
+}
+
+#bestmatch, #name {
+    margin-bottom: 5pt;
+    margin-top: 5pt;
+}
+
+.legendtitle {
+    font-size: 10pt;
+    margin-bottom: 3pt;
+    margin-top: 3pt;
+}
+
+#neighborhoodname, #neighborhoodphrase,
+#neighborhoodcategory, #neighborhoodprice,
+#neighborhoodreviewcount {
+    visibility: hidden;
+    font-size: 18pt;
+    margin-bottom: 3pt;
+    margin-top: 3pt;
+}
+
+#neighborhoodphrase {
+    font-size: 24pt;
+}
+
+#name, #bestmatch,
+#category,
+#price,
+#reviewcount {
+    height: 50pt;
+}
+
+.main {
+    margin: auto;
+}
+
+#mapSVG {
+    width: 100%;
+}
+
+.neighborhoodInnerPath {
+    stroke-width: 3 px;
+    stroke: black;
+    fill: none;
+}
+
+.topPolyRed {
+    stroke: #530605;
+    fill: #c45a5e;
+}
+
+.topPolyBlue {
+    stroke: white;
+    fill: #0f3D66;
+}
+
+.rightPolyGreen {
+    stroke: #004200;
+    fill: #84ce6b;
+}
+
+.bottomPolyBlue {
+    stroke: #00006a;
+    fill: #9aa3f3;
+}
+
+.leftPoly {
+    stroke: #350452;
+    fill: #b376c4;
+}
+
+#my-foot {
+    padding-left: 10px;
+}

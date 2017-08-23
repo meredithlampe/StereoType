@@ -23014,7 +23014,7 @@ function setMapOpacityStrong() {
 
 function setLegend(d, i) {
 
-    //d3.select(".maplegend").style("visibility", "visible");
+    d3.select(".maplegend").style("visibility", "visible");
 
     var poly = d3.select(this);
 
@@ -23024,17 +23024,18 @@ function setLegend(d, i) {
     // set name
     var name = d3.select("#neighborhoodname");
 
-    if (d.properties.Name == "") {
+    if (d.properties.name == "") {
         name.style("visibility", "hidden");
         name.html("N/A");
     } else {
-        name.html(d.properties.Name);
+        name.html(d.properties.name);
         name.style("visibility", "visible");
     }
 
     // set phrase
     var phraseBox = d3.select("#neighborhoodphrase");
     var phrase = poly.attr("phrase");
+
     if (phrase == "") {
         phraseBox.style("visibility", "hidden");
         phraseBox.html("filler");
@@ -23042,6 +23043,25 @@ function setLegend(d, i) {
         phraseBox.html(phrase);
         phraseBox.style("visibility", "visible");
     }
+
+    // set type
+    var categories = JSON.parse(poly.attr("categories"));
+    var categoryBox = d3.select("#neighborhoodcategory");
+    if (categories != null) {
+        categoryBox.html(categories[0].title).style("visibility", "visible");
+    } else {
+        categoryBox.html("N/A").style("visibility", "visible");
+    }
+
+    // set price range
+    var price = poly.attr("price");
+    if (!price) {
+       price = "Free";
+    }
+    d3.select("#neighborhoodprice").html(price).style("visibility", "visible");
+
+    // set number of ratings
+    d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount")).style("visibility", "visible");
 
     //var chars = poly.selectAll(".charSVGThing").attr("stroke", "white");
     var chars = poly.selectAll(".charSVGThing");
@@ -23058,7 +23078,7 @@ function setLegend(d, i) {
 function resetLegend(d, i) {
 
     // set entire legend to be invisible
-    //d3.select(".maplegend").style("visibility", "hidden");
+    d3.select(".maplegend").style("visibility", "hidden");
 
     var poly = d3.select(this);
 
@@ -23073,13 +23093,13 @@ function resetLegend(d, i) {
     phraseBox.html("Hover to see zindex of neighborhood.");
 
     // set categories
-    d3.select("#neighborhoodcategory");
+    d3.select("#neighborhoodcategory").style("visibility", "hidden");
 
     // set price range
-    d3.select("#neighborhoodprice");
+    d3.select("#neighborhoodprice").style("visibility", "hidden");
 
     // set number of ratings
-    d3.select("#neighborhoodreviewcount");
+    d3.select("#neighborhoodreviewcount").style("visibility", "hidden");
 
     var pathinpoly = poly.select(".neighborhoodOutline");
     pathinpoly.classed("neighborhoodFocus", false);
@@ -30854,18 +30874,19 @@ const TextToSVG = __webpack_require__(9);
 const d3 = __webpack_require__(8);
 const topojson = __webpack_require__(26);
 
+const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
+
 //var width = 900;
 //var height = 1000;
 //var rotate = [122, 0, 0];
-//var scale = 149000;
-//var offset = [1141.329833984375 - 450 + width / 2, 141700.609375];
+//var scale = 150000;
+//var offset = [1141.329833984375 - 450 + width / 2, 142582.609375 + 30];
 
-const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
 var path;
 var neighborhoodGroup;
 
-d3.json("json/build_map_config_dorkmap.json", function(error_config, config) {
-    var svg = d3.select("#mapContainer")
+d3.json("json/build_map_config.json", function (error_config, config) {
+    svg = d3.select("#mapContainer")
         .append("svg")
         .attr("id", "mapSVG")
         .attr("height", config.height)
@@ -30881,56 +30902,49 @@ d3.json("json/build_map_config_dorkmap.json", function(error_config, config) {
     path = d3.geoPath()
         .projection(projection);
 
+
+// make container for map
     neighborhoodGroup = svg.append("g")
         .attr('id', 'neighborhoodGroup');
-});
 
 
+    /*parses json, call back function selects all paths (none exist yet)
+     and joins data (all neighborhoods) with each path. since there are no
+     paths, all data points are waiting in 'update.enter'. calling
+     'enter()' gives us these points, and appends a path for each of them,
+     attributing a path and id to each.*/
 
-/*parses json, call back function selects all paths (none exist yet)
-  and joins data (all neighborhoods) with each path. since there are no
-  paths, all data points are waiting in 'update.enter'. calling
-  'enter()' gives us these points, and appends a path for each of them,
-  attributing a path and id to each.*/
+    var topoGeometries;
 
-var topoGeometries;
+    d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
+        d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
+            d3.json("yelp_api/output.json", function (error_output, bestplaces) {
+                TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
+                    if (error_neighborhoods || error_chars || error_output || error_font) {
+                        console.log(err);
+                    } else {
+                        topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
+                        //generate paths around each neighborhood
+                        var binding = neighborhoodGroup.selectAll(".neighborhood")
+                            .data(topoGeometries);
 
-d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_map) {
-    d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
-        d3.json("zillow_api/zillow_response_trimmed.json", function (error_output, zillow) {
-            TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
-                if (error_neighborhoods || error_chars || error_output || error_font) {
-                    console.log("error"); // lol bad
-                } else {
-                    topoGeometries = [];
-                    for (var i = 0; i < zillow_map.features.length; i++) {
-                        if (zillow_map.features[i].properties.City == "Seattle") {
-                            topoGeometries[topoGeometries.length] = zillow_map.features[i];
-                        }
-                    }
-                    //generate paths around each neighborhood
-                    var binding = neighborhoodGroup.selectAll(".neighborhood")
-                        .data(topoGeometries);
+                        binding.enter()
+                            .append("g")
+                            .attr("neighborhoodBounds", path)
+                            .attr("class", "neighborhood")
+                            .append("path")
+                            .attr("d", path)
+                            .attr("class", "neighborhoodUnFocus")
+                            .attr("class", "neighborhoodOutline")
+                            .attr("id", function (d) {
+                                return "n_" + d.id
+                            });
 
-                    binding.enter()
-                        .append("g")
-                        .attr("neighborhoodBounds", path)
-                        .attr("class", "neighborhood")
-                        .append("path")
-                        .attr("d", path)
-                        .attr("class", "neighborhoodUnFocus")
-                        .attr("class", "neighborhoodOutline")
-                        .attr("id", function (d) {
-                            return "n_" + d.id
-                        });
-
-
-                    // fill text
-                    neighborhoodGroup.selectAll(".neighborhood")
-                        .each(function (d) {
-                            // get chars for neighborhood from file
-                            var chars_for_neighborhood = chars.result[d.properties.Name];
-                            if (chars_for_neighborhood) {
+                        // fill text
+                        neighborhoodGroup.selectAll(".neighborhood")
+                            .each(function (d) {
+                                // get chars for neighborhood from file
+                                var chars_for_neighborhood = chars.result[d.properties.name];
                                 for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
                                     for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
                                         d3.select(this).append("path")
@@ -30938,27 +30952,28 @@ d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_
                                             .classed("charSVGThing", true);
                                     }
                                 }
-                            }
-                        })
-                    .attr("phrase", function (d) {
-                        if (zillow[d.properties.Name]) {
-                            return '$' + numberWithCommas(zillow[d.properties.Name].bestmatch);
-                        } else {
-                            return "";
-                        }
-                    })
-                    .on("mouseover", MapUtil.setLegend)
-                    .on("mouseout", MapUtil.resetLegend);
-                }
+                            })
+                            .attr("phrase", function (d) {
+                                return bestplaces[d.properties.name].bestmatch;
+                            })
+                            .attr("categories", function (d) {
+                                return JSON.stringify(bestplaces[d.properties.name].categories);
+                            })
+                            .attr("price", function (d) {
+                                return bestplaces[d.properties.name].price;
+                            })
+                            .attr("reviewcount", function (d) {
+                                return bestplaces[d.properties.name].review_count;
+                            })
+                            .on("mouseover", MapUtil.setLegend)
+                            .on("mouseout", MapUtil.resetLegend);
+                    }
+                });
             });
         });
+
     });
-
 });
-
-function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
 
 
 

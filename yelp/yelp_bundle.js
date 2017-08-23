@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 27);
+/******/ 	return __webpack_require__(__webpack_require__.s = 47);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -19263,7 +19263,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
  * Copyright (c) 2016 Hideki Shiro
  */
 
-module.exports = __webpack_require__(45);
+module.exports = __webpack_require__(44);
 
 
 /***/ }),
@@ -19443,7 +19443,7 @@ exports.BoundingBox = BoundingBox;
 
 
 var check = __webpack_require__(1);
-var draw = __webpack_require__(32);
+var draw = __webpack_require__(31);
 var path = __webpack_require__(3);
 
 function getPathDefinition(glyph, path) {
@@ -22984,7 +22984,7 @@ exports.checkArgument = function(expression, message) {
     }
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(29).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28).Buffer))
 
 /***/ }),
 /* 25 */
@@ -23023,18 +23023,34 @@ function setLegend(d, i) {
 
     // set name
     var name = d3.select("#neighborhoodname");
-    name.html(d.properties.name);
+
+    if (d.properties.name == "") {
+        name.style("visibility", "hidden");
+        name.html("N/A");
+    } else {
+        name.html(d.properties.name);
+        name.style("visibility", "visible");
+    }
 
     // set phrase
     var phraseBox = d3.select("#neighborhoodphrase");
     var phrase = poly.attr("phrase");
-    phraseBox.html(phrase);
+
+    if (phrase == "") {
+        phraseBox.style("visibility", "hidden");
+        phraseBox.html("filler");
+    } else {
+        phraseBox.html(phrase);
+        phraseBox.style("visibility", "visible");
+    }
 
     // set type
     var categories = JSON.parse(poly.attr("categories"));
     var categoryBox = d3.select("#neighborhoodcategory");
     if (categories != null) {
-        categoryBox.html(categories[0].title);
+        categoryBox.html(categories[0].title).style("visibility", "visible");
+    } else {
+        categoryBox.html("N/A").style("visibility", "visible");
     }
 
     // set price range
@@ -23042,10 +23058,10 @@ function setLegend(d, i) {
     if (!price) {
        price = "Free";
     }
-    d3.select("#neighborhoodprice").html(price);
+    d3.select("#neighborhoodprice").html(price).style("visibility", "visible");
 
     // set number of ratings
-    d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount"));
+    d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount")).style("visibility", "visible");
 
     //var chars = poly.selectAll(".charSVGThing").attr("stroke", "white");
     var chars = poly.selectAll(".charSVGThing");
@@ -23069,17 +23085,21 @@ function resetLegend(d, i) {
     // weird scrolling thing -- gotta save scroll top
     var oldScrollTop = document.body.scrollTop;
     var name = d3.select("#neighborhoodname");
+    name.style("visibility", "hidden");
+    name.html("Hover to see name of neighborhood.");
 
     var phraseBox = d3.select("#neighborhoodphrase");
+    phraseBox.style("visibility", "hidden");
+    phraseBox.html("Hover to see zindex of neighborhood.");
 
     // set categories
-    d3.select("#neighborhoodcategory");
+    d3.select("#neighborhoodcategory").style("visibility", "hidden");
 
     // set price range
-    d3.select("#neighborhoodprice");
+    d3.select("#neighborhoodprice").style("visibility", "hidden");
 
     // set number of ratings
-    d3.select("#neighborhoodreviewcount");
+    d3.select("#neighborhoodreviewcount").style("visibility", "hidden");
 
     var pathinpoly = poly.select(".neighborhoodOutline");
     pathinpoly.classed("neighborhoodFocus", false);
@@ -25011,115 +25031,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/**
- * Created by meredith on 2/20/16.
- */
-
-var MapUtil = __webpack_require__(25);
-const TextToSVG = __webpack_require__(9);
-const d3 = __webpack_require__(8);
-const topojson = __webpack_require__(26);
-
-var width = 900;
-var height = 1000;
-var rotate = [122, 0, 0];
-var scale = 150000;
-var offset = [1141.329833984375 - 450 + width / 2, 142582.609375 + 30];
-
-const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
-
-// make container for map
-var svg = d3.select(".mapcontainer")
-    .attr("id", "mapContainer")
-    .append("svg")
-    .attr("id", "mapSVG")
-    .attr("height", height);
-
-// project map - mercatorjjj
-var projection = d3.geoMercator()
-    .rotate(rotate)
-    .scale(scale)
-    .translate(offset)
-    .precision(.5);
-var path = d3.geoPath()
-    .projection(projection);
-
-var neighborhoodGroup = svg.append("g")
-    .attr('id', 'neighborhoodGroup');
-
-/*parses json, call back function selects all paths (none exist yet)
-  and joins data (all neighborhoods) with each path. since there are no
-  paths, all data points are waiting in 'update.enter'. calling
-  'enter()' gives us these points, and appends a path for each of them,
-  attributing a path and id to each.*/
-
-var topoGeometries;
-
-d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
-    d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
-        d3.json("yelp_api/output.json", function (error_output, bestplaces) {
-            TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
-                if (error_neighborhoods || error_chars || error_output || error_font) {
-                    console.log(err);
-                } else {
-                    topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
-                    //generate paths around each neighborhood
-                    var binding = neighborhoodGroup.selectAll(".neighborhood")
-                        .data(topoGeometries);
-
-                    binding.enter()
-                        .append("g")
-                        .attr("neighborhoodBounds", path)
-                        .attr("class", "neighborhood")
-                        .append("path")
-                        .attr("d", path)
-                        .attr("class", "neighborhoodUnFocus")
-                        .attr("class", "neighborhoodOutline")
-                        .attr("id", function (d) {
-                            return "n_" + d.id
-                        });
-
-                    // fill text
-                    neighborhoodGroup.selectAll(".neighborhood")
-                        .each(function (d) {
-                            // get chars for neighborhood from file
-                            var chars_for_neighborhood = chars.result[d.properties.name];
-                            for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
-                                for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
-                                    d3.select(this).append("path")
-                                        .attr("d", chars_for_neighborhood[poly][i])
-                                        .classed("charSVGThing", true);
-                                }
-                            }
-                        })
-                    .attr("phrase", function (d) {
-                        return bestplaces[d.properties.name].bestmatch;
-                    })
-                    .attr("categories", function (d) {
-                        return JSON.stringify(bestplaces[d.properties.name].categories);
-                    })
-                    .attr("price", function (d) {
-                        return bestplaces[d.properties.name].price;
-                    })
-                    .attr("reviewcount", function (d) {
-                        return bestplaces[d.properties.name].review_count;
-                    })
-                    .on("mouseover", MapUtil.setLegend)
-                        .on("mouseout", MapUtil.resetLegend);
-                }
-            });
-        });
-    });
-
-});
-
-
-
-
-/***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 
 
@@ -25238,7 +25149,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25252,9 +25163,9 @@ function fromByteArray (uint8) {
 
 
 
-var base64 = __webpack_require__(28)
-var ieee754 = __webpack_require__(30)
-var isArray = __webpack_require__(31)
+var base64 = __webpack_require__(27)
+var ieee754 = __webpack_require__(29)
+var isArray = __webpack_require__(30)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -27032,10 +26943,10 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(47)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(46)))
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -27125,7 +27036,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -27136,7 +27047,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27156,7 +27067,7 @@ exports.line = line;
 
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27165,10 +27076,10 @@ exports.line = line;
 
 
 var path = __webpack_require__(3);
-var sfnt = __webpack_require__(42);
+var sfnt = __webpack_require__(41);
 var encoding = __webpack_require__(4);
 var glyphset = __webpack_require__(6);
-var Substitution = __webpack_require__(36);
+var Substitution = __webpack_require__(35);
 var util = __webpack_require__(24);
 
 /**
@@ -27691,7 +27602,7 @@ exports.Font = Font;
 
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27980,7 +27891,7 @@ module.exports = Layout;
 
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27993,10 +27904,10 @@ module.exports = Layout;
 
 
 
-var inflate = __webpack_require__(46);
+var inflate = __webpack_require__(45);
 
 var encoding = __webpack_require__(4);
-var _font = __webpack_require__(33);
+var _font = __webpack_require__(32);
 var glyph = __webpack_require__(11);
 var parse = __webpack_require__(0);
 var bbox = __webpack_require__(10);
@@ -28005,16 +27916,16 @@ var util = __webpack_require__(24);
 
 var cmap = __webpack_require__(13);
 var cff = __webpack_require__(12);
-var fvar = __webpack_require__(37);
-var glyf = __webpack_require__(38);
-var gpos = __webpack_require__(39);
+var fvar = __webpack_require__(36);
+var glyf = __webpack_require__(37);
+var gpos = __webpack_require__(38);
 var gsub = __webpack_require__(14);
 var head = __webpack_require__(15);
 var hhea = __webpack_require__(16);
 var hmtx = __webpack_require__(17);
-var kern = __webpack_require__(40);
+var kern = __webpack_require__(39);
 var ltag = __webpack_require__(18);
-var loca = __webpack_require__(41);
+var loca = __webpack_require__(40);
 var maxp = __webpack_require__(19);
 var _name = __webpack_require__(21);
 var os2 = __webpack_require__(22);
@@ -28377,7 +28288,7 @@ exports.loadSync = loadSync;
 
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28387,7 +28298,7 @@ exports.loadSync = loadSync;
 
 
 var check = __webpack_require__(1);
-var Layout = __webpack_require__(34);
+var Layout = __webpack_require__(33);
 
 /**
  * @exports opentype.Substitution
@@ -28685,7 +28596,7 @@ module.exports = Substitution;
 
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28831,7 +28742,7 @@ exports.parse = parseFvarTable;
 
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29173,7 +29084,7 @@ exports.parse = parseGlyfTable;
 
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29417,7 +29328,7 @@ exports.parse = parseGposTable;
 
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29495,7 +29406,7 @@ exports.parse = parseKernTable;
 
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29535,7 +29446,7 @@ exports.parse = parseLocaTable;
 
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29884,7 +29795,7 @@ exports.fontToTable = fontToSfntTable;
 
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -30112,10 +30023,10 @@ var substr = 'ab'.substr(-1) === 'b'
     }
 ;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(44)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(43)))
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -30301,7 +30212,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30315,7 +30226,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       * Copyright (c) 2016 Hideki Shiro
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       */
 
-var _opentype = __webpack_require__(35);
+var _opentype = __webpack_require__(34);
 
 var _opentype2 = _interopRequireDefault(_opentype);
 
@@ -30323,7 +30234,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var DEFAULT_FONT = __webpack_require__(43).join(__dirname, '../fonts/ipag.ttf');
+var DEFAULT_FONT = __webpack_require__(42).join(__dirname, '../fonts/ipag.ttf');
 
 // Private method
 
@@ -30542,7 +30453,7 @@ module.exports = exports.default;
 /* WEBPACK VAR INJECTION */}.call(exports, "/"))
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports) {
 
 var TINF_OK = 0;
@@ -30923,7 +30834,7 @@ module.exports = tinf_uncompress;
 
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports) {
 
 var g;
@@ -30947,6 +30858,121 @@ try {
 // easier to handle this case. if(!global) { ...}
 
 module.exports = g;
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Created by meredith on 2/20/16.
+ */
+
+var MapUtil = __webpack_require__(25);
+const TextToSVG = __webpack_require__(9);
+const d3 = __webpack_require__(8);
+const topojson = __webpack_require__(26);
+
+const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
+
+//var width = 900;
+//var height = 1000;
+//var rotate = [122, 0, 0];
+//var scale = 150000;
+//var offset = [1141.329833984375 - 450 + width / 2, 142582.609375 + 30];
+
+var path;
+
+d3.json("json/build_map_config.json", function(error_config, config) {
+    var svg = d3.select(".mapcontainer")
+        .attr("id", "mapContainer")
+        .append("svg")
+        .attr("id", "mapSVG")
+        .attr("height", config.height);
+
+    // project map - mercator
+    var projection = d3.geoMercator()
+        .rotate(config.rotate)
+        .scale(config.scale)
+        .translate(config.offset)
+        .precision(.5);
+
+    path = d3.geoPath()
+        .projection(projection);
+});
+
+
+// make container for map
+var neighborhoodGroup = svg.append("g")
+    .attr('id', 'neighborhoodGroup');
+
+/*parses json, call back function selects all paths (none exist yet)
+  and joins data (all neighborhoods) with each path. since there are no
+  paths, all data points are waiting in 'update.enter'. calling
+  'enter()' gives us these points, and appends a path for each of them,
+  attributing a path and id to each.*/
+
+var topoGeometries;
+
+d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
+    d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
+        d3.json("yelp_api/output.json", function (error_output, bestplaces) {
+            TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
+                if (error_neighborhoods || error_chars || error_output || error_font) {
+                    console.log(err);
+                } else {
+                    topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
+                    //generate paths around each neighborhood
+                    var binding = neighborhoodGroup.selectAll(".neighborhood")
+                        .data(topoGeometries);
+
+                    binding.enter()
+                        .append("g")
+                        .attr("neighborhoodBounds", path)
+                        .attr("class", "neighborhood")
+                        .append("path")
+                        .attr("d", path)
+                        .attr("class", "neighborhoodUnFocus")
+                        .attr("class", "neighborhoodOutline")
+                        .attr("id", function (d) {
+                            return "n_" + d.id
+                        });
+
+                    // fill text
+                    neighborhoodGroup.selectAll(".neighborhood")
+                        .each(function (d) {
+                            // get chars for neighborhood from file
+                            var chars_for_neighborhood = chars.result[d.properties.name];
+                            for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
+                                for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
+                                    d3.select(this).append("path")
+                                        .attr("d", chars_for_neighborhood[poly][i])
+                                        .classed("charSVGThing", true);
+                                }
+                            }
+                        })
+                    .attr("phrase", function (d) {
+                        return bestplaces[d.properties.name].bestmatch;
+                    })
+                    .attr("categories", function (d) {
+                        return JSON.stringify(bestplaces[d.properties.name].categories);
+                    })
+                    .attr("price", function (d) {
+                        return bestplaces[d.properties.name].price;
+                    })
+                    .attr("reviewcount", function (d) {
+                        return bestplaces[d.properties.name].review_count;
+                    })
+                    .on("mouseover", MapUtil.setLegend)
+                        .on("mouseout", MapUtil.resetLegend);
+                }
+            });
+        });
+    });
+
+});
+
+
 
 
 /***/ })

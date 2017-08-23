@@ -24,34 +24,20 @@ export function setLegend(d, i) {
 
     // set name
     var name = d3.select("#neighborhoodname");
+    name.html(d.properties.name);
 
-    if (d.properties.name == "") {
-        name.style("visibility", "hidden");
-        name.html("N/A");
-    } else {
-        name.html(d.properties.name);
-        name.style("visibility", "visible");
-    }
+
 
     // set phrase
     var phraseBox = d3.select("#neighborhoodphrase");
     var phrase = poly.attr("phrase");
-
-    if (phrase == "") {
-        phraseBox.style("visibility", "hidden");
-        phraseBox.html("filler");
-    } else {
-        phraseBox.html(phrase);
-        phraseBox.style("visibility", "visible");
-    }
+    phraseBox.html(phrase);
 
     // set type
     var categories = JSON.parse(poly.attr("categories"));
     var categoryBox = d3.select("#neighborhoodcategory");
     if (categories != null) {
-        categoryBox.html(categories[0].title).style("visibility", "visible");
-    } else {
-        categoryBox.html("N/A").style("visibility", "visible");
+        categoryBox.html(categories[0].title);
     }
 
     // set price range
@@ -59,10 +45,10 @@ export function setLegend(d, i) {
     if (!price) {
        price = "Free";
     }
-    d3.select("#neighborhoodprice").html(price).style("visibility", "visible");
+    d3.select("#neighborhoodprice").html(price);
 
     // set number of ratings
-    d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount")).style("visibility", "visible");
+    d3.select("#neighborhoodreviewcount").html(poly.attr("reviewcount"));
 
     //var chars = poly.selectAll(".charSVGThing").attr("stroke", "white");
     var chars = poly.selectAll(".charSVGThing");
@@ -86,21 +72,17 @@ export function resetLegend(d, i) {
     // weird scrolling thing -- gotta save scroll top
     var oldScrollTop = document.body.scrollTop;
     var name = d3.select("#neighborhoodname");
-    name.style("visibility", "hidden");
-    name.html("Hover to see name of neighborhood.");
 
     var phraseBox = d3.select("#neighborhoodphrase");
-    phraseBox.style("visibility", "hidden");
-    phraseBox.html("Hover to see zindex of neighborhood.");
 
     // set categories
-    d3.select("#neighborhoodcategory").style("visibility", "hidden");
+    d3.select("#neighborhoodcategory");
 
     // set price range
-    d3.select("#neighborhoodprice").style("visibility", "hidden");
+    d3.select("#neighborhoodprice");
 
     // set number of ratings
-    d3.select("#neighborhoodreviewcount").style("visibility", "hidden");
+    d3.select("#neighborhoodreviewcount");
 
     var pathinpoly = poly.select(".neighborhoodOutline");
     pathinpoly.classed("neighborhoodFocus", false);

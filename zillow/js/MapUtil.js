@@ -27,7 +27,7 @@ export function setLegend(d, i) {
 
     if (d.properties.Name == "") {
         name.style("visibility", "hidden");
-        name.html("filler");
+        name.html("N/A");
     } else {
         name.html(d.properties.Name);
         name.style("visibility", "visible");
