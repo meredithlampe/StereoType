@@ -1,0 +1,38 @@
+/**
+ * Created by meredith on 8/23/17.
+ */
+
+{
+    "Haller Lake": ".64",
+    "Bitter Lake": ".73",
+    "Lake City": ".74",
+    "Blue Ridge": ".88",
+    "Northgate": ".64",
+    "Inverness": ".68",
+    "North Beach": ".86",
+    "Loyal Heights": ".88",
+    "Ballard": ".90",
+    "Fremont": ".84",
+    "University": ".57",
+    "Laurelhurst": ".84",
+    "Windermere": ".84",
+    "Madison Park": ".86",
+    "Capitol Hill": ".74",
+    "Central Area": ".54",
+    "Beacon Hill": ".29",
+    "Downtown": ".46",
+    "Sodo": ".50",
+    "Queen Anne": ".81",
+    "Interbay": ".86",
+    "Magnolia": ".90",
+    "Harbor Island": ".74",
+    "West Seattle": ".85",
+    "Alki": ".88",
+    "Delrid":".45",
+    "Fauntleroy": ".86",
+    "Arbor Heights": ".85",
+    "Georgetown": ".70",
+    "Rainier Valley": ".10",
+    "Columbia City": ".42",
+    "Rainier Beach": ".25"
+}

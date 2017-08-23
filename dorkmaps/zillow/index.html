@@ -9,8 +9,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style>
-    /* Remove the navbar's default rounded borders and increase the bottom margin */ 
- 
+    /* Remove the navbar's default rounded borders and increase the bottom margin */
+
       @font-face {
           font-family: 'DIN';
           src: url('../fonts/din-regular-webfont.eot');
@@ -68,14 +68,14 @@
       .navbar {
         margin-bottom: 20px;
         border-radius: 0;
-        
+
       }
-      
-      /* Remove the jumbotron's default bottom margin */ 
+
+      /* Remove the jumbotron's default bottom margin */
        .jumbotron {
         margin-bottom: 0;
       }
-     
+
       /* Add a gray background color and some padding to the footer */
       footer {
         padding: 25px;
@@ -98,7 +98,7 @@
         font-weight: bold;
       }
 
-     
+
       .description {
             font-size: 17px;
 
@@ -126,14 +126,14 @@
       .col-sm-12 {background-color: #CBCCCB;
       }
 
-      .logo {    
+      .logo {
 
         margin-top: 2.5em;
-        margin-bottom: 2.5em;   
+        margin-bottom: 2.5em;
         text-align: center;
         display: block; }
 
-      .header{    
+      .header{
         width: 70%;
         display: block;
 
@@ -202,7 +202,7 @@
       .carousel-control.left {margin-left: -45px;
         border: none;
        }
-      .carousel-control.right {margin-right: -45px; 
+      .carousel-control.right {margin-right: -45px;
 
         border: none;
       }
@@ -229,7 +229,7 @@
         box-shadow: none;
       }
 
-    
+
 
       .nav>li>a:hover, .nav>li>a:focus {
           background-color: transparent;
@@ -254,7 +254,7 @@
       .announcement{
         text-align: center;
         font-family: "Futura";
-        font-weight: 
+        font-weight:
         text-transform: uppercase;
         font-size: 10pt;
         letter-spacing: 2px;
@@ -267,6 +267,10 @@
 
     #cart_button {
       margin-bottom: 15pt;
+    }
+
+    #demographic_button {
+      margin-top: 15pt;
     }
 
   </style>
@@ -353,24 +357,13 @@
       <button id="cart_button" type="button" class="btn btn-default">
            Add to cart
       </button>
-
-      <!--<div class="maplegend">-->
-        <!--<div class="legend col">-->
-
-          <!--<div class="legendterm row" id="zindex">-->
-            <!--<div class="termbox">-->
               <h1 id="neighborhoodphrase">Hover to see zindex of neighborhood.</h1>
-            <!--</div>-->
             <h3 class="legendtitle">Zindex</h3>
-          <!--</div>-->
-          <!--<div class="legendterm row" id="name">-->
-            <!--<div class="termbox">-->
               <h1 id="neighborhoodname">Hover to see name of neighborhood.</h1>
-            <!--</div>-->
             <h3 class="legendtitle">Neighborhood Name</h3>
-          <!--</div>-->
-        <!--</div>-->
-      <!--</div>-->
+      <button id="demographic_button" type="button" class="btn btn-default">
+        Demographic Filter
+      </button>
 
     </div>
 </div>
@@ -423,5 +416,6 @@
 </footer>
 
 </body>
+<!--<script src="../../zillow/zillow_dorkmap_bundle.js"></script>-->
 <script src="zillow_dorkmap_bundle.js"></script>
 </html>

@@ -23016,6 +23016,8 @@ function setLegend(d, i) {
 
     //d3.select(".maplegend").style("visibility", "visible");
 
+    //debugger;
+
     var poly = d3.select(this);
 
     // weird scrolling thing -- gotta save scroll top
@@ -23047,9 +23049,12 @@ function setLegend(d, i) {
     var chars = poly.selectAll(".charSVGThing");
     chars.style("fill", "white");
 
+    var demo_image_visibility = d3.select("#demo_image").attr("visibility");
     var pathinpoly = poly.select(".neighborhoodOutline");
+
     pathinpoly.classed("neighborhoodUnFocus", false);
     pathinpoly.classed("neighborhoodFocus", true);
+
 
     // set scrolling top so that we don't scroll
     document.body.scrollTop = oldScrollTop;
