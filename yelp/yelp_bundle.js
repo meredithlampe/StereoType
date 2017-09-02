@@ -30925,7 +30925,6 @@ const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
 //var scale = 150000;
 //var offset = [1141.329833984375 - 450 + width / 2, 142582.609375 + 30];
 
-var path;
 var svg;
 
 d3.json("json/build_map_config.json", function (error_config, config) {
@@ -30937,14 +30936,13 @@ d3.json("json/build_map_config.json", function (error_config, config) {
 
     // project map - mercator
     var projection = d3.geoMercator()
-        .rotate(config.rotate)
+        .rotate(JSON.parse(config.rotate))
         .scale(config.scale)
-        .translate(config.offset)
+        .translate(JSON.parse(config.offset))
         .precision(.5);
 
-    path = d3.geoPath()
+    var path = d3.geoPath()
         .projection(projection);
-
 
 // make container for map
     var neighborhoodGroup = svg.append("g")
@@ -30980,6 +30978,8 @@ d3.json("json/build_map_config.json", function (error_config, config) {
                         .attr("id", function (d) {
                             return "n_" + d.id
                         });
+
+                    debugger;
 
                     // fill text
                     neighborhoodGroup.selectAll(".neighborhood")

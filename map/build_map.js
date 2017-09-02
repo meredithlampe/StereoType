@@ -147,25 +147,30 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                         }
                         var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
+                        var shape_info = {
+                            name: topo.properties.name,
+                            index: poly
+                        };
+
                         if (pathCoords3d != null) { //coordinates are enough to actually make a shape
                             TextPoly.execute(
-                                topo.properties.name,
-                                poly,
-                                pathCoords3d,
-                                slicedNameArray[poly],
-                                0,
-                                font_for_map,
-                                svg,
-                                function(name, poly, chars) {
+                                pathCoords3d, // shape outline
+                                slicedNameArray[poly], // phrase
+                                0, // padding
+                                font_for_map, // font file
+                                svg, // phantom SVG (move this into library)
+                                function(chars, shape_info) {
                                     shapes_left--;
-                                    result[name][poly] = chars;
+                                    result[shape_info.name][shape_info.index] = chars;
 
                                     // if we're at the end of all of our for-loops, write to file
                                     if (shapes_left == 0) {
                                         // write result out to file
                                         jsonfile.writeFileSync(outputfile, output_container);
                                     }
-                                });
+                                },
+                                shape_info // rando json to use in callback
+                            );
                         }
                     }
                 }

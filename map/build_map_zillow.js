@@ -112,7 +112,6 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
 
                     var topo = topoGeometries[i];
 
-
                     if (!bestplaces[topo.properties.Name] || !bestplaces[topo.properties.Name].bestmatch) {
                         shapes_left--;
                         continue;
@@ -149,28 +148,31 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                             }
                         }
                         var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
+                        var shape_info = {
+                            name: topo.properties.Name,
+                            index: poly
+                        };
 
                         if (pathCoords3d != null) { //coordinates are enough to actually make a shape
 
                             TextPoly.execute(
-                                topo.properties.Name,
-                                poly,
-                                pathCoords3d,
-                                slicedNameArray[poly],
-                                0,
-                                font_for_map,
-                                svg,
-                                function (name, poly, chars) {
+                                pathCoords3d, // shape outline
+                                slicedNameArray[poly], // phrase
+                                0, // padding (not using this right now)
+                                font_for_map, // font file
+                                svg, // phantom SVG (need to move)
+                                function (chars, shape_info) { // callback
                                     shapes_left--;
-                                    result[name][poly] = chars;
+                                    result[shape_info.name][shape_info.index] = chars;
                                     console.log("shapes left = " + shapes_left);
 
                                     if (shapes_left == 0) {
-                                        debugger;
                                         // write result out to file
                                         jsonfile.writeFileSync(outputfile, output_container);
                                     }
-                                });
+                                },
+                                shape_info // obj to pass to callback
+                            );
                         }
                     }
                 }
