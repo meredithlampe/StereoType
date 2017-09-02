@@ -148,8 +148,15 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                         var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
                         if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                            TextPoly.execute(topo.properties.name, poly,
-                                pathCoords3d, slicedNameArray[poly], 0, font_for_map, svg, function(name, poly, chars) {
+                            TextPoly.execute(
+                                topo.properties.name,
+                                poly,
+                                pathCoords3d,
+                                slicedNameArray[poly],
+                                0,
+                                font_for_map,
+                                svg,
+                                function(name, poly, chars) {
                                     shapes_left--;
                                     result[name][poly] = chars;
 

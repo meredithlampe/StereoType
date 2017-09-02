@@ -52,6 +52,7 @@ d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_
             if (error_neighborhoods || error_chars || error_output) {
                 console.log("error"); // lol bad
             } else {
+                debugger;
                 topoGeometries = [];
                 for (var i = 0; i < zillow_map.features.length; i++) {
                     if (zillow_map.features[i].properties.City == "Seattle") {
