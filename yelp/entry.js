@@ -16,9 +16,10 @@ const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
 //var offset = [1141.329833984375 - 450 + width / 2, 142582.609375 + 30];
 
 var path;
+var svg;
 
-d3.json("json/build_map_config.json", function(error_config, config) {
-    var svg = d3.select(".mapcontainer")
+d3.json("json/build_map_config.json", function (error_config, config) {
+    svg = d3.select(".mapcontainer")
         .attr("id", "mapContainer")
         .append("svg")
         .attr("id", "mapSVG")
@@ -33,27 +34,25 @@ d3.json("json/build_map_config.json", function(error_config, config) {
 
     path = d3.geoPath()
         .projection(projection);
-});
 
 
 // make container for map
-var neighborhoodGroup = svg.append("g")
-    .attr('id', 'neighborhoodGroup');
+    var neighborhoodGroup = svg.append("g")
+        .attr('id', 'neighborhoodGroup');
 
-/*parses json, call back function selects all paths (none exist yet)
-  and joins data (all neighborhoods) with each path. since there are no
-  paths, all data points are waiting in 'update.enter'. calling
-  'enter()' gives us these points, and appends a path for each of them,
-  attributing a path and id to each.*/
+    /*parses json, call back function selects all paths (none exist yet)
+      and joins data (all neighborhoods) with each path. since there are no
+      paths, all data points are waiting in 'update.enter'. calling
+      'enter()' gives us these points, and appends a path for each of them,
+      attributing a path and id to each.*/
 
-var topoGeometries;
+    var topoGeometries;
 
-d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
-    d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
-        d3.json("yelp_api/output.json", function (error_output, bestplaces) {
-            TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
-                if (error_neighborhoods || error_chars || error_output || error_font) {
-                    console.log(err);
+    d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
+        d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
+            d3.json("yelp_api/output.json", function (error_output, bestplaces) {
+                if (error_neighborhoods || error_chars || error_output) {
+                    console.log("err");
                 } else {
                     topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
                     //generate paths around each neighborhood
@@ -85,25 +84,24 @@ d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
                                 }
                             }
                         })
-                    .attr("phrase", function (d) {
-                        return bestplaces[d.properties.name].bestmatch;
-                    })
-                    .attr("categories", function (d) {
-                        return JSON.stringify(bestplaces[d.properties.name].categories);
-                    })
-                    .attr("price", function (d) {
-                        return bestplaces[d.properties.name].price;
-                    })
-                    .attr("reviewcount", function (d) {
-                        return bestplaces[d.properties.name].review_count;
-                    })
-                    .on("mouseover", MapUtil.setLegend)
+                        .attr("phrase", function (d) {
+                            return bestplaces[d.properties.name].bestmatch;
+                        })
+                        .attr("categories", function (d) {
+                            return JSON.stringify(bestplaces[d.properties.name].categories);
+                        })
+                        .attr("price", function (d) {
+                            return bestplaces[d.properties.name].price;
+                        })
+                        .attr("reviewcount", function (d) {
+                            return bestplaces[d.properties.name].review_count;
+                        })
+                        .on("mouseover", MapUtil.setLegend)
                         .on("mouseout", MapUtil.resetLegend);
                 }
             });
         });
     });
-
 });
 
 

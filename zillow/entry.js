@@ -16,7 +16,7 @@ const topojson = require('topojson');
 const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
 var path;
 var neighborhoodGroup;
-d3.json("json/build_map_config.json", function(error_config, config) {
+d3.json("json/build_map_config.json", function (error_config, config) {
     var svg = d3.select(".mapcontainer")
         .attr("id", "mapContainer")
         .append("svg")
@@ -38,7 +38,6 @@ d3.json("json/build_map_config.json", function(error_config, config) {
 });
 
 
-
 /*parses json, call back function selects all paths (none exist yet)
   and joins data (all neighborhoods) with each path. since there are no
   paths, all data points are waiting in 'update.enter'. calling
@@ -50,48 +49,46 @@ var topoGeometries;
 d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_map) {
     d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
         d3.json("zillow_api/zillow_response_trimmed.json", function (error_output, zillow) {
-            TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
-                if (error_neighborhoods || error_chars || error_output || error_font) {
-                    console.log("error"); // lol bad
-                } else {
-                    topoGeometries = [];
-                    for (var i = 0; i < zillow_map.features.length; i++) {
-                        if (zillow_map.features[i].properties.City == "Seattle") {
-                            topoGeometries[topoGeometries.length] = zillow_map.features[i];
-                        }
+            if (error_neighborhoods || error_chars || error_output) {
+                console.log("error"); // lol bad
+            } else {
+                topoGeometries = [];
+                for (var i = 0; i < zillow_map.features.length; i++) {
+                    if (zillow_map.features[i].properties.City == "Seattle") {
+                        topoGeometries[topoGeometries.length] = zillow_map.features[i];
                     }
-                    //generate paths around each neighborhood
-                    var binding = neighborhoodGroup.selectAll(".neighborhood")
-                        .data(topoGeometries);
+                }
+                //generate paths around each neighborhood
+                var binding = neighborhoodGroup.selectAll(".neighborhood")
+                    .data(topoGeometries);
 
-                    binding.enter()
-                        .append("g")
-                        .attr("neighborhoodBounds", path)
-                        .attr("class", "neighborhood")
-                        .append("path")
-                        .attr("d", path)
-                        .attr("class", "neighborhoodUnFocus")
-                        .attr("class", "neighborhoodOutline")
-                        .attr("id", function (d) {
-                            return "n_" + d.id
-                        });
+                binding.enter()
+                    .append("g")
+                    .attr("neighborhoodBounds", path)
+                    .attr("class", "neighborhood")
+                    .append("path")
+                    .attr("d", path)
+                    .attr("class", "neighborhoodUnFocus")
+                    .attr("class", "neighborhoodOutline")
+                    .attr("id", function (d) {
+                        return "n_" + d.id
+                    });
 
-
-                    // fill text
-                    neighborhoodGroup.selectAll(".neighborhood")
-                        .each(function (d) {
-                            // get chars for neighborhood from file
-                            var chars_for_neighborhood = chars.result[d.properties.Name];
-                            if (chars_for_neighborhood) {
-                                for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
-                                    for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
-                                        d3.select(this).append("path")
-                                            .attr("d", chars_for_neighborhood[poly][i])
-                                            .classed("charSVGThing", true);
-                                    }
+                // fill text
+                neighborhoodGroup.selectAll(".neighborhood")
+                    .each(function (d) {
+                        // get chars for neighborhood from file
+                        var chars_for_neighborhood = chars.result[d.properties.Name];
+                        if (chars_for_neighborhood) {
+                            for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
+                                for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
+                                    d3.select(this).append("path")
+                                        .attr("d", chars_for_neighborhood[poly][i])
+                                        .classed("charSVGThing", true);
                                 }
                             }
-                        })
+                        }
+                    })
                     .attr("phrase", function (d) {
                         if (zillow[d.properties.Name]) {
                             return '$' + numberWithCommas(zillow[d.properties.Name].bestmatch);
@@ -101,8 +98,7 @@ d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_
                     })
                     .on("mouseover", MapUtil.setLegend)
                     .on("mouseout", MapUtil.resetLegend);
-                }
-            });
+            }
         });
     });
 

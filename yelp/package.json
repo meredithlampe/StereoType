@@ -18,7 +18,7 @@
   "homepage": "https://github.com/meredithlampe/StereoType#readme",
   "dependencies": {
     "bootstrap": "^3.3.7",
-    "d3": "^4.9.1",
+    "d3": "^4.10.0",
     "d3plus": "file:d3plus",
     "jsonfile": "^3.0.0",
     "mock-browser": "^0.92.14",

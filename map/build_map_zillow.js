@@ -145,16 +145,19 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                         }
                         var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
-                        if (topo.properties.Name == "Woodland") {
+                        if (topo.properties.Name == "University District") {
                             debugger;
                         }
 
-                        debugger;
-
                         if (pathCoords3d != null) { //coordinates are enough to actually make a shape
+
                             result[topo.properties.Name][poly] = TextPoly.execute(pathCoords3d, slicedNameArray[poly], 0,
                                 font,
                                 textToSVG, svg);
+                        }
+
+                        if (topo.properties.Name == "University District") {
+                            debugger;
                         }
                     }
                 }

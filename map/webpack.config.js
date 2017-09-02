@@ -1,8 +1,8 @@
 const webpack = require('webpack');
 module.exports = {
-      entry: ["./build_map.js"
+      entry: ["./test_one_shape.js"
             ],
         output: {
-                filename: "bundle.js"
+                filename: "test_one_shape_bundle.js"
         }
 }
