@@ -148,16 +148,13 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                         var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
                         if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                            TextPoly.execute(
-                                pathCoords3d, slicedNameArray[poly], 0, font_for_map, svg, function(chars) {
+                            TextPoly.execute(topo.properties.name, poly,
+                                pathCoords3d, slicedNameArray[poly], 0, font_for_map, svg, function(name, poly, chars) {
                                     shapes_left--;
-                                    console.log("dropping count to " + shapes_left);
-                                    result[topo.properties.name][poly] = chars;
-                                    console.log("result:" + result[topo.properties.name][poly]);
+                                    result[name][poly] = chars;
 
                                     // if we're at the end of all of our for-loops, write to file
                                     if (shapes_left == 0) {
-                                        console.log("writing file out");
                                         // write result out to file
                                         jsonfile.writeFileSync(outputfile, output_container);
                                     }

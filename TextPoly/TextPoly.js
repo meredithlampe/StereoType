@@ -19,7 +19,7 @@ module.exports = {
     //slice neighborhood horizontally, then vertically
     //according to length of phrase to get grid over neighborhood.
     //Use inscribed rectangles to fill each grid slot with a letter
-    execute: function (pathCoords3d, phrase, padding, font_file, svg, callback) {
+    execute: function (id, index, pathCoords3d, phrase, padding, font_file, svg, callback) {
 
         TextToSVG.load(font_file, function (error_font, textToSVG) {
 
@@ -45,7 +45,7 @@ module.exports = {
                 chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, padding, textToSVG);
             }
 
-            callback(chars);
+            callback(id, index, chars);
         });
     },
 
