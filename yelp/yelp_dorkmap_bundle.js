@@ -764,7 +764,7 @@ exports.recordList = recordList;
 
 
 
-var bbox = __webpack_require__(10);
+var bbox = __webpack_require__(9);
 
 /**
  * A bézier path containing a set of path commands similar to a SVG path.
@@ -2247,7 +2247,7 @@ exports.sizeOf = sizeOf;
 
 
 
-var _glyph = __webpack_require__(11);
+var _glyph = __webpack_require__(10);
 
 // Define a property on the glyph that depends on the path being loaded.
 function defineDependentProperty(glyph, externalName, internalName) {
@@ -19303,17 +19303,6 @@ Object.defineProperty(exports, '__esModule', { value: true });
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/**
- * Copyright (c) 2016 Hideki Shiro
- */
-
-module.exports = __webpack_require__(44);
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
 "use strict";
 // The Bounding Box object
 
@@ -19478,7 +19467,7 @@ exports.BoundingBox = BoundingBox;
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19826,7 +19815,7 @@ exports.Glyph = Glyph;
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20945,7 +20934,7 @@ exports.make = makeCFFTable;
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21174,7 +21163,7 @@ exports.make = makeCmapTable;
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21439,7 +21428,7 @@ exports.make = makeGsubTable;
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21512,7 +21501,7 @@ exports.make = makeHeadTable;
 
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21572,7 +21561,7 @@ exports.make = makeHheaTable;
 
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21621,7 +21610,7 @@ exports.make = makeHmtxTable;
 
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21689,7 +21678,7 @@ exports.parse = parseLtagTable;
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21739,7 +21728,7 @@ exports.make = makeMaxpTable;
 
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21807,7 +21796,7 @@ exports.make = makeMetaTable;
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22649,7 +22638,7 @@ exports.make = makeNameTable;
 
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22910,7 +22899,7 @@ exports.make = makeOS2Table;
 
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22988,7 +22977,7 @@ exports.make = makePostTable;
 
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23031,6 +23020,17 @@ exports.checkArgument = function(expression, message) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(28).Buffer))
 
 /***/ }),
+/* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2016 Hideki Shiro
+ */
+
+module.exports = __webpack_require__(44);
+
+
+/***/ }),
 /* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -23045,7 +23045,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * Created by meredith on 4/24/17.
  */
 
-const TextToSVG = __webpack_require__(9);
+const TextToSVG = __webpack_require__(24);
 const d3 = __webpack_require__(8);
 
 function setMapOpacityFade() {
@@ -27124,7 +27124,7 @@ var sfnt = __webpack_require__(41);
 var encoding = __webpack_require__(4);
 var glyphset = __webpack_require__(6);
 var Substitution = __webpack_require__(35);
-var util = __webpack_require__(24);
+var util = __webpack_require__(23);
 
 /**
  * @typedef FontOptions
@@ -27952,29 +27952,29 @@ var inflate = __webpack_require__(45);
 
 var encoding = __webpack_require__(4);
 var _font = __webpack_require__(32);
-var glyph = __webpack_require__(11);
+var glyph = __webpack_require__(10);
 var parse = __webpack_require__(0);
-var bbox = __webpack_require__(10);
+var bbox = __webpack_require__(9);
 var path = __webpack_require__(3);
-var util = __webpack_require__(24);
+var util = __webpack_require__(23);
 
-var cmap = __webpack_require__(13);
-var cff = __webpack_require__(12);
+var cmap = __webpack_require__(12);
+var cff = __webpack_require__(11);
 var fvar = __webpack_require__(36);
 var glyf = __webpack_require__(37);
 var gpos = __webpack_require__(38);
-var gsub = __webpack_require__(14);
-var head = __webpack_require__(15);
-var hhea = __webpack_require__(16);
-var hmtx = __webpack_require__(17);
+var gsub = __webpack_require__(13);
+var head = __webpack_require__(14);
+var hhea = __webpack_require__(15);
+var hmtx = __webpack_require__(16);
 var kern = __webpack_require__(39);
-var ltag = __webpack_require__(18);
+var ltag = __webpack_require__(17);
 var loca = __webpack_require__(40);
-var maxp = __webpack_require__(19);
-var _name = __webpack_require__(21);
-var os2 = __webpack_require__(22);
-var post = __webpack_require__(23);
-var meta = __webpack_require__(20);
+var maxp = __webpack_require__(18);
+var _name = __webpack_require__(20);
+var os2 = __webpack_require__(21);
+var post = __webpack_require__(22);
+var meta = __webpack_require__(19);
 
 /**
  * The opentype library.
@@ -29505,18 +29505,18 @@ exports.parse = parseLocaTable;
 var check = __webpack_require__(1);
 var table = __webpack_require__(2);
 
-var cmap = __webpack_require__(13);
-var cff = __webpack_require__(12);
-var head = __webpack_require__(15);
-var hhea = __webpack_require__(16);
-var hmtx = __webpack_require__(17);
-var ltag = __webpack_require__(18);
-var maxp = __webpack_require__(19);
-var _name = __webpack_require__(21);
-var os2 = __webpack_require__(22);
-var post = __webpack_require__(23);
-var gsub = __webpack_require__(14);
-var meta = __webpack_require__(20);
+var cmap = __webpack_require__(12);
+var cff = __webpack_require__(11);
+var head = __webpack_require__(14);
+var hhea = __webpack_require__(15);
+var hmtx = __webpack_require__(16);
+var ltag = __webpack_require__(17);
+var maxp = __webpack_require__(18);
+var _name = __webpack_require__(20);
+var os2 = __webpack_require__(21);
+var post = __webpack_require__(22);
+var gsub = __webpack_require__(13);
+var meta = __webpack_require__(19);
 
 function log2(v) {
     return Math.log(v) / Math.log(2) | 0;
@@ -30914,7 +30914,7 @@ module.exports = g;
  */
 
 var MapUtil = __webpack_require__(25);
-const TextToSVG = __webpack_require__(9);
+const TextToSVG = __webpack_require__(24);
 const d3 = __webpack_require__(8);
 const topojson = __webpack_require__(26);
 

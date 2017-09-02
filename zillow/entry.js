@@ -3,17 +3,9 @@
  */
 
 var MapUtil = require("./js/MapUtil.js");
-const TextToSVG = require('text-to-svg');
 const d3 = require('d3');
-const topojson = require('topojson');
+// const topojson = require('topojson'); <- don't need this for zillow, just read in the shapes
 
-//var width = 900;
-//var height = 1000;
-//var rotate = [122, 0, 0];
-//var scale = 149000;
-//var offset = [1141.329833984375 - 450 + width / 2, 141700.609375];
-
-const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
 var path;
 var neighborhoodGroup;
 d3.json("json/build_map_config.json", function (error_config, config) {
@@ -52,7 +44,6 @@ d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_
             if (error_neighborhoods || error_chars || error_output) {
                 console.log("error"); // lol bad
             } else {
-                debugger;
                 topoGeometries = [];
                 for (var i = 0; i < zillow_map.features.length; i++) {
                     if (zillow_map.features[i].properties.City == "Seattle") {

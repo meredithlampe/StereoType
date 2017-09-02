@@ -23,6 +23,10 @@ module.exports = {
 
         TextToSVG.load(font_file, function (error_font, textToSVG) {
 
+            if (error_font) {
+                console.log(error_font);
+            }
+
             // pad polygon here
 
             //get height and width of polygon

@@ -3,17 +3,8 @@
  */
 
 var MapUtil = require("./js/MapUtil.js");
-const TextToSVG = require('text-to-svg');
 const d3 = require('d3');
 const topojson = require('topojson');
-
-const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
-
-//var width = 900;
-//var height = 1000;
-//var rotate = [122, 0, 0];
-//var scale = 150000;
-//var offset = [1141.329833984375 - 450 + width / 2, 142582.609375 + 30];
 
 var svg;
 
@@ -68,8 +59,6 @@ d3.json("json/build_map_config.json", function (error_config, config) {
                         .attr("id", function (d) {
                             return "n_" + d.id
                         });
-
-                    debugger;
 
                     // fill text
                     neighborhoodGroup.selectAll(".neighborhood")

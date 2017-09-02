@@ -18751,15 +18751,17 @@ module.exports = {
     //slice neighborhood horizontally, then vertically
     //according to length of phrase to get grid over neighborhood.
     //Use inscribed rectangles to fill each grid slot with a letter
-    execute: function (pathCoords3d, phrase, padding, font_file, svg) {
+    execute: function (pathCoords3d, phrase, padding, font_file, svg, callback, shape_info) {
 
         TextToSVG.load(font_file, function (error_font, textToSVG) {
+
+            // pad polygon here
 
             //get height and width of polygon
             var dimensions = module.exports.getShapeDimensions(pathCoords3d);
 
             // get number of horizontal slices we should be using for optimal letter fitting
-            var optimalHorizontalSlices = module.exports.testGrid(pathCoords3d, dimensions, svg, phrase, padding);
+            var optimalHorizontalSlices = module.exports.testGrid(pathCoords3d, dimensions, svg, phrase);
 
             console.log("num horizontal slices: " + optimalHorizontalSlices);
 
@@ -18777,11 +18779,8 @@ module.exports = {
                 chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, padding, textToSVG);
             }
 
-            return chars;
+            callback(chars, shape_info);
         });
-
-        return null;
-
     },
 
     getShapeDimensions: function (pathCoords3d) {
@@ -18807,7 +18806,7 @@ module.exports = {
         return results;
     },
 
-    testGrid: function (pathCoords3d, dimensions, svg, phrase, padding) {
+    testGrid: function (pathCoords3d, dimensions, svg, phrase) {
 
         var optimalHorizontalSlices = -1;
         var lowestError = Number.MAX_VALUE;
