@@ -618,7 +618,6 @@ function test_path_string(path_string) {
 //pathCoords3d, phrase, padding, font_file, svg, callback, shape_info
 var map = d3.select("#map");
 TextPoly.execute(maple_outline, "468500", 0, font_for_map, map, function(chars, shape_info) {
-    debugger;
         for (var poly = 0; poly < chars.length; poly++) {
                 map.append("path")
                     .attr("d", chars[poly])
