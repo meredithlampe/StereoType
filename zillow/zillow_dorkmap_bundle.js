@@ -21854,6 +21854,11 @@ function addBeach(site) {
       dxr,
       node = beaches._;
 
+<<<<<<< HEAD
+    //debugger;
+
+    var poly = d3.select(this);
+=======
   while (node) {
     dxl = leftBreakPoint(node, directrix) - x;
     if (dxl > epsilon$4) node = node.L; else {
@@ -21878,6 +21883,7 @@ function addBeach(site) {
       }
     }
   }
+>>>>>>> 9c0db5d8c7e750cd60b0811a4fcaafed1837fc31
 
   createCell(site);
   var newArc = createBeach(site);
@@ -21904,6 +21910,17 @@ function addBeach(site) {
   detachCircle(lArc);
   detachCircle(rArc);
 
+<<<<<<< HEAD
+    var demo_image_visibility = d3.select("#demo_image").attr("visibility");
+    var pathinpoly = poly.select(".neighborhoodOutline");
+
+    pathinpoly.classed("neighborhoodUnFocus", false);
+    pathinpoly.classed("neighborhoodFocus", true);
+
+
+    // set scrolling top so that we don't scroll
+    document.body.scrollTop = oldScrollTop;
+=======
   var lSite = lArc.site,
       ax = lSite[0],
       ay = lSite[1],
@@ -21922,6 +21939,7 @@ function addBeach(site) {
   rArc.edge = createEdge(site, rSite, null, vertex);
   attachCircle(lArc);
   attachCircle(rArc);
+>>>>>>> 9c0db5d8c7e750cd60b0811a4fcaafed1837fc31
 }
 
 function leftBreakPoint(arc, directrix) {
@@ -30872,6 +30890,35 @@ d3.json("json/build_map_config_dorkmap.json", function(error_config, config) {
         .attr("height", config.height)
         .attr("width", config.width);
 
+    var defs = svg.append("defs");
+
+    //debugger;
+
+    var pattern = defs.append("pattern")
+        .attr("id", "overlay")
+        .attr("x", "0")
+        .attr("y", "0")
+        .attr("patternUnits", "userSpaceOnUse")
+        .attr("height", "1000")
+        .attr("width", "900");
+
+    pattern.append("image")
+        .attr("x", "-270")
+        .attr("y", "23")
+        .attr("height", "1160")
+        .attr("width", "1100")
+        .attr("xlink:href", "img/demo0.png");
+
+    svg.append("rect")
+        .attr("id", "demo_image")
+        .attr("x", "0")
+        .attr("y", "0")
+        .attr("z", "-100")
+        .attr("fill", "url(#overlay")
+        .attr("height", "1000")
+        .attr("width", "900")
+        .attr("visibility", "hidden");
+
     // project map - mercator
     var projection = d3.geoMercator()
         .rotate(JSON.parse(config.rotate))
@@ -30884,6 +30931,20 @@ d3.json("json/build_map_config_dorkmap.json", function(error_config, config) {
 
     neighborhoodGroup = svg.append("g")
         .attr('id', 'neighborhoodGroup');
+
+    d3.select("#demographic_button")
+        .on("click", function() {
+            var demo_image = d3.select("#demo_image");
+            var demo_key = d3.select("#demo_key");
+            var visibility = demo_image.attr("visibility");
+            if (visibility == "visible") {
+                demo_image.attr("visibility", "hidden");
+                demo_key.style("visibility", "hidden");
+            } else {
+                demo_image.attr("visibility", "visible");
+                demo_key.style("visibility", "visible");
+            }
+        });
 });
 
 
@@ -30919,8 +30980,7 @@ d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_
                         .attr("class", "neighborhood")
                         .append("path")
                         .attr("d", path)
-                        .attr("class", "neighborhoodUnFocus")
-                        .attr("class", "neighborhoodOutline")
+                        .attr("class", "neighborhoodUnFocus neighborhoodOutline")
                         .attr("id", function (d) {
                             return "n_" + d.id
                         });

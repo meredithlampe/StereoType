@@ -764,7 +764,11 @@ exports.recordList = recordList;
 
 
 
+<<<<<<< HEAD
 var bbox = __webpack_require__(9);
+=======
+var bbox = __webpack_require__(8);
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 
 /**
  * A bézier path containing a set of path commands similar to a SVG path.
@@ -2247,7 +2251,11 @@ exports.sizeOf = sizeOf;
 
 
 
+<<<<<<< HEAD
 var _glyph = __webpack_require__(10);
+=======
+var _glyph = __webpack_require__(9);
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 
 // Define a property on the glyph that depends on the path being loaded.
 function defineDependentProperty(glyph, externalName, internalName) {
@@ -2387,6 +2395,7 @@ exports.cffGlyphLoader = cffGlyphLoader;
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
+<<<<<<< HEAD
 /**
  * Copyright (c) 2016 Hideki Shiro
  */
@@ -2398,6 +2407,8 @@ module.exports = __webpack_require__(42);
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
+=======
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 "use strict";
 // The Bounding Box object
 
@@ -2562,7 +2573,11 @@ exports.BoundingBox = BoundingBox;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 10 */
+=======
+/* 9 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2910,7 +2925,11 @@ exports.Glyph = Glyph;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 11 */
+=======
+/* 10 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4029,7 +4048,11 @@ exports.make = makeCFFTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 12 */
+=======
+/* 11 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4258,7 +4281,11 @@ exports.make = makeCmapTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 13 */
+=======
+/* 12 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4523,7 +4550,11 @@ exports.make = makeGsubTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 14 */
+=======
+/* 13 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4596,7 +4627,11 @@ exports.make = makeHeadTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 15 */
+=======
+/* 14 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4656,7 +4691,11 @@ exports.make = makeHheaTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 16 */
+=======
+/* 15 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4705,7 +4744,11 @@ exports.make = makeHmtxTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 17 */
+=======
+/* 16 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4773,7 +4816,11 @@ exports.parse = parseLtagTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 18 */
+=======
+/* 17 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4823,7 +4870,11 @@ exports.make = makeMaxpTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 19 */
+=======
+/* 18 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4891,7 +4942,11 @@ exports.make = makeMetaTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 20 */
+=======
+/* 19 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5733,7 +5788,11 @@ exports.make = makeNameTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 21 */
+=======
+/* 20 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5994,7 +6053,11 @@ exports.make = makeOS2Table;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 22 */
+=======
+/* 21 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6072,7 +6135,11 @@ exports.make = makePostTable;
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 23 */
+=======
+/* 22 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6115,6 +6182,20 @@ exports.checkArgument = function(expression, message) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25).Buffer))
 
 /***/ }),
+<<<<<<< HEAD
+=======
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2016 Hideki Shiro
+ */
+
+module.exports = __webpack_require__(42);
+
+
+/***/ }),
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -25039,7 +25120,11 @@ var sfnt = __webpack_require__(39);
 var encoding = __webpack_require__(4);
 var glyphset = __webpack_require__(6);
 var Substitution = __webpack_require__(33);
+<<<<<<< HEAD
 var util = __webpack_require__(23);
+=======
+var util = __webpack_require__(22);
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 
 /**
  * @typedef FontOptions
@@ -25867,6 +25952,7 @@ var inflate = __webpack_require__(43);
 
 var encoding = __webpack_require__(4);
 var _font = __webpack_require__(30);
+<<<<<<< HEAD
 var glyph = __webpack_require__(10);
 var parse = __webpack_require__(0);
 var bbox = __webpack_require__(9);
@@ -25890,6 +25976,31 @@ var _name = __webpack_require__(20);
 var os2 = __webpack_require__(21);
 var post = __webpack_require__(22);
 var meta = __webpack_require__(19);
+=======
+var glyph = __webpack_require__(9);
+var parse = __webpack_require__(0);
+var bbox = __webpack_require__(8);
+var path = __webpack_require__(3);
+var util = __webpack_require__(22);
+
+var cmap = __webpack_require__(11);
+var cff = __webpack_require__(10);
+var fvar = __webpack_require__(34);
+var glyf = __webpack_require__(35);
+var gpos = __webpack_require__(36);
+var gsub = __webpack_require__(12);
+var head = __webpack_require__(13);
+var hhea = __webpack_require__(14);
+var hmtx = __webpack_require__(15);
+var kern = __webpack_require__(37);
+var ltag = __webpack_require__(16);
+var loca = __webpack_require__(38);
+var maxp = __webpack_require__(17);
+var _name = __webpack_require__(19);
+var os2 = __webpack_require__(20);
+var post = __webpack_require__(21);
+var meta = __webpack_require__(18);
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 
 /**
  * The opentype library.
@@ -27420,6 +27531,7 @@ exports.parse = parseLocaTable;
 var check = __webpack_require__(1);
 var table = __webpack_require__(2);
 
+<<<<<<< HEAD
 var cmap = __webpack_require__(12);
 var cff = __webpack_require__(11);
 var head = __webpack_require__(14);
@@ -27432,6 +27544,20 @@ var os2 = __webpack_require__(21);
 var post = __webpack_require__(22);
 var gsub = __webpack_require__(13);
 var meta = __webpack_require__(19);
+=======
+var cmap = __webpack_require__(11);
+var cff = __webpack_require__(10);
+var head = __webpack_require__(13);
+var hhea = __webpack_require__(14);
+var hmtx = __webpack_require__(15);
+var ltag = __webpack_require__(16);
+var maxp = __webpack_require__(17);
+var _name = __webpack_require__(19);
+var os2 = __webpack_require__(20);
+var post = __webpack_require__(21);
+var gsub = __webpack_require__(12);
+var meta = __webpack_require__(18);
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 
 function log2(v) {
     return Math.log(v) / Math.log(2) | 0;
@@ -28834,7 +28960,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * Created by meredith on 4/24/17.
  */
 
+<<<<<<< HEAD
 const TextToSVG = __webpack_require__(8);
+=======
+const TextToSVG = __webpack_require__(23);
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 const d3 = __webpack_require__(24);
 
 function setMapOpacityFade() {
@@ -28849,6 +28979,11 @@ function setLegend(d, i) {
 
     //d3.select(".maplegend").style("visibility", "visible");
 
+<<<<<<< HEAD
+=======
+    //debugger;
+
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
     var poly = d3.select(this);
 
     // weird scrolling thing -- gotta save scroll top
@@ -28880,10 +29015,20 @@ function setLegend(d, i) {
     var chars = poly.selectAll(".charSVGThing");
     chars.style("fill", "white");
 
+<<<<<<< HEAD
     var pathinpoly = poly.select(".neighborhoodOutline");
     pathinpoly.classed("neighborhoodUnFocus", false);
     pathinpoly.classed("neighborhoodFocus", true);
 
+=======
+    var demo_image_visibility = d3.select("#demo_image").attr("visibility");
+    var pathinpoly = poly.select(".neighborhoodOutline");
+
+    pathinpoly.classed("neighborhoodUnFocus", false);
+    pathinpoly.classed("neighborhoodFocus", true);
+
+
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
     // set scrolling top so that we don't scroll
     document.body.scrollTop = oldScrollTop;
 }
@@ -29053,7 +29198,12 @@ function appendSingleLetter(rectangle, letter, d) {
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 46 */
+=======
+/* 46 */,
+/* 47 */
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/topojson/topojson Version 3.0.0. Copyright 2017 Mike Bostock.
@@ -30841,7 +30991,10 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 
 /***/ }),
+<<<<<<< HEAD
 /* 47 */,
+=======
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 /* 48 */,
 /* 49 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -30851,9 +31004,15 @@ Object.defineProperty(exports, '__esModule', { value: true });
  */
 
 var MapUtil = __webpack_require__(45);
+<<<<<<< HEAD
 const TextToSVG = __webpack_require__(8);
 const d3 = __webpack_require__(24);
 const topojson = __webpack_require__(46);
+=======
+const TextToSVG = __webpack_require__(23);
+const d3 = __webpack_require__(24);
+const topojson = __webpack_require__(47);
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 
 //var width = 900;
 //var height = 1000;
@@ -30872,6 +31031,38 @@ d3.json("json/build_map_config_dorkmap.json", function(error_config, config) {
         .attr("height", config.height)
         .attr("width", config.width);
 
+<<<<<<< HEAD
+=======
+    var defs = svg.append("defs");
+
+    //debugger;
+
+    var pattern = defs.append("pattern")
+        .attr("id", "overlay")
+        .attr("x", "0")
+        .attr("y", "0")
+        .attr("patternUnits", "userSpaceOnUse")
+        .attr("height", "1000")
+        .attr("width", "900");
+
+    pattern.append("image")
+        .attr("x", "-270")
+        .attr("y", "23")
+        .attr("height", "1160")
+        .attr("width", "1100")
+        .attr("xlink:href", "img/demo0.png");
+
+    svg.append("rect")
+        .attr("id", "demo_image")
+        .attr("x", "0")
+        .attr("y", "0")
+        .attr("z", "-100")
+        .attr("fill", "url(#overlay")
+        .attr("height", "1000")
+        .attr("width", "900")
+        .attr("visibility", "hidden");
+
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
     // project map - mercator
     var projection = d3.geoMercator()
         .rotate(JSON.parse(config.rotate))
@@ -30884,6 +31075,23 @@ d3.json("json/build_map_config_dorkmap.json", function(error_config, config) {
 
     neighborhoodGroup = svg.append("g")
         .attr('id', 'neighborhoodGroup');
+<<<<<<< HEAD
+=======
+
+    d3.select("#demographic_button")
+        .on("click", function() {
+            var demo_image = d3.select("#demo_image");
+            var demo_key = d3.select("#demo_key");
+            var visibility = demo_image.attr("visibility");
+            if (visibility == "visible") {
+                demo_image.attr("visibility", "hidden");
+                demo_key.style("visibility", "hidden");
+            } else {
+                demo_image.attr("visibility", "visible");
+                demo_key.style("visibility", "visible");
+            }
+        });
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
 });
 
 
@@ -30919,8 +31127,12 @@ d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_
                         .attr("class", "neighborhood")
                         .append("path")
                         .attr("d", path)
+<<<<<<< HEAD
                         .attr("class", "neighborhoodUnFocus")
                         .attr("class", "neighborhoodOutline")
+=======
+                        .attr("class", "neighborhoodUnFocus neighborhoodOutline")
+>>>>>>> 4388b8b0f912da8d2484a043dacfa17724ea693c
                         .attr("id", function (d) {
                             return "n_" + d.id
                         });

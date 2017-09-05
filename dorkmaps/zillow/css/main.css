@@ -29,7 +29,8 @@ html {
     stroke: #282828;
     stroke-width: 1px;
     stroke: black;
-    fill: white;
+    /*fill: none;*/
+    /*opacity: 0.3;*/
 }
 
 footer {
@@ -38,6 +39,7 @@ footer {
 
 .neighborhoodUnFocus {
     fill: white;
+    fill-opacity: 0.01;
 }
 
 .neighborhoodFocus {

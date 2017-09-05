@@ -21186,6 +21186,11 @@ RedBlackTree.prototype = {
   insert: function(after, node) {
     var parent, grandpa, uncle;
 
+<<<<<<< HEAD
+    //debugger;
+
+    var poly = d3.select(this);
+=======
     if (after) {
       node.P = after;
       node.N = after.N;
@@ -21213,6 +21218,7 @@ RedBlackTree.prototype = {
     node.L = node.R = null;
     node.U = parent;
     node.C = true;
+>>>>>>> 9c0db5d8c7e750cd60b0811a4fcaafed1837fc31
 
     after = node;
     while (parent && parent.C) {
@@ -21304,6 +21310,18 @@ RedBlackTree.prototype = {
     if (red) return;
     if (node && node.C) { node.C = false; return; }
 
+<<<<<<< HEAD
+    var demo_image_visibility = d3.select("#demo_image").attr("visibility");
+    var pathinpoly = poly.select(".neighborhoodOutline");
+
+    pathinpoly.classed("neighborhoodUnFocus", false);
+    pathinpoly.classed("neighborhoodFocus", true);
+
+
+    // set scrolling top so that we don't scroll
+    document.body.scrollTop = oldScrollTop;
+}
+=======
     do {
       if (node === this._) break;
       if (node === parent.L) {
@@ -21359,6 +21377,7 @@ RedBlackTree.prototype = {
     if (node) node.C = false;
   }
 };
+>>>>>>> 9c0db5d8c7e750cd60b0811a4fcaafed1837fc31
 
 function RedBlackRotateLeft(tree, node) {
   var p = node,
