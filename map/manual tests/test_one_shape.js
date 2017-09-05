@@ -624,7 +624,6 @@ TextPoly.execute(maple_outline, "468500", 0, font_for_map, map, function(chars, 
                     .attr("d", chars[poly])
                     .classed("charSVGThing", true);
         }
-    console.log("did it");
 },
     {});
 
