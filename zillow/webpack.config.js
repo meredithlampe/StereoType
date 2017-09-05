@@ -2,7 +2,8 @@ const webpack = require('webpack');
 module.exports = {
     entry: {
           zillow: "./entry.js",
-          zillow_dorkmap: "./entry_dorkmap.js"
+          zillow_dorkmap: "./entry_dorkmap.js",
+	  test_one_shape: "./test_one_shape.js"
 
       },
         output: {

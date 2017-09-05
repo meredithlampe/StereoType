@@ -25,6 +25,7 @@
     "simplify-js": "^1.2.1",
     "text-to-svg": "^3.1.3",
     "topojson": "^3.0.0",
+    "webpack": "^3.5.5",
     "xmlhttprequest": "^1.8.0"
   }
 }

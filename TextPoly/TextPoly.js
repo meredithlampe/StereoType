@@ -5,6 +5,7 @@ const PolyK = require('polyk');
 const debug_colors = ["#DCDCDD", "#C5C3C6", "#46494C", "#4C5C68", "#1985A1", "#114B5F"];
 const largestRect = require('./largestRect.js');
 const point_at_length = require('point-at-length');
+const TextToSVG = require('text-to-svg');
 // mock browser
 // text to svg
 
@@ -18,32 +19,40 @@ module.exports = {
     //slice neighborhood horizontally, then vertically
     //according to length of phrase to get grid over neighborhood.
     //Use inscribed rectangles to fill each grid slot with a letter
-    execute: function (pathCoords3d, phrase, padding, font, textToSVG, svg) {
+    execute: function (pathCoords3d, phrase, padding, font_file, svg, callback, shape_info) {
 
-        //get height and width of polygon
-        var dimensions = module.exports.getShapeDimensions(pathCoords3d);
+        TextToSVG.load(font_file, function (error_font, textToSVG) {
 
-        // get number of horizontal slices we should be using for optimal letter fitting
-        var optimalHorizontalSlices = module.exports.testGrid(pathCoords3d, dimensions, svg, phrase, padding);
+            if (error_font) {
+                console.log(error_font);
+            }
 
-        console.log("num horizontal slices: " + optimalHorizontalSlices);
+            // pad polygon here
 
-        // get individual grid cells that each letter will be fit into
-        // TODO: sometimes this doesn't return enough grid cells!
-        var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, svg, phrase, padding);
-        if (gridUnits.length != phrase.length) {
-            console.log("number of cells != phrase length for phrase: " + phrase);
-        }
+            //get height and width of polygon
+            var dimensions = module.exports.getShapeDimensions(pathCoords3d);
 
-        var chars = [];
+            // get number of horizontal slices we should be using for optimal letter fitting
+            var optimalHorizontalSlices = module.exports.testGrid(pathCoords3d, dimensions, svg, phrase);
 
-        // for each unit of the grid, fit a letter into it
-        for (var i = 0; i < gridUnits.length; i++) {
-            chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, padding, font, textToSVG);
-            //console.log(chars[chars.length - 1]);
-        }
+            console.log("num horizontal slices: " + optimalHorizontalSlices);
 
-        return chars;
+            // get individual grid cells that each letter will be fit into
+            // TODO: sometimes this doesn't return enough grid cells!
+            var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, svg, phrase, padding);
+            if (gridUnits.length != phrase.length) {
+                console.log("number of cells != phrase length for phrase: " + phrase);
+            }
+
+            var chars = [];
+
+            // for each unit of the grid, fit a letter into it
+            for (var i = 0; i < gridUnits.length; i++) {
+                chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, padding, textToSVG);
+            }
+
+            callback(chars, shape_info);
+        });
     },
 
     getShapeDimensions: function (pathCoords3d) {
@@ -69,7 +78,7 @@ module.exports = {
         return results;
     },
 
-    testGrid: function (pathCoords3d, dimensions, svg, phrase, padding) {
+    testGrid: function (pathCoords3d, dimensions, svg, phrase) {
 
         var optimalHorizontalSlices = -1;
         var lowestError = Number.MAX_VALUE;
@@ -229,6 +238,8 @@ module.exports = {
                     lowestError = horLevelError;
                     optimalHorizontalSlices = horCount;
                 }
+
+                console.log("horizontal level error for " + horCount + " is " + horLevelError);
 
             } else {
                 console.log("slices null for shape: " + phrase);
@@ -424,12 +435,12 @@ module.exports = {
                     //paint color of whole horizontal slice
                     var polyInSlicePath = svg.append("path");
                     polyInSlicePath.attr("d", function () {
-                            var twoDPath = module.exports.oneDToTwoD(currPolyInSlice);
-                            //console.log("twoDPath: " + twoDPath);
-                            var pathString = module.exports.arrayToPath(twoDPath);
-                            //console.log(pathString);
-                            return pathString;
-                        })
+                        var twoDPath = module.exports.oneDToTwoD(currPolyInSlice);
+                        //console.log("twoDPath: " + twoDPath);
+                        var pathString = module.exports.arrayToPath(twoDPath);
+                        //console.log(pathString);
+                        return pathString;
+                    })
                         .attr("fill", color);
 
 
@@ -515,7 +526,7 @@ module.exports = {
     },
 
 
-    getCharacterAsSVG: function (char, gridUnit, svg, tag, padding, font,
+    getCharacterAsSVG: function (char, gridUnit, svg, tag, padding,
                                  textToSVG) {
 
         var startPathX,
@@ -542,7 +553,7 @@ module.exports = {
         startPathY -= paddingScaledHeight;
 
         return module.exports.getChar(startPathX, startPathY, char,
-            tag, svg, TEXT_SIZE_MULTIPLIER, font, gridUnit, textToSVG);
+            tag, svg, TEXT_SIZE_MULTIPLIER, gridUnit, textToSVG);
 
     },
 
@@ -612,7 +623,7 @@ module.exports = {
 
     getChar: function (startPathX, startPathY,
                        phrase, k, svg, TEXT_SIZE_MULTIPLIER,
-                       font, rectangle, textToSVG) {
+                       rectangle, textToSVG) {
 
         var textSize = 5;
 

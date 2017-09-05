@@ -35,7 +35,7 @@ const jsonfile = require('jsonfile'),
     TextPoly = require('../TextPoly/TextPoly.js');
 
 var font = "din-condensed-bold";
-var font_for_map = './DIN-Condensed-Bold.ttf';
+var font_for_map = './css/DIN-Condensed-Bold.ttf';
 
 //var seattle_topology = './json/neighborhoods.json';
 var seattle_topology = process.argv[5];
@@ -105,13 +105,15 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
 
                  }
                  */
+
+                var shapes_left = topoGeometries.length;
                 // loop through each neighborhood
                 for (var i = 0; i < topoGeometries.length; i++) {
 
                     var topo = topoGeometries[i];
 
-
                     if (!bestplaces[topo.properties.Name] || !bestplaces[topo.properties.Name].bestmatch) {
+                        shapes_left--;
                         continue;
                     }
 
@@ -132,6 +134,8 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                     var nameNoSpaces = TextUtil.removeSpaces(bestplaces[topo.properties.Name].bestmatch);
                     var slicedNameArray = TextUtil.slicePhrase(solution.length, nameNoSpaces);
 
+                    shapes_left += solution.length - 1;
+
                     // for each polygon in the overall shape, fill with text
                     // loop through polygons in result of padding operation
                     for (var poly = 0; poly < solution.length; poly++) {
@@ -144,23 +148,34 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                             }
                         }
                         var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
-
-                        if (topo.properties.Name == "Woodland") {
-                            debugger;
-                        }
-
-                        debugger;
+                        var shape_info = {
+                            name: topo.properties.Name,
+                            index: poly
+                        };
 
                         if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                            result[topo.properties.Name][poly] = TextPoly.execute(pathCoords3d, slicedNameArray[poly], 0,
-                                font,
-                                textToSVG, svg);
+
+                            TextPoly.execute(
+                                pathCoords3d, // shape outline
+                                slicedNameArray[poly], // phrase
+                                0, // padding (not using this right now)
+                                font_for_map, // font file
+                                svg, // phantom SVG (need to move)
+                                function (chars, shape_info) { // callback
+                                    shapes_left--;
+                                    result[shape_info.name][shape_info.index] = chars;
+                                    console.log("shapes left = " + shapes_left);
+
+                                    if (shapes_left == 0) {
+                                        // write result out to file
+                                        jsonfile.writeFileSync(outputfile, output_container);
+                                    }
+                                },
+                                shape_info // obj to pass to callback
+                            );
                         }
                     }
                 }
-
-                // write result out to file
-                jsonfile.writeFileSync(outputfile, output_container);
             });
         });
     });

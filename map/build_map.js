@@ -28,7 +28,6 @@ const jsonfile = require('jsonfile'),
     NeighborhoodParser = require("./js/NeighborhoodParser.js"),
     TextUtil = require("./js/TextUtil.js"),
     MapUtil = require("./js/MapUtil.js"),
-    TextToSVG = require('text-to-svg'),
     topojson = require('topojson'),
     sample_bestplaces = require('./json/SampleBestPlaces.js'),
     TextPoly = require('../TextPoly/TextPoly.js');
@@ -63,8 +62,7 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
 
     jsonfile.readFile(seattle_topology, function (err_topo, topology) {
         jsonfile.readFile(process.argv[2], function (err_best, bestplaces) {
-            TextToSVG.load(font_for_map, function (err_font, textToSVG) {
-                if (err_topo || err_best || err_font) {
+                if (err_topo || err_best) {
                     if (err_topo) {
                         console.log(err_topo);
                     }
@@ -105,6 +103,7 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                  }
                  */
 
+                var shapes_left = topoGeometries.length; // we'll at least need to call TextPoly this num times
                 // loop through each neighborhood
                 for (var i = 0; i < topoGeometries.length; i++) {
 
@@ -113,7 +112,6 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                     if (!bestplaces[topo.properties.name] || !bestplaces[topo.properties.name].bestmatch) {
                         continue;
                     }
-
 
                     console.log("processing " + topo.properties.name);
 
@@ -127,10 +125,14 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                     // pad polygon between letters and border of shape
                     var solution = pad_polygon(pathCoords3d);
 
+                    // TODO: handle bad solution case...or maybe that gets handled well enough below
+
                     // divide phrase into number of polygons that result from
                     // the padding transform
                     var nameNoSpaces = TextUtil.removeSpaces(bestplaces[topo.properties.name].bestmatch);
                     var slicedNameArray = TextUtil.slicePhrase(solution.length, nameNoSpaces);
+
+                    shapes_left += solution.length - 1;
 
                     // for each polygon in the overall shape, fill with text
                     // loop through polygons in result of padding operation
@@ -145,21 +147,34 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                         }
                         var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
 
-                        // steal shape for testing
-                        if (topo.properties.name == "Phinney Ridge") {
-                            debugger;
-                        }
+                        var shape_info = {
+                            name: topo.properties.name,
+                            index: poly
+                        };
+
                         if (pathCoords3d != null) { //coordinates are enough to actually make a shape
-                            result[topo.properties.name][poly] = TextPoly.execute(pathCoords3d, slicedNameArray[poly], 0,
-                                font,
-                                textToSVG, svg);
+                            TextPoly.execute(
+                                pathCoords3d, // shape outline
+                                slicedNameArray[poly], // phrase
+                                0, // padding
+                                font_for_map, // font file
+                                svg, // phantom SVG (move this into library)
+                                function(chars, shape_info) {
+                                    shapes_left--;
+                                    result[shape_info.name][shape_info.index] = chars;
+
+                                    // if we're at the end of all of our for-loops, write to file
+                                    if (shapes_left == 0) {
+                                        // write result out to file
+                                        jsonfile.writeFileSync(outputfile, output_container);
+                                    }
+                                },
+                                shape_info // rando json to use in callback
+                            );
                         }
                     }
                 }
 
-                // write result out to file
-                jsonfile.writeFileSync(outputfile, output_container);
-            });
         });
     });
 });
