@@ -30921,11 +30921,14 @@ d3.json("json/build_map_config_dorkmap.json", function(error_config, config) {
     d3.select("#demographic_button")
         .on("click", function() {
             var demo_image = d3.select("#demo_image");
+            var demo_key = d3.select("#demo_key");
             var visibility = demo_image.attr("visibility");
             if (visibility == "visible") {
                 demo_image.attr("visibility", "hidden");
+                demo_key.style("visibility", "hidden");
             } else {
                 demo_image.attr("visibility", "visible");
+                demo_key.style("visibility", "visible");
             }
         });
 });
