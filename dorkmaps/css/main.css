@@ -1,0 +1,439 @@
+
+@font-face {
+    font-family: din-condensed-bold;
+    src: url(DIN-Condensed-Bold.ttf);
+}
+
+html {
+    background-color: #efefef;
+}
+
+.my_body {
+    /*padding: 0px;*/
+    background-color: transparent;
+    /*margin-top: -20px;*/
+}
+
+#page_title {
+    font-family: din-condensed-bold;
+    font-size: 60pt;
+    letter-spacing: 4px;
+}
+
+#title_container {
+    width: 100%;
+    text-align: center;
+}
+
+.neighborhoodOutline {
+    stroke: #282828;
+    stroke-width: 1px;
+    stroke: black;
+    fill: white;
+}
+
+footer {
+    padding-left: 100px;
+}
+
+.neighborhoodUnFocus {
+    fill: white;
+}
+
+.neighborhoodFocus {
+    fill: black;
+    stroke: white;
+}
+
+.neighborhoodFocus.charSVGThing {
+    stroke: white;
+    fill: white;
+}
+
+
+.neighborhoodOutlineBorder {
+    stroke: black;
+    stroke-width: 5px;
+}
+
+/*#neighborhoodGroup:hover {*/
+    /*opacity:0.5 ;*/
+/*}*/
+
+/*.neighborhood:hover {*/
+    /*opacity: 1.0;*/
+/*}*/
+
+.mapcontainer {
+    margin: auto;
+    width: 600px;
+}
+
+.mapinfo {
+    width: 100%;
+    background-color: transparent;
+    margin-bottom: 30pt;
+    margin-top: 30pt;
+}
+
+.legendterm {
+    overflow: hidden;
+}
+
+#bestmatch, #name {
+    margin-bottom: 5pt;
+    margin-top: 5pt;
+}
+
+.legendtitle {
+    font-size: 10pt;
+    margin-bottom: 3pt;
+    margin-top: 3pt;
+}
+
+#neighborhoodname, #neighborhoodphrase,
+#neighborhoodcategory, #neighborhoodprice,
+#neighborhoodreviewcount {
+    visibility: hidden;
+    font-size: 18pt;
+    margin-bottom: 3pt;
+    margin-top: 3pt;
+}
+
+#neighborhoodphrase {
+    font-size: 24pt;
+}
+
+#name, #bestmatch,
+#category,
+#price,
+#reviewcount {
+    height: 50pt;
+}
+
+.main {
+    margin: auto;
+}
+
+#mapSVG {
+    width: 100%;
+}
+
+.neighborhoodInnerPath {
+    stroke-width: 3 px;
+    stroke: black;
+    fill: none;
+}
+
+.topPolyRed {
+    stroke: #530605;
+    fill: #c45a5e;
+}
+
+.topPolyBlue {
+    stroke: white;
+    fill: #0f3D66;
+}
+
+.rightPolyGreen {
+    stroke: #004200;
+    fill: #84ce6b;
+}
+
+.bottomPolyBlue {
+    stroke: #00006a;
+    fill: #9aa3f3;
+}
+
+.leftPoly {
+    stroke: #350452;
+    fill: #b376c4;
+}
+
+#my-foot {
+    padding-left: 10px;
+}
+
+@font-face {
+    font-family: 'DIN';
+    src: url('../fonts/din-regular-webfont.eot');
+    src: url('../fonts/din-regular-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/din-regular-webfont.woff2') format('woff2'),
+    url('../fonts/din-regular-webfont.woff') format('woff'),
+    url('../fonts/din-regular-webfont.ttf') format('truetype'),
+    url('../fonts/din-regular-webfont.svg#dinregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DIN';
+    src: url('../fonts/din_bold-webfont.eot');
+    src: url('../fonts/din_bold-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/din_bold-webfont.woff2') format('woff2'),
+    url('../fonts/din_bold-webfont.woff') format('woff'),
+    url('../fonts/din_bold-webfont.ttf') format('truetype'),
+    url('../fonts/din_bold-webfont.svg#dinbold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DIN';
+    src: url('../fonts/din-regularitalic-webfont.eot');
+    src: url('../fonts/din-regularitalic-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/din-regularitalic-webfont.woff2') format('woff2'),
+    url('../fonts/din-regularitalic-webfont.woff') format('woff'),
+    url('../fonts/din-regularitalic-webfont.ttf') format('truetype'),
+    url('../fonts/din-regularitalic-webfont.svg#din-regularitalicregular') format('svg');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Futura';
+    src: url('../fonts/futura-webfont.eot');
+    src: url('../fonts/futura-webfont.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/futura-webfont.woff2') format('woff2'),
+    url('../fonts/futura-webfont.woff') format('woff'),
+    url('../fonts/futura-webfont.ttf') format('truetype'),
+    url('../fonts/futura-webfont.svg#futuramedium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'DIN';
+}
+
+.navbar {
+    margin-bottom: 20px;
+    border-radius: 0;
+
+}
+
+/* Remove the jumbotron's default bottom margin */
+.jumbotron {
+    margin-bottom: 0;
+}
+
+/* Add a gray background color and some padding to the footer */
+footer {
+    padding: 25px;
+    background-color: #F3F3F3;
+}
+
+h1 {
+    font-size: 20pt;
+    font-weight: bold;
+    line-height: 1.214;
+    letter-spacing: -1px;
+}
+
+h5 {
+    text-align: center;
+    color: #404146;
+    letter-spacing: 0.1em;
+}
+
+h3 {
+    font-size: 30pt;
+    font-weight: bold;
+}
+
+.description {
+    font-size: 17px;
+
+}
+
+.s1 {
+    font-style: italic;
+    font-size: 10pt;
+    line-height: 12pt;
+}
+
+.price {
+    font-size: 1.41575em;
+    margin: 1.41575em 0;
+    color: #121e8c;
+
+}
+
+.map {
+    padding-bottom: 30px;
+    line-height: 1.618;
+
+}
+
+.col-sm-12 {
+    background-color: #CBCCCB;
+}
+
+.logo {
+
+    margin-top: 2.5em;
+    margin-bottom: 2.5em;
+    text-align: center;
+    display: block;
+}
+
+.header {
+    width: 70%;
+    display: block;
+
+}
+
+.header_badge {
+    width: 31%;
+    margin: 0 auto;
+    display: inline-block;
+    position: relative;
+    display: inline-block;
+
+}
+
+.secondary_nav {
+    display: inline-block;
+    margin-top: 25px;
+    font-size: 12pt;
+}
+
+.secondary_nav a {
+    font-weight: 400 !important;
+    padding: 1em .875em;
+    color: #9aa0a7 !important;
+
+}
+
+.title {
+    font-size: 1.41575em;
+    letter-spacing: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .05);
+    padding: 0 0 1em;
+    margin-bottom: 1em;
+    font-weight: 300;
+}
+
+.main {
+    padding: 0 1em 20px;
+    color: #000 !important;
+    font-size: 14pt;
+}
+
+.carousel-control.left, .carousel-control.right {
+    background-image: none
+}
+
+.carousel-inner > .item > img {
+    margin: 0 auto;
+}
+
+.carousel-indicators li {
+    background: #404146;
+    border: none;
+}
+
+.carousel-indicators .active {
+    background: #00C1C4;
+    border: none;
+    width: 11px;
+    height: 11px;
+}
+
+.carousel-indicators {
+    bottom: -40px;
+}
+
+.carousel-control.left {
+    margin-left: -45px;
+    border: none;
+}
+
+.carousel-control.right {
+    margin-right: -45px;
+
+    border: none;
+}
+
+.panel-footer {
+    text-align: center;
+    background: none;
+}
+
+.dots {
+
+    background: url('../img/header-bk.png') repeat-x bottom left;
+    height: 135px;
+
+}
+
+.dropdown-menu {
+    background-color: #EEEEEE !important;
+    border: none !important;
+    border-radius: 0 !important;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    box-shadow: none;
+}
+
+.nav > li > a:hover, .nav > li > a:focus {
+    background-color: transparent;
+}
+
+.dropdown-toggle {
+    background-color: transparent !important;
+}
+
+.dropdown-menu > li > a {
+    color: #828282;
+}
+
+.dropdown-menu > li > a:hover {
+    background-color: #EEEEEE;
+}
+
+.dotstop {
+    padding-top: 35px;
+    background: url('../img/header-bk.png') repeat-x bottom left;
+    height: 117px;
+    margin-bottom: -82px;
+}
+
+.announcement {
+    text-align: center;
+    font-family: "Futura";
+    font-weight: text-transform: uppercase;
+    font-size: 10pt;
+    letter-spacing: 2px;
+    color: #000;
+    position: static;
+    background: #CBCCCB;
+    padding: .9em;
+
+}
+
+#cart_button {
+    margin-bottom: 15pt;
+}
+
+#demographic_legend {
+    width: 500px;
+    height: 50px;
+}
+
+.demographic_legend_val {
+    display: inline;
+    margin: 3pt;
+}
+
+#demographic_legend_gradient {
+    width: 200px;
+    height: 30px;
+    display: inline-block;
+    /* TODO replace w image of gradient for browsers that don't support gradient*/
+    background: red; /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(left, white, #E44540); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, white, #E44540); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, white, #E44540); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(left, white, #E44540); /* Standard syntax */
+}

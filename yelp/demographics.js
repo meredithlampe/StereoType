@@ -1,138 +1,194 @@
-Sand Point,  78.62
+{
 
-South Park, 85.90
+    "Sand
+    Point": 78.62,
 
-Pinehurst, 84.29
+    "South
+    Park": 85.90,
 
-Brighton, 14.84
+    "Pinehurst": 84.29,
 
-Maple Leaf, 76.47
+    Brighton, 14.84
 
-Sunset Hill, 89.82
+    Maple
+    Leaf, 76.47
 
-Broadmoor, 85.68
+    Sunset
+    Hill, 89.82
 
-Whittier Heights, 88.13
+    Broadmoor, 85.68
 
-High Point, 80.45
+    Whittier
+    Heights, 88.13
 
-View Ridge, 82.90
+    High
+    Point, 80.45
 
-Matthews Beach, 83.36
+    View
+    Ridge, 82.90
 
-Wedgwood, 79.70
+    Matthews
+    Beach, 83.36
 
-South Lake Union, 80.20
+    Wedgwood, 79.70
 
-First Hill, 71.95
+    South
+    Lake
+    Union, 80.20
 
-Lower Queen Anne, 81.20
+    First
+    Hill, 71.95
 
-Eastlake, 85.22
+    Lower
+    Queen
+    Anne, 81.20
 
-Mount Baker, 77.47
+    Eastlake, 85.22
 
-Meadowbrook, 67.80
+    Mount
+    Baker, 77.47
 
-Admiral, 85.15
+    Meadowbrook, 67.80
 
-North College Park, 75.08
+    Admiral, 85.15
 
-Atlantic, 36.37
+    North
+    College
+    Park, 75.08
 
-Denny-Blaine, 77.47
+    Atlantic, 36.37
 
-Madison Valley, 76.76
+    Denny - Blaine, 77.47
 
-Central District, 57.26
+    Madison
+    Valley, 76.76
 
-International District, 78.97
+    Central
+    District, 57.26
 
-Industrial District, 49.75
+    International
+    District, 78.97
 
-University District, 57.26
+    Industrial
+    District, 49.75
 
-Roosevelt, 82.02
+    University
+    District, 57.26
 
-Pioneer Square, 45.63
+    Roosevelt, 82.02
 
-Portage Bay, 85.22
+    Pioneer
+    Square, 45.63
 
-Roxhill, 90.49
+    Portage
+    Bay, 85.22
 
-North Delridge, 83.07
+    Roxhill, 90.49
 
-Highland Park, 85.94
+    North
+    Delridge, 83.07
 
-Wallingford. 85.05
+    Highland
+    Park, 85.94
 
-Hawthorne Hills, 81.65
+    Wallingford.
+    85.05
 
-Greenwood, 85.67
+    Hawthorne
+    Hills, 81.65
 
-Leschi, 77.47
+    Greenwood, 85.67
 
-Riverview, 52.15
+    Leschi, 77.47
 
-Montlake, 85.68
+    Riverview, 52.15
 
-Green Lake, 87.60
+    Montlake, 85.68
 
-Olympic Hills, 66.61
+    Green
+    Lake, 87.60
 
-Ravenna, 84.29
+    Olympic
+    Hills, 66.61
 
-Crown Hill, 77.16
+    Ravenna, 84.29
 
-Madrona, 77.47
+    Crown
+    Hill, 77.16
 
-Broadview, 87.71
+    Madrona, 77.47
 
-Seward Park, 59.11
+    Broadview, 87.71
 
-Olympic Manor, 89.65
+    Seward
+    Park, 59.11
 
-South Delridge, 55.10
+    Olympic
+    Manor, 89.65
 
-Cedar Park, 58.59
+    South
+    Delridge, 55.10
 
-Victory Heights, 66.61
+    Cedar
+    Park, 58.59
 
-Phinney Ridge, 89.43
+    Victory
+    Heights, 66.61
 
-Belltown, 71.40
+    Phinney
+    Ridge, 89.43
 
-Bryant, 81.83
+    Belltown, 71.40
 
-Haller Lake, 64
-Bitter Lake, 73
-Lake City, 74
-Blue Ridge, 88
-Northgate, 64
-Inverness, 68
-North Beach, 86
-Loyal Heights, 88
-Ballard, 90
-Fremont, 84
-University, 57
-Laurelhurst, 84
-Windermere, 84
-Madison Park, 86
-Capitol Hill, 74
-Central Area, 54
-Beacon Hill, 29
-Downtown, 46
-Sodo, 50
-Queen Anne, 81
-Interbay, 86
-Magnolia, 90
-Harbor Island, 74
-West Seattle, 85
-Alki, 88
-Delridge45
-Fauntleroy, 86
-Arbor Heights, 85
-Georgetown, 70
-Rainier Valley, 10
-Columbia City, 42
-Rainier Beach, 25
+    Bryant, 81.83
+
+    Haller
+    Lake, 64
+    Bitter
+    Lake, 73
+    Lake
+    City, 74
+    Blue
+    Ridge, 88
+    Northgate, 64
+    Inverness, 68
+    North
+    Beach, 86
+    Loyal
+    Heights, 88
+    Ballard, 90
+    Fremont, 84
+    University, 57
+    Laurelhurst, 84
+    Windermere, 84
+    Madison
+    Park, 86
+    Capitol
+    Hill, 74
+    Central
+    Area, 54
+    Beacon
+    Hill, 29
+    Downtown, 46
+    Sodo, 50
+    Queen
+    Anne, 81
+    Interbay, 86
+    Magnolia, 90
+    Harbor
+    Island, 74
+    West
+    Seattle, 85
+    Alki, 88
+    Delridge45
+    Fauntleroy, 86
+    Arbor
+    Heights, 85
+    Georgetown, 70
+    Rainier
+    Valley, 10
+    Columbia
+    City, 42
+    Rainier
+    Beach, 25
+}

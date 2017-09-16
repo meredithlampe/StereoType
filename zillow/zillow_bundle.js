@@ -764,7 +764,7 @@ exports.recordList = recordList;
 
 
 
-var bbox = __webpack_require__(9);
+var bbox = __webpack_require__(8);
 
 /**
  * A bézier path containing a set of path commands similar to a SVG path.
@@ -2247,7 +2247,7 @@ exports.sizeOf = sizeOf;
 
 
 
-var _glyph = __webpack_require__(10);
+var _glyph = __webpack_require__(9);
 
 // Define a property on the glyph that depends on the path being loaded.
 function defineDependentProperty(glyph, externalName, internalName) {
@@ -2385,17 +2385,6 @@ exports.cffGlyphLoader = cffGlyphLoader;
 
 /***/ }),
 /* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/**
- * Copyright (c) 2016 Hideki Shiro
- */
-
-module.exports = __webpack_require__(42);
-
-
-/***/ }),
-/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2562,7 +2551,7 @@ exports.BoundingBox = BoundingBox;
 
 
 /***/ }),
-/* 10 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2910,7 +2899,7 @@ exports.Glyph = Glyph;
 
 
 /***/ }),
-/* 11 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4029,7 +4018,7 @@ exports.make = makeCFFTable;
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4258,7 +4247,7 @@ exports.make = makeCmapTable;
 
 
 /***/ }),
-/* 13 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4523,7 +4512,7 @@ exports.make = makeGsubTable;
 
 
 /***/ }),
-/* 14 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4596,7 +4585,7 @@ exports.make = makeHeadTable;
 
 
 /***/ }),
-/* 15 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4656,7 +4645,7 @@ exports.make = makeHheaTable;
 
 
 /***/ }),
-/* 16 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4705,7 +4694,7 @@ exports.make = makeHmtxTable;
 
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4773,7 +4762,7 @@ exports.parse = parseLtagTable;
 
 
 /***/ }),
-/* 18 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4823,7 +4812,7 @@ exports.make = makeMaxpTable;
 
 
 /***/ }),
-/* 19 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4891,7 +4880,7 @@ exports.make = makeMetaTable;
 
 
 /***/ }),
-/* 20 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5733,7 +5722,7 @@ exports.make = makeNameTable;
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5994,7 +5983,7 @@ exports.make = makeOS2Table;
 
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6072,7 +6061,7 @@ exports.make = makePostTable;
 
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6113,6 +6102,17 @@ exports.checkArgument = function(expression, message) {
 };
 
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(25).Buffer))
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/**
+ * Copyright (c) 2016 Hideki Shiro
+ */
+
+module.exports = __webpack_require__(42);
+
 
 /***/ }),
 /* 24 */
@@ -21186,11 +21186,6 @@ RedBlackTree.prototype = {
   insert: function(after, node) {
     var parent, grandpa, uncle;
 
-<<<<<<< HEAD
-    //debugger;
-
-    var poly = d3.select(this);
-=======
     if (after) {
       node.P = after;
       node.N = after.N;
@@ -21218,7 +21213,6 @@ RedBlackTree.prototype = {
     node.L = node.R = null;
     node.U = parent;
     node.C = true;
->>>>>>> 9c0db5d8c7e750cd60b0811a4fcaafed1837fc31
 
     after = node;
     while (parent && parent.C) {
@@ -21310,18 +21304,6 @@ RedBlackTree.prototype = {
     if (red) return;
     if (node && node.C) { node.C = false; return; }
 
-<<<<<<< HEAD
-    var demo_image_visibility = d3.select("#demo_image").attr("visibility");
-    var pathinpoly = poly.select(".neighborhoodOutline");
-
-    pathinpoly.classed("neighborhoodUnFocus", false);
-    pathinpoly.classed("neighborhoodFocus", true);
-
-
-    // set scrolling top so that we don't scroll
-    document.body.scrollTop = oldScrollTop;
-}
-=======
     do {
       if (node === this._) break;
       if (node === parent.L) {
@@ -21377,7 +21359,6 @@ RedBlackTree.prototype = {
     if (node) node.C = false;
   }
 };
->>>>>>> 9c0db5d8c7e750cd60b0811a4fcaafed1837fc31
 
 function RedBlackRotateLeft(tree, node) {
   var p = node,
@@ -25058,7 +25039,7 @@ var sfnt = __webpack_require__(39);
 var encoding = __webpack_require__(4);
 var glyphset = __webpack_require__(6);
 var Substitution = __webpack_require__(33);
-var util = __webpack_require__(23);
+var util = __webpack_require__(22);
 
 /**
  * @typedef FontOptions
@@ -25886,29 +25867,29 @@ var inflate = __webpack_require__(43);
 
 var encoding = __webpack_require__(4);
 var _font = __webpack_require__(30);
-var glyph = __webpack_require__(10);
+var glyph = __webpack_require__(9);
 var parse = __webpack_require__(0);
-var bbox = __webpack_require__(9);
+var bbox = __webpack_require__(8);
 var path = __webpack_require__(3);
-var util = __webpack_require__(23);
+var util = __webpack_require__(22);
 
-var cmap = __webpack_require__(12);
-var cff = __webpack_require__(11);
+var cmap = __webpack_require__(11);
+var cff = __webpack_require__(10);
 var fvar = __webpack_require__(34);
 var glyf = __webpack_require__(35);
 var gpos = __webpack_require__(36);
-var gsub = __webpack_require__(13);
-var head = __webpack_require__(14);
-var hhea = __webpack_require__(15);
-var hmtx = __webpack_require__(16);
+var gsub = __webpack_require__(12);
+var head = __webpack_require__(13);
+var hhea = __webpack_require__(14);
+var hmtx = __webpack_require__(15);
 var kern = __webpack_require__(37);
-var ltag = __webpack_require__(17);
+var ltag = __webpack_require__(16);
 var loca = __webpack_require__(38);
-var maxp = __webpack_require__(18);
-var _name = __webpack_require__(20);
-var os2 = __webpack_require__(21);
-var post = __webpack_require__(22);
-var meta = __webpack_require__(19);
+var maxp = __webpack_require__(17);
+var _name = __webpack_require__(19);
+var os2 = __webpack_require__(20);
+var post = __webpack_require__(21);
+var meta = __webpack_require__(18);
 
 /**
  * The opentype library.
@@ -27439,18 +27420,18 @@ exports.parse = parseLocaTable;
 var check = __webpack_require__(1);
 var table = __webpack_require__(2);
 
-var cmap = __webpack_require__(12);
-var cff = __webpack_require__(11);
-var head = __webpack_require__(14);
-var hhea = __webpack_require__(15);
-var hmtx = __webpack_require__(16);
-var ltag = __webpack_require__(17);
-var maxp = __webpack_require__(18);
-var _name = __webpack_require__(20);
-var os2 = __webpack_require__(21);
-var post = __webpack_require__(22);
-var gsub = __webpack_require__(13);
-var meta = __webpack_require__(19);
+var cmap = __webpack_require__(11);
+var cff = __webpack_require__(10);
+var head = __webpack_require__(13);
+var hhea = __webpack_require__(14);
+var hmtx = __webpack_require__(15);
+var ltag = __webpack_require__(16);
+var maxp = __webpack_require__(17);
+var _name = __webpack_require__(19);
+var os2 = __webpack_require__(20);
+var post = __webpack_require__(21);
+var gsub = __webpack_require__(12);
+var meta = __webpack_require__(18);
 
 function log2(v) {
     return Math.log(v) / Math.log(2) | 0;
@@ -28853,7 +28834,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * Created by meredith on 4/24/17.
  */
 
-const TextToSVG = __webpack_require__(8);
+const TextToSVG = __webpack_require__(23);
 const d3 = __webpack_require__(24);
 
 function setMapOpacityFade() {
@@ -28867,6 +28848,8 @@ function setMapOpacityStrong() {
 function setLegend(d, i) {
 
     //d3.select(".maplegend").style("visibility", "visible");
+
+    //debugger;
 
     var poly = d3.select(this);
 
@@ -28899,9 +28882,12 @@ function setLegend(d, i) {
     var chars = poly.selectAll(".charSVGThing");
     chars.style("fill", "white");
 
+    var demo_image_visibility = d3.select("#demo_image").attr("visibility");
     var pathinpoly = poly.select(".neighborhoodOutline");
+
     pathinpoly.classed("neighborhoodUnFocus", false);
     pathinpoly.classed("neighborhoodFocus", true);
+
 
     // set scrolling top so that we don't scroll
     document.body.scrollTop = oldScrollTop;
@@ -29123,7 +29109,6 @@ d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_
             if (error_neighborhoods || error_chars || error_output) {
                 console.log("error"); // lol bad
             } else {
-                debugger;
                 topoGeometries = [];
                 for (var i = 0; i < zillow_map.features.length; i++) {
                     if (zillow_map.features[i].properties.City == "Seattle") {

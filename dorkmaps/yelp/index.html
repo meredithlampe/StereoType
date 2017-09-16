@@ -1,427 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>City Neighborhood Maps &amp; More by Dork Posters</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/main.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <style>
-    /* Remove the navbar's default rounded borders and increase the bottom margin */
-
-    @font-face {
-      font-family: 'DIN';
-      src: url('../fonts/din-regular-webfont.eot');
-      src: url('../fonts/din-regular-webfont.eot?#iefix') format('embedded-opentype'),
-      url('../fonts/din-regular-webfont.woff2') format('woff2'),
-      url('../fonts/din-regular-webfont.woff') format('woff'),
-      url('../fonts/din-regular-webfont.ttf') format('truetype'),
-      url('../fonts/din-regular-webfont.svg#dinregular') format('svg');
-      font-weight: normal;
-      font-style: normal;
-    }
-
-    @font-face {
-      font-family: 'DIN';
-      src: url('../fonts/din_bold-webfont.eot');
-      src: url('../fonts/din_bold-webfont.eot?#iefix') format('embedded-opentype'),
-      url('../fonts/din_bold-webfont.woff2') format('woff2'),
-      url('../fonts/din_bold-webfont.woff') format('woff'),
-      url('../fonts/din_bold-webfont.ttf') format('truetype'),
-      url('../fonts/din_bold-webfont.svg#dinbold') format('svg');
-      font-weight: bold;
-      font-style: normal;
-    }
-
-    @font-face {
-      font-family: 'DIN';
-      src: url('../fonts/din-regularitalic-webfont.eot');
-      src: url('../fonts/din-regularitalic-webfont.eot?#iefix') format('embedded-opentype'),
-      url('../fonts/din-regularitalic-webfont.woff2') format('woff2'),
-      url('../fonts/din-regularitalic-webfont.woff') format('woff'),
-      url('../fonts/din-regularitalic-webfont.ttf') format('truetype'),
-      url('../fonts/din-regularitalic-webfont.svg#din-regularitalicregular') format('svg');
-      font-weight: normal;
-      font-style: italic;
-    }
-
-    @font-face {
-      font-family: 'Futura';
-      src: url('../fonts/futura-webfont.eot');
-      src: url('../fonts/futura-webfont.eot?#iefix') format('embedded-opentype'),
-      url('../fonts/futura-webfont.woff2') format('woff2'),
-      url('../fonts/futura-webfont.woff') format('woff'),
-      url('../fonts/futura-webfont.ttf') format('truetype'),
-      url('../fonts/futura-webfont.svg#futuramedium') format('svg');
-      font-weight: normal;
-      font-style: normal;
-    }
-
-    body {
-      font-family: 'DIN';
-    }
-
-    .navbar {
-      margin-bottom: 20px;
-      border-radius: 0;
-
-    }
-
-    /* Remove the jumbotron's default bottom margin */
-    .jumbotron {
-      margin-bottom: 0;
-    }
-
-    /* Add a gray background color and some padding to the footer */
-    footer {
-      padding: 25px;
-      background-color: #F3F3F3;
-    }
-
-    h1 {
-      font-size: 20pt;
-      font-weight: bold;
-      line-height: 1.214;
-      letter-spacing: -1px;
-    }
-
-    h5 {
-      text-align: center;
-      color: #404146;
-      letter-spacing: 0.1em;
-    }
-
-    h3 {
-      font-size: 30pt;
-      font-weight: bold;
-    }
-
-    .description {
-      font-size: 17px;
-
-    }
-
-    .s1 {
-      font-style: italic;
-      font-size: 10pt;
-      line-height: 12pt;
-    }
-
-    .price {
-      font-size: 1.41575em;
-      margin: 1.41575em 0;
-      color: #121e8c;
-
-    }
-
-    .map {
-      padding-bottom: 30px;
-      line-height: 1.618;
-
-    }
-
-    .col-sm-12 {
-      background-color: #CBCCCB;
-    }
-
-    .logo {
-
-      margin-top: 2.5em;
-      margin-bottom: 2.5em;
-      text-align: center;
-      display: block;
-    }
-
-    .header {
-      width: 70%;
-      display: block;
-
-    }
-
-    .header_badge {
-      width: 31%;
-      margin: 0 auto;
-      display: inline-block;
-      position: relative;
-      display: inline-block;
-
-    }
-
-    .secondary_nav {
-      display: inline-block;
-      margin-top: 25px;
-      font-size: 12pt;
-    }
-
-    .secondary_nav a {
-      font-weight: 400 !important;
-      padding: 1em .875em;
-      color: #9aa0a7 !important;
-
-    }
-
-    .title {
-      font-size: 1.41575em;
-      letter-spacing: 0;
-      border-bottom: 1px solid rgba(0, 0, 0, .05);
-      padding: 0 0 1em;
-      margin-bottom: 1em;
-      font-weight: 300;
-    }
-
-    .main {
-      padding: 0 1em 20px;
-      color: #000 !important;
-      font-size: 14pt;
-    }
-
-    .carousel-control.left, .carousel-control.right {
-      background-image: none
-    }
-
-    .carousel-inner > .item > img {
-      margin: 0 auto;
-    }
-
-    .carousel-indicators li {
-      background: #404146;
-      border: none;
-    }
-
-    .carousel-indicators .active {
-      background: #00C1C4;
-      border: none;
-      width: 11px;
-      height: 11px;
-    }
-
-    .carousel-indicators {
-      bottom: -40px;
-    }
-
-    .carousel-control.left {
-      margin-left: -45px;
-      border: none;
-    }
-
-    .carousel-control.right {
-      margin-right: -45px;
-
-      border: none;
-    }
-
-    .panel-footer {
-      text-align: center;
-      background: none;
-    }
-
-    .dots {
-
-      background: url('../img/header-bk.png') repeat-x bottom left;
-      height: 135px;
-
-    }
-
-    .dropdown-menu {
-      background-color: #EEEEEE !important;
-      border: none !important;
-      border-radius: 0 !important;
-      -webkit-border-radius: 0;
-      -moz-border-radius: 0;
-      box-shadow: none;
-    }
-
-    .nav > li > a:hover, .nav > li > a:focus {
-      background-color: transparent;
-    }
-
-    .dropdown-toggle {
-      background-color: transparent !important;
-    }
-
-    .dropdown-menu > li > a {
-      color: #828282;
-    }
-
-    .dropdown-menu > li > a:hover {
-      background-color: #EEEEEE;
-    }
-
-    .dotstop {
-      padding-top: 35px;
-      background: url('../img/header-bk.png') repeat-x bottom left;
-      height: 117px;
-      margin-bottom: -82px;
-    }
-
-    .announcement {
-      text-align: center;
-      font-family: "Futura";
-      font-weight: text-transform: uppercase;
-      font-size: 10pt;
-      letter-spacing: 2px;
-      color: #000;
-      position: static;
-      background: #CBCCCB;
-      padding: .9em;
-
-    }
-
-    #cart_button {
-      margin-bottom: 15pt;
-    }
-
-  </style>
+    <title>City Neighborhood Maps &amp; More by Dork Posters</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+    <link rel-="stylesheet" href="../lib/bootstrap/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel-="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
+    <script src="../lib/jquery-1.12.2.min.js"></script>
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+    <script src="../lib/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <body>
 <div class="row">
-  <!--  <div class="col-sm-12"> -->
-  <div class="announcement">
-    DID YOU SEE WE'VE ADDED TSHIRTS FEATURING MANY OF OUR CITY MAP DESIGNS? CHECK THEM OUT HERE.
-  </div>
+    <!--  <div class="col-sm-12"> -->
+    <div class="announcement">
+        DID YOU SEE WE'VE ADDED TSHIRTS FEATURING MANY OF OUR CITY MAP DESIGNS? CHECK THEM OUT HERE.
+    </div>
 </div>
 <!-- </div> -->
 <div class="container">
-  <div class="row">
-    <div class="logo">
+    <div class="row">
+        <div class="logo">
 
-      <div class="col-sm-4 text-left">
-        <img src="../img/header_badge-new.jpg" class="header_badge">
-      </div>
+            <div class="col-sm-4 text-left">
+                <img src="../img/header_badge-new.jpg" class="header_badge">
+            </div>
 
-      <div class="col-sm-5 text-center">
-        <img src="../img/header-image-new.jpg" class="header">
-      </div>
+            <div class="col-sm-5 text-center">
+                <img src="../img/header-image-new.jpg" class="header">
+            </div>
 
-      <div class="col-sm-3 text-right">
-        <div class="secondary_nav">
-          <a href="#">Stockists</a> <a href="#">Contact</a>
+            <div class="col-sm-3 text-right">
+                <div class="secondary_nav">
+                    <a href="#">Stockists</a> <a href="#">Contact</a>
+                </div>
+            </div>
+
         </div>
-      </div>
-
     </div>
-  </div>
 </div>
 <div class="col-sm-12 dotstop">
 </div>
 
 
 <nav class="navbar">
-  <div class="container">
-    <ul class="nav navbar-nav">
-      <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Shop By Tech<span
-          class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Yelp</a></li>
-          <li><a href="#">Zillow</a></li>
-          <li><a href="#">Amazon</a></li>
+    <div class="container">
+        <ul class="nav navbar-nav">
+            <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Shop By Tech<span
+                    class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Yelp</a></li>
+                    <li><a href="#">Zillow</a></li>
+                    <li><a href="#">Amazon</a></li>
+                </ul>
+            </li>
+            <li class="active"><a class="main" href="#">All Posters</a></li>
+            <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Products For
+                Hanging<span
+                        class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Frames</a></li>
+                    <li><a href="#">Modest Magnets</a></li>
+                    <li><a href="#">Simple Clips</a></li>
+                </ul>
+            </li>
+            <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Besides Posters<span
+                    class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Seattle Civil Rights and Labor History Project</a></li>
+                    <li><a href="#">Tenants Union of Washington State</a></li>
+                </ul>
+            </li>
         </ul>
-      </li>
-      <li class="active"><a class="main" href="#">All Posters</a></li>
-      <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Products For Hanging<span
-          class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Frames</a></li>
-          <li><a href="#">Modest Magnets</a></li>
-          <li><a href="#">Simple Clips</a></li>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a class="main" href="#"><span class="glyphicon glyphicon-shopping-cart"></span> </a></li>
         </ul>
-      </li>
-      <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Besides Posters<span
-          class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Seattle Civil Rights and Labor History Project</a></li>
-          <li><a href="#">Tenants Union of Washington State</a></li>
-        </ul>
-      </li>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li><a class="main" href="#"><span class="glyphicon glyphicon-shopping-cart"></span> </a></li>
-    </ul>
-  </div>
-  </div>
+    </div>
+    </div>
 </nav>
 
 
 <div class="container map">
-  <div class="row">
-    <div class="col-sm-6" id="mapContainer">
+    <div class="row">
+        <div class="col-sm-6" id="mapContainer">
+            <div id="demographic_legend">
+                <h2 class="demographic_legend_val">White % 0</h2>
+                <div id="demographic_legend_gradient"></div>
+                <h2 class="demographic_legend_val">100</h2>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <h1>Yelp Neighborhood Map 18″ x 24″</h1>
+            <p class="price">From: $22.00</p>
+
+            <p class="description">It’s no secret that Seattlites love their tech – decorate your love for your startup
+                and
+                love for your city with this poster. 18” x 24” typographic map of the neighborhoods within the city
+                limits of
+                Seattle. The letters or numbers of each neighborhood name are twisted and turned to fit inside the area
+                of the
+                neighborhood.</p>
+
+            <p class="s1">Because we care about impressing you, Dork Posters uses only the highest quality data. This
+                poster
+                is made with Grade A algorithmically generated content which offers a sharp and clean rendering,
+                saturated
+                stereotypes, and archival properties to be sure the projections won’t fade over time.</p>
+
+            <button id="cart_button" type="button" class="btn btn-default">
+                Add to cart
+            </button>
+            <h1 id="neighborhoodphrase">N/A</h1>
+            <h3 class="legendtitle">Best Match</h3>
+            <h1 id="neighborhoodname">N/A</h1>
+            <h3 class="legendtitle">Neighborhood Name</h3>
+            <h1 id="neighborhoodcategory">N/A</h1>
+            <h3 class="legendtitle">Category for Best Match</h3>
+            <h1 id="neighborhoodprice">N/A</h1>
+            <h3 class="legendtitle">Price Range for Best Match</h3>
+            <h1 id="neighborhoodreviewcount">N/A</h1>
+            <h3 class="legendtitle">Review Count for Best Match</h3>
+        </div>
     </div>
 
-    <div class="col-sm-6">
-      <h1>Yelp Neighborhood Map 18″ x 24″</h1>
-      <p class="price">From: $22.00</p>
+    <footer class="container-fluid text-center">
 
-      <p class="description">It’s no secret that Seattlites love their tech – decorate your love for your startup and
-        love for your city with this poster. 18” x 24” typographic map of the neighborhoods within the city limits of
-        Seattle. The letters or numbers of each neighborhood name are twisted and turned to fit inside the area of the
-        neighborhood.</p>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3">
+                </div>
 
-      <p class="s1">Because we care about impressing you, Dork Posters uses only the highest quality data. This poster
-        is made with Grade A algorithmically generated content which offers a sharp and clean rendering, saturated
-        stereotypes, and archival properties to be sure the projections won’t fade over time.</p>
 
-      <button id="cart_button" type="button" class="btn btn-default">
-        Add to cart
-      </button>
-      <h1 id="neighborhoodphrase">N/A</h1>
-      <h3 class="legendtitle">Best Match</h3>
-      <h1 id="neighborhoodname">N/A</h1>
-      <h3 class="legendtitle">Neighborhood Name</h3>
-      <h1 id="neighborhoodcategory">N/A</h1>
-      <h3 class="legendtitle">Category for Best Match</h3>
-      <h1 id="neighborhoodprice">N/A</h1>
-      <h3 class="legendtitle">Price Range for Best Match</h3>
-      <h1 id="neighborhoodreviewcount">N/A</h1>
-      <h3 class="legendtitle">Review Count for Best Match</h3>
-    </div>
-  </div>
+                <div class="col-sm-2">
+                    <p class="title">More Info</p>
+                    <hr/>
+                    <p>HOW IT’S MADE</p>
+                    <p> WHO IS ORK?</p>
+                    <p> ORDERING & SHIPPING</p>
+                    <p> RETURNS & EXCHANGES</p>
+                    <p> GIFT CERTIFICATE</p>
+                    <p> T’S & C’S</p>
+                    <p> PAY CUSTOM AMOUNT</p>
+                </div>
+                <div class="col-sm-2">
+                    <p class="title">Visit Our Flagship Shop</p>
+                    <hr/>
+                    Located at 2003 W Montrose in Chicago. Find Ork Posters’ maps, postcards and select T-shirts, as
+                    well as home
+                    goods, gifts and artwork from many other independent makers. Check it out at neighborlyshop.com.
+                </div>
 
-  <footer class="container-fluid text-center">
+                <div class="col-sm-2">
+                    <form class="form-inline">
+                        <p class="title">Keep in Touch!</p>
+                        <hr/>
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3">
+                        <input type="email" class="form-control" size="20" placeholder="Email Address">
+                        <br/>
+                        <br/>
+                        <button type="button" class="btn btn-danger">Subscribe</button>
+                    </form>
+                </div>
+                <div class="col-sm-3">
+                </div>
+            </div>
         </div>
 
-
-        <div class="col-sm-2">
-          <p class="title">More Info</p>
-          <hr/>
-          <p>HOW IT’S MADE</p>
-          <p> WHO IS ORK?</p>
-          <p> ORDERING & SHIPPING</p>
-          <p> RETURNS & EXCHANGES</p>
-          <p> GIFT CERTIFICATE</p>
-          <p> T’S & C’S</p>
-          <p> PAY CUSTOM AMOUNT</p>
-        </div>
-        <div class="col-sm-2">
-          <p class="title">Visit Our Flagship Shop</p>
-          <hr/>
-          Located at 2003 W Montrose in Chicago. Find Ork Posters’ maps, postcards and select T-shirts, as well as home
-          goods, gifts and artwork from many other independent makers. Check it out at neighborlyshop.com.
-        </div>
-
-        <div class="col-sm-2">
-          <form class="form-inline">
-            <p class="title">Keep in Touch!</p>
-            <hr/>
-
-            <input type="email" class="form-control" size="20" placeholder="Email Address">
-            <br/>
-            <br/>
-            <button type="button" class="btn btn-danger">Subscribe</button>
-          </form>
-        </div>
-        <div class="col-sm-3">
-        </div>
-      </div>
-    </div>
-
-  </footer>
+    </footer>
 
 </body>
 <!--<script src="yelp_dorkmap_bundle.js"></script>-->

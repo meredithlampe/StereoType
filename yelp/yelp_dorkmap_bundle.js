@@ -30936,38 +30936,6 @@ d3.json("json/build_map_config.json", function (error_config, config) {
         .attr("height", config.height)
         .attr("width", config.width);
 
-    /*
-     <pattern id="image" x="0" y="0" patternUnits="userSpaceOnUse" height="1" width="1">
-     <image x="0" y="0" xlink:href="url.png"></image>
-     </pattern>
-     */
-
-    //var defs = svg.append("defs");
-    //
-    ////debugger;
-    //
-    //var pattern = defs.append("pattern")
-    //    .attr("id", "overlay")
-    //    .attr("x", "0")
-    //    .attr("y", "0")
-    //    .attr("patternUnits", "userSpaceOnUse")
-    //    .attr("height", "1000")
-    //    .attr("width", "900");
-    //
-    //pattern.append("image")
-    //    .attr("x", "-160")
-    //    .attr("y", "125")
-    //    .attr("height", "900")
-    //    .attr("width", "800")
-    //    .attr("xlink:href", "img/background-test-v4.png");
-    //
-    //svg.append("rect")
-    //    .attr("x", "0")
-    //    .attr("y", "0")
-    //    .attr("fill", "url(#overlay")
-    //    .attr("height", "1000")
-    //    .attr("width", "900");
-
     // project map - mercator
     var projection = d3.geoMercator()
         .rotate(JSON.parse(config.rotate))
@@ -31023,8 +30991,115 @@ d3.json("json/build_map_config.json", function (error_config, config) {
         "Georgetown": ".70",
         "Rainier Valley": ".10",
         "Columbia City": ".42",
-        "Rainier Beach": ".25"
+        "Rainier Beach": ".25",
+        "Sand Point": ".7862",
+        "South Park": ".8590",
+        "Pinehurst": ".8429",
+        "Brighton": ".1484",
+
+        "Maple Leaf": ".7647",
+
+        "Sunset Hill": ".8982",
+
+        "Broadmoor": ".8568",
+
+        "Whittier Heights": ".8813",
+
+        "High Point": ".8045",
+
+        "View Ridge": ".8290",
+
+        "Matthews Beach": ".8336",
+
+        "Wedgwood": ".7970",
+
+        "South Lake Union": ".8020",
+
+        "First Hill": ".7195",
+
+        "Lower Queen Anne": ".8120",
+
+        "Eastlake": ".8522",
+
+        "Mount Baker": ".7747",
+
+        "Meadowbrook": ".6780",
+
+        "Admiral": ".8515",
+
+        "North College Park": ".7508",
+
+        "Atlantic": ".3637",
+
+        "Denny - Blaine": ".7747",
+
+        "Madison Valley": ".7676",
+
+        "Central District": ".5726",
+
+        "International District": ".7897",
+
+        "Industrial District": ".4975",
+
+        "University District": ".5726",
+
+        "Roosevelt": ".8202",
+
+        "Pioneer Square": ".4563",
+
+        "Portage Bay": ".8522",
+
+        "Roxhill": ".9049",
+
+        "North Delridge": ".8307",
+
+        "Highland Park": ".8594",
+
+        "Wallingford": ".8505",
+
+        "Hawthorne Hills": ".8165",
+
+        "Greenwood": ".8567",
+
+        "Leschi": ".7747",
+
+        "Riverview": ".5215",
+
+        "Montlake": ".8568",
+
+        "Green Lake": ".8760",
+
+        "Olympic Hills": ".6661",
+
+        "Ravenna": ".8429",
+
+        "Crown Hill": ".7716",
+
+        "Madrona": ".7747",
+
+        "Broadview": ".8771",
+
+        "Seward Park": ".5911",
+
+        "Olympic Manor": ".8965",
+
+        "South Delridge": ".5510",
+
+        "Cedar Park": ".5859",
+
+        "Victory Heights": ".6661",
+
+        "Phinney Ridge": ".8943",
+
+        "Belltown": ".7140",
+
+        "Bryant": ".8183",
+        "Westlake": ".960",
+        "Denny-Blaine": ".462"
     };
+
+    var curr_min_white_percentage = 1.0;
+    var curr_max_white_percentage = 0;
 
     //d3.json("json/demographic.json", function (error_demo, demographic) {
         d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
@@ -31050,9 +31125,11 @@ d3.json("json/build_map_config.json", function (error_config, config) {
                                 .attr("class", "neighborhoodOutline")
                                 .attr("id", function (d) {
                                     return "n_" + d.id
-                                }).style("fill", "gray")
+                                }).style("fill", "#E44540")
                                 .style("opacity", function(d) {
                                     if (demographic[d.properties.name]) {
+                                        curr_max_white_percentage = Math.max(curr_max_white_percentage, demographic[d.properties.name]);
+                                        curr_min_white_percentage = Math.min(curr_min_white_percentage, demographic[d.properties.name]);
                                         return demographic[d.properties.name];
                                     } else {
                                         console.log("no demographic data for " + d.properties.name);
@@ -31086,6 +31163,9 @@ d3.json("json/build_map_config.json", function (error_config, config) {
                                 })
                                 .on("mouseover", MapUtil.setLegend)
                                 .on("mouseout", MapUtil.resetLegend);
+
+                            // make legend
+
                         }
                     });
                 });

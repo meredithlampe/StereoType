@@ -29,7 +29,8 @@ html {
     stroke: #282828;
     stroke-width: 1px;
     stroke: black;
-    fill: white;
+    /*fill: none;*/
+    /*opacity: 0.3;*/
 }
 
 footer {
@@ -38,6 +39,7 @@ footer {
 
 .neighborhoodUnFocus {
     fill: white;
+    fill-opacity: 0.01;
 }
 
 .neighborhoodFocus {
@@ -94,14 +96,18 @@ footer {
 #neighborhoodname, #neighborhoodphrase,
 #neighborhoodcategory, #neighborhoodprice,
 #neighborhoodreviewcount {
-    visibility: hidden;
     font-size: 18pt;
     margin-bottom: 3pt;
     margin-top: 3pt;
 }
 
+#neighborhoodname {
+    visibility: hidden;
+}
+
 #neighborhoodphrase {
     font-size: 24pt;
+    visibility: hidden;
 }
 
 #name, #bestmatch,
