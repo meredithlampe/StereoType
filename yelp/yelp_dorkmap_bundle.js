@@ -30947,10 +30947,9 @@ d3.json("json/build_map_config.json", function (error_config, config) {
         .projection(projection);
 
 
-// make container for map
+    // make container for map
     neighborhoodGroup = svg.append("g")
         .attr('id', 'neighborhoodGroup');
-
 
     /*parses json, call back function selects all paths (none exist yet)
      and joins data (all neighborhoods) with each path. since there are no
