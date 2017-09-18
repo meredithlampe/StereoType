@@ -5,9 +5,10 @@
 const Dorkmap = require("../entry_shared.js");
 const TextToSVG = require('text-to-svg');
 const d3 = require('d3');
-const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
+const MAP_FONT = "../css/DIN-Condensed-Bold.ttf";
 var MapUtil = require("../js/MapUtil.js"); // relative from yelp and zillow files
 const topojson = require('topojson');
+
 function resetLegend(d, i) {
 
     // set entire legend to be invisible
@@ -44,6 +45,7 @@ function resetLegend(d, i) {
     // set scrolling top so that we don't scroll
     document.body.scrollTop = oldScrollTop;
 }
+
 function setLegend(d, i) {
 
     d3.select(".maplegend").style("visibility", "visible");
@@ -155,7 +157,7 @@ d3.json("json/build_map_config.json", function (error_config, config) {
         "Harbor Island": ".74",
         "West Seattle": ".85",
         "Alki": ".88",
-        "Delrid":".45",
+        "Delrid": ".45",
         "Fauntleroy": ".86",
         "Arbor Heights": ".85",
         "Georgetown": ".70",
@@ -272,73 +274,72 @@ d3.json("json/build_map_config.json", function (error_config, config) {
     var curr_max_white_percentage = 0;
 
     //d3.json("json/demographic.json", function (error_demo, demographic) {
-        d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
-            d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
-                d3.json("yelp_api/output.json", function (error_output, bestplaces) {
-                    TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
-                        if (error_neighborhoods || error_chars || error_output || error_font) {
-                            debugger;
-                            console.log("err");
-                        } else {
-                            topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
-                            //generate paths around each neighborhood
-                            var binding = neighborhoodGroup.selectAll(".neighborhood")
-                                .data(topoGeometries);
+    d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
+        d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
+            d3.json("yelp_api/output.json", function (error_output, bestplaces) {
+                if (error_neighborhoods || error_chars || error_output) {
+                    debugger;
+                    console.log("err");
+                } else {
+                    topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
+                    //generate paths around each neighborhood
+                    var binding = neighborhoodGroup.selectAll(".neighborhood")
+                        .data(topoGeometries);
 
-                            binding.enter()
-                                .append("g")
-                                .attr("neighborhoodBounds", path)
-                                .attr("class", "neighborhood")
-                                .append("path")
-                                .attr("d", path)
-                                .attr("class", "neighborhoodUnFocus")
-                                .attr("class", "neighborhoodOutline")
-                                .attr("id", function (d) {
-                                    return "n_" + d.id
-                                }).style("fill", "#E44540")
-                                .style("opacity", function(d) {
-                                    if (demographic[d.properties.name]) {
-                                        curr_max_white_percentage = Math.max(curr_max_white_percentage, demographic[d.properties.name]);
-                                        curr_min_white_percentage = Math.min(curr_min_white_percentage, demographic[d.properties.name]);
-                                        return demographic[d.properties.name];
-                                    } else {
-                                        console.log("no demographic data for " + d.properties.name);
-                                        return "0.0";
-                                }});
+                    binding.enter()
+                        .append("g")
+                        .attr("neighborhoodBounds", path)
+                        .attr("class", "neighborhood")
+                        .append("path")
+                        .attr("d", path)
+                        .attr("class", "neighborhoodUnFocus")
+                        .attr("class", "neighborhoodOutline")
+                        .attr("id", function (d) {
+                            return "n_" + d.id
+                        }).style("fill", "#E44540")
+                        .style("opacity", function (d) {
+                            if (demographic[d.properties.name]) {
+                                curr_max_white_percentage = Math.max(curr_max_white_percentage, demographic[d.properties.name]);
+                                curr_min_white_percentage = Math.min(curr_min_white_percentage, demographic[d.properties.name]);
+                                return demographic[d.properties.name];
+                            } else {
+                                console.log("no demographic data for " + d.properties.name);
+                                return "0.0";
+                            }
+                        });
 
-                            // fill text
-                            neighborhoodGroup.selectAll(".neighborhood")
-                                .each(function (d) {
-                                    // get chars for neighborhood from file
-                                    var chars_for_neighborhood = chars.result[d.properties.name];
-                                    for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
-                                        for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
-                                            d3.select(this).append("path")
-                                                .attr("d", chars_for_neighborhood[poly][i])
-                                                .classed("charSVGThing", true);
-                                        }
-                                    }
-                                })
-                                .attr("phrase", function (d) {
-                                    return bestplaces[d.properties.name].bestmatch;
-                                })
-                                .attr("categories", function (d) {
-                                    return JSON.stringify(bestplaces[d.properties.name].categories);
-                                })
-                                .attr("price", function (d) {
-                                    return bestplaces[d.properties.name].price;
-                                })
-                                .attr("reviewcount", function (d) {
-                                    return bestplaces[d.properties.name].review_count;
-                                })
-                                .on("mouseover", setLegend)
-                                .on("mouseout", resetLegend);
+                    // fill text
+                    neighborhoodGroup.selectAll(".neighborhood")
+                        .each(function (d) {
+                            // get chars for neighborhood from file
+                            var chars_for_neighborhood = chars.result[d.properties.name];
+                            for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
+                                for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
+                                    d3.select(this).append("path")
+                                        .attr("d", chars_for_neighborhood[poly][i])
+                                        .classed("charSVGThing", true);
+                                }
+                            }
+                        })
+                        .attr("phrase", function (d) {
+                            return bestplaces[d.properties.name].bestmatch;
+                        })
+                        .attr("categories", function (d) {
+                            return JSON.stringify(bestplaces[d.properties.name].categories);
+                        })
+                        .attr("price", function (d) {
+                            return bestplaces[d.properties.name].price;
+                        })
+                        .attr("reviewcount", function (d) {
+                            return bestplaces[d.properties.name].review_count;
+                        })
+                        .on("mouseover", setLegend)
+                        .on("mouseout", resetLegend);
 
-                            // make legend
+                    // make legend
 
-                        }
-                    });
-                });
+                }
+            });
             //});
         });
 

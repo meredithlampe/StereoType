@@ -1,0 +1,1 @@
+node build_map_zillow.js ../zillow/zillow_api/zillow_response_trimmed.json ../dorkmaps/zillow/build_map_output/neighborhood_chars.json ../dorkmaps/zillow/json/build_map_config_dorkmap.json ../zillow/json/zillow_neighborhoods.json
