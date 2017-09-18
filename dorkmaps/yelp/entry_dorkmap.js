@@ -124,6 +124,11 @@ d3.json("json/build_map_config.json", function (error_config, config) {
     var neighborhoodGroup = svg.append("g")
         .attr('id', 'neighborhoodGroup');
 
+    d3.select("#demographic_button")
+        .on("click", function () {
+            console.log("change filter vis");
+        });
+
     /*parses json, call back function selects all paths (none exist yet)
      and joins data (all neighborhoods) with each path. since there are no
      paths, all data points are waiting in 'update.enter'. calling

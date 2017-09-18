@@ -431,3 +431,7 @@ h3 {
     height: 20px;
     display: inline-block;
 }
+
+#demographic_button {
+    margin-top: 15pt;
+}
