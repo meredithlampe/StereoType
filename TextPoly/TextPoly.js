@@ -25,6 +25,7 @@ module.exports = {
 
             if (error_font) {
                 console.log(error_font);
+
             }
 
             // pad polygon here

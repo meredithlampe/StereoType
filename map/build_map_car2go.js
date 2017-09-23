@@ -106,7 +106,7 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
 
                     var topo = topoGeometries[i];
 
-                    if (!bestplaces[topo.properties.name] || !bestplaces[topo.properties.name].bestmatch) {
+                    if (!bestplaces[topo.properties.name]) {
                         continue;
                     }
 
@@ -126,7 +126,7 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
 
                     // divide phrase into number of polygons that result from
                     // the padding transform
-                    var nameNoSpaces = TextUtil.removeSpaces(bestplaces[topo.properties.name].bestmatch);
+                    var nameNoSpaces = TextUtil.removeSpaces(bestplaces[topo.properties.name]);
                     var slicedNameArray = TextUtil.slicePhrase(solution.length, nameNoSpaces);
 
                     shapes_left += solution.length - 1;
@@ -161,16 +161,18 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                                     result[shape_info.name][shape_info.index] = chars;
 
                                     // if we're at the end of all of our for-loops, write to file
-                                    if (shapes_left == 0) {
+                                    // if (shapes_left == 0) {
                                         // write result out to file
                                         jsonfile.writeFileSync(outputfile, output_container);
-                                    }
+                                    // }
                                 },
                                 shape_info // rando json to use in callback
                             );
                         }
                     }
                 }
+
+                console.log("finished with " + shapes_left + " left...");
 
         });
     });

@@ -2,7 +2,7 @@
  * Created by meredith on 2/20/16.
  */
 
-require("../entry_shared.js");
+const Dorkmap = require("../entry_shared.js");
 const TextToSVG = require('text-to-svg');
 const d3 = require('d3');
 const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
@@ -47,10 +47,12 @@ function setLegend(d, i) {
     chars.style("fill", "white");
 
     var pathinpoly = poly.select(".neighborhoodOutline");
-
-    pathinpoly.classed("neighborhoodUnFocus", false);
-    pathinpoly.classed("neighborhoodFocus", true);
-
+    if (d3.select("#demographic_legend").style("visibility") == "hidden") {
+        // legend is hidden, which means that map is not colored
+        pathinpoly.style("fill", "black");
+    }
+    // pathinpoly.classed("neighborhoodUnFocus", false);
+    // pathinpoly.classed("neighborhoodFocus", true);
 
     // set scrolling top so that we don't scroll
     document.body.scrollTop = oldScrollTop;
@@ -83,8 +85,12 @@ function resetLegend(d, i) {
     d3.select("#neighborhoodreviewcount");
 
     var pathinpoly = poly.select(".neighborhoodOutline");
-    pathinpoly.classed("neighborhoodFocus", false);
-    pathinpoly.classed("neighborhoodUnFocus", true);
+    if (d3.select("#demographic_legend").style("visibility") == "hidden") {
+        // legend is hidden, which means that map is not colored
+        pathinpoly.style("fill", "white");
+    }
+    // pathinpoly.classed("neighborhoodFocus", false);
+    // pathinpoly.classed("neighborhoodUnFocus", true);
 
     //var chars = poly.selectAll(".charSVGThing").attr("stroke", "black");
     var chars = poly.selectAll(".charSVGThing").style("fill", "black");
@@ -269,35 +275,6 @@ d3.json("json/build_map_config_dorkmap.json", function (error_config, config) {
         .attr("height", config.height)
         .attr("width", config.width);
 
-    // var defs = svg.append("defs");
-    //
-    // //debugger;
-    //
-    // var pattern = defs.append("pattern")
-    //     .attr("id", "overlay")
-    //     .attr("x", "0")
-    //     .attr("y", "0")
-    //     .attr("patternUnits", "userSpaceOnUse")
-    //     .attr("height", "1000")
-    //     .attr("width", "900");
-    //
-    // pattern.append("image")
-    //     .attr("x", "-270")
-    //     .attr("y", "23")
-    //     .attr("height", "1160")
-    //     .attr("width", "1100")
-    //     .attr("xlink:href", "img/demo0.png");
-    //
-    // svg.append("rect")
-    //     .attr("id", "demo_image")
-    //     .attr("x", "0")
-    //     .attr("y", "0")
-    //     .attr("z", "-100")
-    //     .attr("fill", "url(#overlay")
-    //     .attr("height", "1000")
-    //     .attr("width", "900")
-    //     .attr("visibility", "hidden");
-
     // project map - mercator
     var projection = d3.geoMercator()
         .rotate(JSON.parse(config.rotate))
@@ -313,7 +290,7 @@ d3.json("json/build_map_config_dorkmap.json", function (error_config, config) {
 
     d3.select("#demographic_button")
         .on("click", function () {
-            console.log("change filter vis");
+            Dorkmap.toggleDemographicVisibility("#1491ff");
         });
 });
 
@@ -354,7 +331,6 @@ d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_
                         .attr("id", function (d) {
                             return "n_" + d.id
                         })
-                        .style("fill", "#1491ff")
                         .style("opacity", function (d) {
                             if (demographic[d.properties.Name]) {
                                 return demographic[d.properties.Name];

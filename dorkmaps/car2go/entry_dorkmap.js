@@ -26,15 +26,6 @@ function resetLegend(d, i) {
     phraseBox.style("visibility", "hidden");
     phraseBox.html("Hover to see zindex of neighborhood.");
 
-    // set categories
-    d3.select("#neighborhoodcategory").style("visibility", "hidden");
-
-    // set price range
-    d3.select("#neighborhoodprice").style("visibility", "hidden");
-
-    // set number of ratings
-    d3.select("#neighborhoodreviewcount").style("visibility", "hidden");
-
     var pathinpoly = poly.select(".neighborhoodOutline");
     if (d3.select("#demographic_legend").style("visibility") == "hidden") {
         // legend is hidden, which means that map is not colored
@@ -75,36 +66,13 @@ function setLegend(d, i) {
     var phraseBox = d3.select("#neighborhoodphrase");
     var phrase = poly.attr("phrase");
 
-    if (phrase == "") {
+    if (!phrase || phrase == "") {
         phraseBox.style("visibility", "hidden");
         phraseBox.html("filler");
     } else {
         phraseBox.html(phrase);
         phraseBox.style("visibility", "visible");
     }
-
-    // set type
-    var categories = JSON.parse(poly.attr("categories"));
-    var categoryBox = d3.select("#neighborhoodcategory");
-    if (categories != null) {
-        categoryBox.html(categories[0].title).style("visibility", "visible");
-    } else {
-        categoryBox.html("N/A").style("visibility", "visible");
-    }
-
-    // set price range
-    var price = poly.attr("price");
-    if (!price) {
-        price = "Free";
-    }
-    d3.select("#neighborhoodprice")
-        .html(price)
-        .style("visibility", "visible");
-
-    // set number of ratings
-    d3.select("#neighborhoodreviewcount")
-        .html(poly.attr("reviewcount"))
-        .style("visibility", "visible");
 
     var chars = poly.selectAll(".charSVGThing");
     chars.style("fill", "white");
@@ -138,7 +106,7 @@ d3.json("json/build_map_config.json", function (error_config, config) {
 
     d3.select("#demographic_button")
         .on("click", function () {
-            Dorkmap.toggleDemographicVisibility("#E44540");
+            Dorkmap.toggleDemographicVisibility("#00adf0");
         });
 
     /*parses json, call back function selects all paths (none exist yet)
@@ -287,13 +255,17 @@ d3.json("json/build_map_config.json", function (error_config, config) {
         "Denny-Blaine": ".462"
     };
 
+    var car2go_cache = {
+
+    };
+
     var curr_min_white_percentage = 1.0;
     var curr_max_white_percentage = 0;
 
     //d3.json("json/demographic.json", function (error_demo, demographic) {
     d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
         d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
-            d3.json("yelp_api/output.json", function (error_output, bestplaces) {
+            d3.json("api/output.json", function (error_output, car2go) {
                 if (error_neighborhoods || error_chars || error_output) {
                     debugger;
                     console.log("err");
@@ -329,25 +301,18 @@ d3.json("json/build_map_config.json", function (error_config, config) {
                         .each(function (d) {
                             // get chars for neighborhood from file
                             var chars_for_neighborhood = chars.result[d.properties.name];
-                            for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
-                                for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
-                                    d3.select(this).append("path")
-                                        .attr("d", chars_for_neighborhood[poly][i])
-                                        .classed("charSVGThing", true);
+                            if (chars_for_neighborhood != null) {
+                                for (var poly = 0; poly < chars_for_neighborhood.length; poly++) {
+                                    for (var i = 0; i < chars_for_neighborhood[poly].length; i++) {
+                                        d3.select(this).append("path")
+                                            .attr("d", chars_for_neighborhood[poly][i])
+                                            .classed("charSVGThing", true);
+                                    }
                                 }
                             }
                         })
                         .attr("phrase", function (d) {
-                            return bestplaces[d.properties.name].bestmatch;
-                        })
-                        .attr("categories", function (d) {
-                            return JSON.stringify(bestplaces[d.properties.name].categories);
-                        })
-                        .attr("price", function (d) {
-                            return bestplaces[d.properties.name].price;
-                        })
-                        .attr("reviewcount", function (d) {
-                            return bestplaces[d.properties.name].review_count;
+                            return car2go[d.properties.name];
                         })
                         .on("mouseover", setLegend)
                         .on("mouseout", resetLegend);
