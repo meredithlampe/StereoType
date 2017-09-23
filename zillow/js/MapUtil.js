@@ -15,7 +15,7 @@ export function setMapOpacityStrong() {
 
 export function setLegend(d, i) {
 
-    //d3.select(".maplegend").style("visibility", "visible");
+    d3.select(".maplegend").style("visibility", "visible");
 
     //debugger;
 
@@ -46,16 +46,13 @@ export function setLegend(d, i) {
         phraseBox.style("visibility", "visible");
     }
 
-    //var chars = poly.selectAll(".charSVGThing").attr("stroke", "white");
     var chars = poly.selectAll(".charSVGThing");
     chars.style("fill", "white");
 
-    var demo_image_visibility = d3.select("#demo_image").attr("visibility");
     var pathinpoly = poly.select(".neighborhoodOutline");
 
     pathinpoly.classed("neighborhoodUnFocus", false);
     pathinpoly.classed("neighborhoodFocus", true);
-
 
     // set scrolling top so that we don't scroll
     document.body.scrollTop = oldScrollTop;
@@ -64,7 +61,7 @@ export function setLegend(d, i) {
 export function resetLegend(d, i) {
 
     // set entire legend to be invisible
-    //d3.select(".maplegend").style("visibility", "hidden");
+    d3.select(".maplegend").style("visibility", "hidden");
 
     var poly = d3.select(this);
 
@@ -77,15 +74,6 @@ export function resetLegend(d, i) {
     var phraseBox = d3.select("#neighborhoodphrase");
     phraseBox.style("visibility", "hidden");
     phraseBox.html("Hover to see zindex of neighborhood.");
-
-    // set categories
-    d3.select("#neighborhoodcategory");
-
-    // set price range
-    d3.select("#neighborhoodprice");
-
-    // set number of ratings
-    d3.select("#neighborhoodreviewcount");
 
     var pathinpoly = poly.select(".neighborhoodOutline");
     pathinpoly.classed("neighborhoodFocus", false);

@@ -7,12 +7,6 @@ const TextToSVG = require('text-to-svg');
 const d3 = require('d3');
 const topojson = require('topojson');
 
-//var width = 900;
-//var height = 1000;
-//var rotate = [122, 0, 0];
-//var scale = 149000;
-//var offset = [1141.329833984375 - 450 + width / 2, 141700.609375];
-
 const MAP_FONT = "./css/DIN-Condensed-Bold.ttf";
 var path;
 var neighborhoodGroup;

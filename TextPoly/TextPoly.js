@@ -7,12 +7,23 @@ const largestRect = require('./largestRect.js');
 const point_at_length = require('point-at-length');
 const TextToSVG = require('text-to-svg');
 // mock browser
-// text to svg
+// Clipper (to move pad_polygon in here)
 
 // constants to control alg
+
+/*
+Creating grid to overlay on polygon
+ */
 var HORIZONTAL_SLICE_CAP = 10; // max number of horizontal rows we'll attempt to use per shape
-var CHAR_ASPECT_RATIO = .5;
-var TEXT_SIZE_MULTIPLIER = 1;
+
+/*
+Fitting letter into grid cell
+ */
+const FONT_SIZE_START = 5; // start w size 5 font when we iteratively increase size of chars
+var CHAR_ASPECT_RATIO = .5; // what is our ideal aspect ratio for grid cells
+
+// how many points will we check on the outside of each character to detect when it has crossed boundary of grid cell
+const NUM_HIT_TEST_POINTS = 20;
 
 module.exports = {
 
@@ -28,9 +39,9 @@ module.exports = {
 
             }
 
-            // pad polygon here
+            // pad polygon here - need to import Clipper
 
-            //get height and width of polygon
+            //get height and width of polygon - use as boundaries of grid
             var dimensions = module.exports.getShapeDimensions(pathCoords3d);
 
             // get number of horizontal slices we should be using for optimal letter fitting
@@ -40,7 +51,7 @@ module.exports = {
 
             // get individual grid cells that each letter will be fit into
             // TODO: sometimes this doesn't return enough grid cells!
-            var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, svg, phrase, padding);
+            var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, svg, phrase);
             if (gridUnits.length != phrase.length) {
                 console.log("number of cells != phrase length for phrase: " + phrase);
             }
@@ -49,7 +60,7 @@ module.exports = {
 
             // for each unit of the grid, fit a letter into it
             for (var i = 0; i < gridUnits.length; i++) {
-                chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, padding, textToSVG);
+                chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, textToSVG);
             }
 
             callback(chars, shape_info);
@@ -393,7 +404,7 @@ module.exports = {
 
     //same as test grid, but doesn't loop through a bunch of different numbers
     //of horizontal levels...instead, uses known value
-    createGrid: function (pathCoords3d, dimensions, numLevels, svg, phrase, padding) {
+    createGrid: function (pathCoords3d, dimensions, numLevels, svg, phrase) {
 
         //to be filled with rectangles that make up grid units
         var grid = [];
@@ -403,7 +414,8 @@ module.exports = {
 
         if (slices != null) {
 
-            var phrasePieces = module.exports.slicePhrase(slices.length * pathCoords3d.length, phrase, padding);
+            // split phrase into chars for each row
+            var phrasePieces = module.exports.slicePhrase(slices.length * pathCoords3d.length, phrase);
 
             //assert that everything is still working
             if (slices.length != numLevels || numLevels != phrasePieces.length) {
@@ -526,37 +538,43 @@ module.exports = {
         return twoDArray;
     },
 
-
-    getCharacterAsSVG: function (char, gridUnit, svg, tag, padding,
-                                 textToSVG) {
+    tryUprightAndSidewaysCharacter: function (char, tag, svg, gridUnit, textToSVG) {
 
         var startPathX,
             startPathY,
             widthOfSlice,
             heightOfSlice;
 
-        if (gridUnit[0].angle == 0 || gridUnit[0].angle == 180) {
-            startPathX = gridUnit[0].cx - (gridUnit[0].width / 2);
-            startPathY = gridUnit[0].cy + (gridUnit[0].height / 2);
-            widthOfSlice = gridUnit[0].width;
-            heightOfSlice = gridUnit[0].height;
-        } else { //rectangle angle == 90 || 270
-            startPathX = gridUnit[0].cx - (gridUnit[0].height / 2);
-            startPathY = gridUnit[0].cy + (gridUnit[0].width / 2);
-            widthOfSlice = gridUnit[0].height;
-            heightOfSlice = gridUnit[0].width;
+        var getCharUpright;
+        var getCharSideways;
+
+        // startPathX = gridUnit[0].cx - (gridUnit[0].width / 2);
+        // startPathY = gridUnit[0].cy + (gridUnit[0].height / 2);
+        // widthOfSlice = gridUnit[0].width;
+        // heightOfSlice = gridUnit[0].height;
+        // getCharSideways = module.exports.getChar(startPathX, startPathY, char, tag, svg, gridUnit, textToSVG);
+
+
+        //TODO: implement sideways characters
+
+        startPathX = gridUnit[0].cx - (gridUnit[0].height / 2);
+        startPathY = gridUnit[0].cy + (gridUnit[0].width / 2);
+        widthOfSlice = gridUnit[0].height;
+        heightOfSlice = gridUnit[0].width;
+        getCharUpright = module.exports.getChar(startPathX, startPathY, char, tag, svg, gridUnit, textToSVG);
+
+        return getCharUpright.path;
+    },
+
+    getCharacterAsSVG:
+
+        function (char, gridUnit, svg, tag, textToSVG) {
+
+            return module.exports.tryUprightAndSidewaysCharacter(char, tag, svg, gridUnit, textToSVG);
+
         }
 
-        //apply padding
-        var paddingScaledWidth = padding * widthOfSlice;
-        var paddingScaledHeight = padding * heightOfSlice;
-        startPathX += paddingScaledWidth;
-        startPathY -= paddingScaledHeight;
-
-        return module.exports.getChar(startPathX, startPathY, char,
-            tag, svg, TEXT_SIZE_MULTIPLIER, gridUnit, textToSVG);
-
-    },
+    ,
 
     estimateError: function (currPoly, neighborhoodGroup, CHAR_ASPECT_RATIO) {
         var twoDPath = module.exports.oneDToTwoD(currPoly);
@@ -575,7 +593,8 @@ module.exports = {
         //remove this slice.
         vertSlicePath.remove();
         return horLevelError;
-    },
+    }
+    ,
 
 
     getDiffAspectRatio: function (twoDPath, CHAR_ASPECT_RATIO) {
@@ -593,7 +612,8 @@ module.exports = {
             horLevelError = Math.abs(inscribedAspectRatio - CHAR_ASPECT_RATIO);
         }
         return horLevelError;
-    },
+    }
+    ,
 
 
     /*converts given 2d array of form:
@@ -620,82 +640,90 @@ module.exports = {
         pathString += 'Z';
 
         return pathString;
-    },
+    }
+    ,
 
     getChar: function (startPathX, startPathY,
-                       phrase, k, svg, TEXT_SIZE_MULTIPLIER,
-                       rectangle, textToSVG) {
+                       phrase, k, svg, rectangle,
+                       textToSVG) {
 
-        var textSize = 5;
+        // viable anchors: bottom, left, middle, baseline
 
-        var defaultOptions = {
+        const ANCHOR_OPTIONS = ["bottom", "left", "middle", "baseline"];
+
+        var options = {
             "x": startPathX,
             "y": startPathY,
-            "fontSize": textSize
+            "anchor": ANCHOR_OPTIONS[0],
+            "fontSize": FONT_SIZE_START
         };
+        var bestPath = textToSVG.getD(phrase.toUpperCase(), options);
+        var bestFontSize = FONT_SIZE_START;
 
-        // just use this one for now
-        var bestPath = textToSVG.getD(phrase.toUpperCase(), defaultOptions);
-        var charToBig = false;
+        // loop through all anchors that we can pass to text-to-svg
+        for (var i = 0; i < ANCHOR_OPTIONS.length; i++) {
 
-        var whileLoopCount = 0;
-        // canvas for trying out char sizes - who even knows if these are the right dimensions
-        while (!charToBig) {
-            whileLoopCount++;
+            options.anchor = ANCHOR_OPTIONS[i];
+            options.fontSize = FONT_SIZE_START;
 
-            // if char is normal,
-            // convert text to svg
-            var options = {
-                "x": startPathX,
-                "y": startPathY,
-                "fontSize": textSize
-            };
+            var charToBig = false;
+            var bestPathForAnchor = textToSVG.getD(phrase.toUpperCase(), options);
 
-            const charPath = textToSVG.getD(phrase.toUpperCase(), options);
-            var countOutOfBounds = 0; // count num points found to be outside of the containing polygon
-            var stopIterating = false;
-            //var charPaperPath = paper.path(charPath);
-            var numHitTestPoints = 20;
-            //var totalLength = charPaperPath.getTotalLength();
-            var point_at_length_instance = point_at_length(charPath);
-            var totalLength = point_at_length_instance.length();
-            var lengthIncrement = totalLength * 1.0 / numHitTestPoints;
+            var whileLoopCount = 0;
 
-            // check coords of char path, make sure they are inside of polygon
-            for (var curr = 0; curr < numHitTestPoints; curr++) {
-                //var point = charPaperPath.getPointAtLength(lengthIncrement * curr);
-                var point = point_at_length_instance.at(lengthIncrement * curr);
+            // canvas for trying out char sizes - who even knows if these are the right dimensions
+            while (!charToBig) {
+                whileLoopCount++;
 
-                if (!point) {
-                    console.log("found undefined point in appendChar");
-                }
+                // get character as SVG path
+                const charPath = textToSVG.getD(phrase.toUpperCase(), options);
 
-                // is point inside of polygon?
-                //if (!point || !polyk.ContainsPoint(rectangle.polygon, point.x, point.y)) {
-                if (!point || !PolyK.ContainsPoint(rectangle.polygon, point[0], point[1])) {
+                // count num points found to be outside of the containing polygon
+                var countOutOfBounds = 0;
+
+                // flag
+                var stopIterating = false;
+
+                var point_at_length_instance = point_at_length(charPath);
+                var totalLength = point_at_length_instance.length();
+                var lengthIncrement = totalLength * 1.0 / NUM_HIT_TEST_POINTS;
+
+                // check points along char path, make sure they are inside of polygon
+                for (var curr = 0; curr < NUM_HIT_TEST_POINTS; curr++) {
+                    var point = point_at_length_instance.at(lengthIncrement * curr);
+
                     if (!point) {
-                        console.log("point is null");
+                        console.log("found undefined point in appendChar");
                     }
-                    countOutOfBounds++;
-                    if (countOutOfBounds > 2) {
-                        stopIterating = true;
-                        break;
+
+                    // is point inside of polygon?
+                    if (!PolyK.ContainsPoint(rectangle.polygon, point[0], point[1])) {
+                        countOutOfBounds++;
+                        if (countOutOfBounds > 2) {
+                            stopIterating = true;
+                            break;
+                        }
                     }
                 }
+
+                if (!stopIterating) {
+                    bestPathForAnchor = charPath;
+                    options.fontSize += 1;
+                } else {
+                    charToBig = true;
+                }
+
             }
 
-            if (!stopIterating) {
-                bestPath = charPath;
-                textSize += 1;
-            } else {
-                charToBig = true;
+            if (options.fontSize > bestFontSize) {
+                // update overall best path
+                bestPath = bestPathForAnchor;
+                bestFontSize = options.fontSize;
             }
-
         }
 
-        //console.log("while loop executed " + whileLoopCount + " times");
-
-        return bestPath;
+        return {path: bestPath, fontSize: bestFontSize};
     }
 
-};
+}
+;

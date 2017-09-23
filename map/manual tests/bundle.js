@@ -24432,7 +24432,7 @@ module.exports = {
 
             // get individual grid cells that each letter will be fit into
             // TODO: sometimes this doesn't return enough grid cells!
-            var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, svg, phrase, padding);
+            var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, svg, phrase);
             if (gridUnits.length != phrase.length) {
                 console.log("number of cells != phrase length for phrase: " + phrase);
             }
@@ -24441,7 +24441,7 @@ module.exports = {
 
             // for each unit of the grid, fit a letter into it
             for (var i = 0; i < gridUnits.length; i++) {
-                chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, padding, textToSVG);
+                chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, textToSVG);
             }
 
             callback(chars, shape_info);
@@ -24945,8 +24945,7 @@ module.exports = {
         startPathX += paddingScaledWidth;
         startPathY -= paddingScaledHeight;
 
-        return module.exports.getChar(startPathX, startPathY, char,
-            tag, svg, TEXT_SIZE_MULTIPLIER, gridUnit, textToSVG);
+        return module.exports.getChar(startPathX, startPathY, char, tag, svg, gridUnit, textToSVG);
 
     },
 
