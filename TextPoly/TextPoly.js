@@ -24,6 +24,7 @@ var CHAR_ASPECT_RATIO = .5; // what is our ideal aspect ratio for grid cells
 
 // how many points will we check on the outside of each character to detect when it has crossed boundary of grid cell
 const NUM_HIT_TEST_POINTS = 20;
+const NUM_OVERLAPPING_POINTS = 1; // how many points on character are allowed to overlap w bounding grid cell
 
 module.exports = {
 
@@ -699,7 +700,7 @@ module.exports = {
                     // is point inside of polygon?
                     if (!PolyK.ContainsPoint(rectangle.polygon, point[0], point[1])) {
                         countOutOfBounds++;
-                        if (countOutOfBounds > 2) {
+                        if (countOutOfBounds > NUM_OVERLAPPING_POINTS) {
                             stopIterating = true;
                             break;
                         }
