@@ -4,6 +4,7 @@
 
 const Dorkmap = require("../entry_shared.js");
 const d3 = require('d3');
+const topojson = require('topojson');
 
 function resetLegend(d, i) {
 
@@ -84,4 +85,19 @@ function setLegend(d, i) {
     document.body.scrollTop = oldScrollTop;
 }
 
-Dorkmap.appendMap(setLegend, resetLegend);
+function attachAPIOutputToElements(elem, d, api_output) {
+    d3.select(elem)
+        .attr("phrase", function (d) {
+            return api_output[d.properties.name];
+        });
+}
+
+function getTopoGeometries(topology) {
+    return topojson.feature(topology, topology.objects.neighborhoods).features;
+}
+
+Dorkmap.appendMap(setLegend,
+    resetLegend,
+    attachAPIOutputToElements,
+    getTopoGeometries,
+    "#00adf0");

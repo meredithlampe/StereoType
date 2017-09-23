@@ -139,10 +139,37 @@ const demographic = {
 
     "Bryant": ".8183",
     "Westlake": ".960",
-    "Denny-Blaine": ".462"
+    "Denny-Blaine": ".462",
+    "Minor": ".826",
+    "North Beacon Hill": ".451",
+    "South Beacon Hill": ".530",
+    "Uptown": ".918",
+    "Fairmount Park": ".960",
+    "Mt. Baker": ".538",
+    "Holly Park": ".626",
+    "East Queen Anne": ".974",
+    "Denny Triangle": ".918",
+    "Central": ".462",
+    "Waterfront": ".761",
+    "Junction": ".983",
+    "Rainier View": ".981",
+    "Dunlap": ".800",
+    "Lakewood": ".658",
+    "Yesler Terrace": ".729",
+    "West Queen Anne": ".960",
+    "Garfield": ".140",
+    "Judkins Park": ".451",
+    "Jackson Place": ".140",
+    "Little Saigon": ".382",
+    "Seaview": ".981",
+    "North Queen Anne": ".974",
+    "Woodland": ".975",
+    "West Woodland": ".967",
+    "Gatewood": ".982",
+    "Hillman City": ".670",
+    "Genesee": ".976"
 };
-
-export function appendMapSVG(config) {
+function appendMapSVG(config) {
     return d3.select("#mapContainer")
         .append("svg")
         .attr("id", "mapSVG")
@@ -150,7 +177,7 @@ export function appendMapSVG(config) {
         .attr("width", config.width);
 }
 
-export function buildProjection(config) {
+function buildProjection(config) {
     var projection = d3.geoMercator()
         .rotate(JSON.parse(config.rotate))
         .scale(config.scale)
@@ -159,7 +186,7 @@ export function buildProjection(config) {
     return projection;
 }
 
-export function toggleDemographicVisibility(fill_hex) {
+function toggleDemographicVisibility(fill_hex) {
     var legend = d3.select("#demographic_legend");
     if (legend.style("visibility") == "hidden") {
         // make visible
@@ -177,7 +204,12 @@ export function toggleDemographicVisibility(fill_hex) {
     }
 }
 
-export function appendMap(onMousoverNeighborhood, onMouseLeaveNeighborhood) {
+export function appendMap(
+    onMousoverNeighborhood,
+    onMouseLeaveNeighborhood,
+    perNeighborhoodCallback,
+    getTopoGeometries,
+    demographic_fill_hex) {
 
     d3.json("json/build_map_config.json", function (error_config, config) {
 
@@ -196,7 +228,7 @@ export function appendMap(onMousoverNeighborhood, onMouseLeaveNeighborhood) {
 
         d3.select("#demographic_button")
             .on("click", function () {
-                module.exports.toggleDemographicVisibility("#00adf0");
+                toggleDemographicVisibility(demographic_fill_hex);
             });
 
         /*parses json, call back function selects all paths (none exist yet)
@@ -217,7 +249,7 @@ export function appendMap(onMousoverNeighborhood, onMouseLeaveNeighborhood) {
                         debugger;
                         console.log("err");
                     } else {
-                        topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
+                        topoGeometries = getTopoGeometries(topology);
                         //generate paths around each neighborhood
                         var binding = neighborhoodGroup.selectAll(".neighborhood")
                             .data(topoGeometries);
@@ -257,9 +289,11 @@ export function appendMap(onMousoverNeighborhood, onMouseLeaveNeighborhood) {
                                         }
                                     }
                                 }
-                            })
-                            .attr("phrase", function (d) {
-                                return api_output[d.properties.name];
+
+                                // callback defined by class for specific api,
+                                // usually to attach api output to dom elements
+                                // to be used in mouse events
+                                perNeighborhoodCallback(this, d, api_output);
                             })
                             .on("mouseover", onMousoverNeighborhood)
                             .on("mouseout", onMouseLeaveNeighborhood);

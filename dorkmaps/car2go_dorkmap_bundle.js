@@ -10003,9 +10003,6 @@ var buffer = new ArrayBuffer(16),
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(module) {/* harmony export (immutable) */ __webpack_exports__["appendMapSVG"] = appendMapSVG;
-/* harmony export (immutable) */ __webpack_exports__["buildProjection"] = buildProjection;
-/* harmony export (immutable) */ __webpack_exports__["toggleDemographicVisibility"] = toggleDemographicVisibility;
 /* harmony export (immutable) */ __webpack_exports__["appendMap"] = appendMap;
 const d3 = __webpack_require__(55);
 const topojson = __webpack_require__(519);
@@ -10148,9 +10145,36 @@ const demographic = {
 
     "Bryant": ".8183",
     "Westlake": ".960",
-    "Denny-Blaine": ".462"
+    "Denny-Blaine": ".462",
+    "Minor": ".826",
+    "North Beacon Hill": ".451",
+    "South Beacon Hill": ".530",
+    "Uptown": ".918",
+    "Fairmount Park": ".960",
+    "Mt. Baker": ".538",
+    "Holly Park": ".626",
+    "East Queen Anne": ".974",
+    "Denny Triangle": ".918",
+    "Central": ".462",
+    "Waterfront": ".761",
+    "Junction": ".983",
+    "Rainier View": ".981",
+    "Dunlap": ".800",
+    "Lakewood": ".658",
+    "Yesler Terrace": ".729",
+    "West Queen Anne": ".960",
+    "Garfield": ".140",
+    "Judkins Park": ".451",
+    "Jackson Place": ".140",
+    "Little Saigon": ".382",
+    "Seaview": ".981",
+    "North Queen Anne": ".974",
+    "Woodland": ".975",
+    "West Woodland": ".967",
+    "Gatewood": ".982",
+    "Hillman City": ".670",
+    "Genesee": ".976"
 };
-
 function appendMapSVG(config) {
     return d3.select("#mapContainer")
         .append("svg")
@@ -10186,7 +10210,12 @@ function toggleDemographicVisibility(fill_hex) {
     }
 }
 
-function appendMap(onMousoverNeighborhood, onMouseLeaveNeighborhood) {
+function appendMap(
+    onMousoverNeighborhood,
+    onMouseLeaveNeighborhood,
+    perNeighborhoodCallback,
+    getTopoGeometries,
+    demographic_fill_hex) {
 
     d3.json("json/build_map_config.json", function (error_config, config) {
 
@@ -10205,7 +10234,7 @@ function appendMap(onMousoverNeighborhood, onMouseLeaveNeighborhood) {
 
         d3.select("#demographic_button")
             .on("click", function () {
-                module.exports.toggleDemographicVisibility("#00adf0");
+                toggleDemographicVisibility(demographic_fill_hex);
             });
 
         /*parses json, call back function selects all paths (none exist yet)
@@ -10226,7 +10255,7 @@ function appendMap(onMousoverNeighborhood, onMouseLeaveNeighborhood) {
                         debugger;
                         console.log("err");
                     } else {
-                        topoGeometries = topojson.feature(topology, topology.objects.neighborhoods).features;
+                        topoGeometries = getTopoGeometries(topology);
                         //generate paths around each neighborhood
                         var binding = neighborhoodGroup.selectAll(".neighborhood")
                             .data(topoGeometries);
@@ -10266,9 +10295,11 @@ function appendMap(onMousoverNeighborhood, onMouseLeaveNeighborhood) {
                                         }
                                     }
                                 }
-                            })
-                            .attr("phrase", function (d) {
-                                return api_output[d.properties.name];
+
+                                // callback defined by class for specific api,
+                                // usually to attach api output to dom elements
+                                // to be used in mouse events
+                                perNeighborhoodCallback(this, d, api_output);
                             })
                             .on("mouseover", onMousoverNeighborhood)
                             .on("mouseout", onMouseLeaveNeighborhood);
@@ -10285,7 +10316,6 @@ function appendMap(onMousoverNeighborhood, onMouseLeaveNeighborhood) {
 
 }
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(549)(module)))
 
 /***/ }),
 /* 209 */,
@@ -25220,6 +25250,7 @@ function sphericalTriangleArea(t) {
 
 const Dorkmap = __webpack_require__(208);
 const d3 = __webpack_require__(55);
+const topojson = __webpack_require__(519);
 
 function resetLegend(d, i) {
 
@@ -25300,37 +25331,22 @@ function setLegend(d, i) {
     document.body.scrollTop = oldScrollTop;
 }
 
-Dorkmap.appendMap(setLegend, resetLegend);
+function attachAPIOutputToElements(elem, d, api_output) {
+    d3.select(elem)
+        .attr("phrase", function (d) {
+            return api_output[d.properties.name];
+        });
+}
 
+function getTopoGeometries(topology) {
+    return topojson.feature(topology, topology.objects.neighborhoods).features;
+}
 
-/***/ }),
-/* 549 */
-/***/ (function(module, exports) {
-
-module.exports = function(originalModule) {
-	if(!originalModule.webpackPolyfill) {
-		var module = Object.create(originalModule);
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		Object.defineProperty(module, "exports", {
-			enumerable: true,
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
+Dorkmap.appendMap(setLegend,
+    resetLegend,
+    attachAPIOutputToElements,
+    getTopoGeometries,
+    "#00adf0");
 
 
 /***/ })

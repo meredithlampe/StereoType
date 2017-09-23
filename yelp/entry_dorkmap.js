@@ -192,7 +192,7 @@ d3.json("json/build_map_config.json", function (error_config, config) {
     //d3.json("json/demographic.json", function (error_demo, demographic) {
         d3.json("json/neighborhoods.json", function (error_neighborhoods, topology) {
             d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
-                d3.json("yelp_api/output.json", function (error_output, bestplaces) {
+                d3.json("api/output.json", function (error_output, bestplaces) {
                     TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
                         if (error_neighborhoods || error_chars || error_output || error_font) {
                             debugger;

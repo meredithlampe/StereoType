@@ -183,7 +183,7 @@ var demographic = {
     "Genesee": ".976"
 };
 
-d3.json("json/build_map_config_dorkmap.json", function (error_config, config) {
+d3.json("json/build_map_config.json", function (error_config, config) {
     var svg = d3.select("#mapContainer")
         .append("svg")
         .attr("id", "mapSVG")
@@ -256,9 +256,9 @@ d3.json("json/build_map_config_dorkmap.json", function (error_config, config) {
 
 var topoGeometries;
 
-d3.json("json/zillow_neighborhoods.json", function (error_neighborhoods, zillow_map) {
+d3.json("json/neighborhoods.json", function (error_neighborhoods, zillow_map) {
     d3.json("build_map_output/neighborhood_chars.json", function (error_chars, chars) {
-        d3.json("zillow_api/zillow_response_trimmed.json", function (error_output, zillow) {
+        d3.json("api/output.json", function (error_output, zillow) {
             TextToSVG.load(MAP_FONT, function (error_font, textToSVG) {
                 if (error_neighborhoods || error_chars || error_output || error_font) {
                     console.log("error"); // lol bad
