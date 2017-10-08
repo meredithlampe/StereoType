@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>City Neighborhood Maps &amp; More by Dork Posters</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/main.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-105254709-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  <style>
+    /* Remove the navbar's default rounded borders and increase the bottom margin */
+
+    @font-face {
+      font-family: 'DIN';
+      src: url('../fonts/din-regular-webfont.eot');
+      src: url('../fonts/din-regular-webfont.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/din-regular-webfont.woff2') format('woff2'),
+      url('../fonts/din-regular-webfont.woff') format('woff'),
+      url('../fonts/din-regular-webfont.ttf') format('truetype'),
+      url('../fonts/din-regular-webfont.svg#dinregular') format('svg');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'DIN';
+      src: url('../fonts/din_bold-webfont.eot');
+      src: url('../fonts/din_bold-webfont.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/din_bold-webfont.woff2') format('woff2'),
+      url('../fonts/din_bold-webfont.woff') format('woff'),
+      url('../fonts/din_bold-webfont.ttf') format('truetype'),
+      url('../fonts/din_bold-webfont.svg#dinbold') format('svg');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'DIN';
+      src: url('../fonts/din-regularitalic-webfont.eot');
+      src: url('../fonts/din-regularitalic-webfont.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/din-regularitalic-webfont.woff2') format('woff2'),
+      url('../fonts/din-regularitalic-webfont.woff') format('woff'),
+      url('../fonts/din-regularitalic-webfont.ttf') format('truetype'),
+      url('../fonts/din-regularitalic-webfont.svg#din-regularitalicregular') format('svg');
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    @font-face {
+      font-family: 'Futura';
+      src: url('../fonts/futura-webfont.eot');
+      src: url('../fonts/futura-webfont.eot?#iefix') format('embedded-opentype'),
+      url('../fonts/futura-webfont.woff2') format('woff2'),
+      url('../fonts/futura-webfont.woff') format('woff'),
+      url('../fonts/futura-webfont.ttf') format('truetype'),
+      url('../fonts/futura-webfont.svg#futuramedium') format('svg');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      font-family: 'DIN';
+    }
+
+    .navbar {
+      margin-bottom: 20px;
+      border-radius: 0;
+
+    }
+
+    /* Remove the jumbotron's default bottom margin */
+    .jumbotron {
+      margin-bottom: 0;
+    }
+
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      padding: 25px;
+      background-color: #F3F3F3;
+    }
+
+    h1 {
+      font-size: 20pt;
+      font-weight: bold;
+      line-height: 1.214;
+      letter-spacing: -1px;
+    }
+
+    h5 {
+      text-align: center;
+      color: #404146;
+      letter-spacing: 0.1em;
+    }
+
+    h3 {
+      font-size: 30pt;
+      font-weight: bold;
+    }
+
+    .description {
+      font-size: 17px;
+
+    }
+
+    .s1 {
+      font-style: italic;
+      font-size: 10pt;
+      line-height: 12pt;
+    }
+
+    .price {
+      font-size: 1.41575em;
+      margin: 1.41575em 0;
+      color: #121e8c;
+
+    }
+
+    .map {
+      padding-bottom: 30px;
+      line-height: 1.618;
+
+    }
+
+    .col-sm-12 {
+      background-color: #CBCCCB;
+    }
+
+    .logo {
+
+      margin-top: 2.5em;
+      margin-bottom: 2.5em;
+      text-align: center;
+      display: block;
+    }
+
+    .header {
+      width: 70%;
+      display: block;
+
+    }
+
+    .header_badge {
+      width: 31%;
+      margin: 0 auto;
+      display: inline-block;
+      position: relative;
+      display: inline-block;
+
+    }
+
+    .secondary_nav {
+      display: inline-block;
+      margin-top: 25px;
+      font-size: 12pt;
+    }
+
+    .secondary_nav a {
+      font-weight: 400 !important;
+      padding: 1em .875em;
+      color: #9aa0a7 !important;
+
+    }
+
+    .title {
+      font-size: 1.41575em;
+      letter-spacing: 0;
+      border-bottom: 1px solid rgba(0, 0, 0, .05);
+      padding: 0 0 1em;
+      margin-bottom: 1em;
+      font-weight: 300;
+    }
+
+    .main {
+      padding: 0 1em 20px;
+      color: #000 !important;
+      font-size: 14pt;
+    }
+
+    .carousel-control.left, .carousel-control.right {
+      background-image: none
+    }
+
+    .carousel-inner > .item > img {
+      margin: 0 auto;
+    }
+
+    .carousel-indicators li {
+      background: #404146;
+      border: none;
+    }
+
+    .carousel-indicators .active {
+      background: #00C1C4;
+      border: none;
+      width: 11px;
+      height: 11px;
+    }
+
+    .carousel-indicators {
+      bottom: -40px;
+    }
+
+    .carousel-control.left {
+      margin-left: -45px;
+      border: none;
+    }
+
+    .carousel-control.right {
+      margin-right: -45px;
+
+      border: none;
+    }
+
+    .panel-footer {
+      text-align: center;
+      background: none;
+    }
+
+    .dots {
+
+      background: url('../img/header-bk.png') repeat-x bottom left;
+      height: 135px;
+
+    }
+
+    .dropdown-menu {
+      background-color: #EEEEEE !important;
+      border: none !important;
+      border-radius: 0 !important;
+      -webkit-border-radius: 0;
+      -moz-border-radius: 0;
+      box-shadow: none;
+    }
+
+    .nav > li > a:hover, .nav > li > a:focus {
+      background-color: transparent;
+    }
+
+    .dropdown-toggle {
+      background-color: transparent !important;
+    }
+
+    .dropdown-menu > li > a {
+      color: #828282;
+    }
+
+    .dropdown-menu > li > a:hover {
+      background-color: #EEEEEE;
+    }
+
+    .dotstop {
+      padding-top: 35px;
+      background: url('../img/header-bk.png') repeat-x bottom left;
+      height: 117px;
+      margin-bottom: -82px;
+    }
+
+    .announcement {
+      text-align: center;
+      font-family: "Futura";
+      font-weight: text-transform: uppercase;
+      font-size: 10pt;
+      letter-spacing: 2px;
+      color: #000;
+      position: static;
+      background: #CBCCCB;
+      padding: .9em;
+
+    }
+
+    #cart_button {
+      margin-bottom: 15pt;
+    }
+
+    p {
+    display: block;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+      font-weight: 400;
+     /* color: #43454b; */
+    }
+
+
+
+  </style>
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-105262272-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</head>
+
+<body>
+<div class="row">
+  <!--  <div class="col-sm-12"> -->
+  <div class="announcement">
+    DID YOU SEE WE'VE ADDED TSHIRTS FEATURING MANY OF OUR TECH MAP DESIGNS? CHECK THEM OUT HERE.
+  </div>
+</div>
+<!-- </div> -->
+<div class="container">
+  <div class="row">
+    <div class="logo">
+
+      <div class="col-sm-4 text-left">
+       <img src="../img/header_badge-new.jpg" class="header_badge">
+      </div>
+
+      <div class="col-sm-5 text-center">
+        <a href="http://dorkposters.com/"><img src="../img/header-image-new.jpg" class="header"></a>
+      </div>
+
+      <div class="col-sm-3 text-right">
+        <div class="secondary_nav">
+          <a href="#">Stockists</a> <a href="#">Contact</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="col-sm-12 dotstop">
+</div>
+
+
+<nav class="navbar">
+  <div class="container">
+    <ul class="nav navbar-nav">
+      <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Shop By Tech<span
+          class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="../yelp/">Yelp</a></li>
+          <li><a href="../zillow/">Zillow</a></li>
+          <li><a href="#">Car2Go</a></li>
+        </ul>
+      </li>
+      <li class="active"><a class="main" href="#">All Posters</a></li>
+      <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Products For Hanging<span
+          class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Frames</a></li>
+          <li><a href="#">Modest Magnets</a></li>
+          <li><a href="#">Simple Clips</a></li>
+        </ul>
+      </li>
+      <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Besides Posters<span
+          class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a href="#">Seattle Civil Rights and Labor History Project</a></li>
+          <li><a href="#">Tenants Union of Washington State</a></li>
+        </ul>
+      </li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a class="main" href="#"><span class="glyphicon glyphicon-shopping-cart"></span> </a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-3">
+    </div>
+<div class="col-sm-6">
+ <h1>Contact</h1>
+
+<p>If you have inquiries, comments, or love notes: please reach out! We would love to hear what you think. Email is preferred, but reach out in any way you see fit.</p>
+
+<p><a href="mailto:hello@dorkposters.com">hello [at] dorkposters [dot] com</a></p>
+<p>Phone: +1 770-546-5457</p>
+
+<br/>
+
+
+</div>
+
+    <div class="col-sm-3">
+    </div>
+
+</div>
+</div>
+    
+
+<footer class="container-fluid text-center">
+
+    <div class="container-fluid">
+    <div class="row">
+    
+      <div class="col-sm-1" >
+      </div>
+
+
+    <div class="col-sm-3" >
+      <p class="title">More Info</p> 
+      <hr />
+      <p>HOW IT’S MADE</p>
+      <p> WHO IS DORK?</p>
+      <p> ORDERING & SHIPPING</p>
+      <p> RETURNS & EXCHANGES</p>
+      <p> GIFT CERTIFICATE</p>
+      <p> T’S & C’S</p>
+    </div>
+
+    <div class="col-sm-4" >
+      <p class="title">Visit Our Flagship Shop</p>
+          <hr />
+          Located in the heart of Seattle. Find Dork Posters’ maps and select T-shirts, as well as home goods, gifts and artwork from many other independent makers.
+    </div>
+
+    <div class="col-sm-3" >
+      <form class="form-inline">
+        <p class="title">Keep in Touch!</p>
+              <hr />
+
+        <input type="email" class="form-control" size="20" placeholder="Email Address">
+        <br/>
+        <br/>
+        <a href="mailto:hello@dorkposters.com"><button type="button" class="btn btn-danger">Subscribe</button></a>
+      </form>
+    </div>
+
+     <div class="col-sm-1" >
+  </div>
+  </div>
+
+</div>
+</footer>
+
+</body>
+<script src="yelp_dorkmap_bundle.js"></script>
+<!--<script src="../../yelp/yelp_dorkmap_bundle.js"></script>-->
+</html>
