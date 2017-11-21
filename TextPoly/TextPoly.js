@@ -6,11 +6,13 @@ const debug_colors = ["#DCDCDD", "#C5C3C6", "#46494C", "#4C5C68", "#1985A1", "#1
 const largestRect = require('./largestRect.js');
 const point_at_length = require('point-at-length');
 const TextToSVG = require('text-to-svg');
+const TextUtil = require("./js/TextUtil.js");
+const NeighborhoodParser = require("./js/NeighborhoodParser.js");
+const Clipper = require("./js/Javascript_Clipper_6.2.1.2/clipper.js");
+"use strict";
 // mock browser
-// Clipper (to move pad_polygon in here)
 
 // constants to control alg
-
 /*
 Creating grid to overlay on polygon
  */
@@ -31,41 +33,76 @@ module.exports = {
     //slice neighborhood horizontally, then vertically
     //according to length of phrase to get grid over neighborhood.
     //Use inscribed rectangles to fill each grid slot with a letter
-    execute: function (pathCoords3d, phrase, padding, font_file, svg, callback, shape_info) {
+    execute: function (path, phrase, padding, font_file, svg, callback, shape_info) {
+
+        var pathCoords = path;
 
         TextToSVG.load(font_file, function (error_font, textToSVG) {
 
             if (error_font) {
                 console.log(error_font);
-
             }
 
-            // pad polygon here - need to import Clipper
-
-            //get height and width of polygon - use as boundaries of grid
-            var dimensions = module.exports.getShapeDimensions(pathCoords3d);
-
-            // get number of horizontal slices we should be using for optimal letter fitting
-            var optimalHorizontalSlices = module.exports.testGrid(pathCoords3d, dimensions, svg, phrase);
-
-            console.log("num horizontal slices: " + optimalHorizontalSlices);
-
-            // get individual grid cells that each letter will be fit into
-            // TODO: sometimes this doesn't return enough grid cells!
-            var gridUnits = module.exports.createGrid(pathCoords3d, dimensions, optimalHorizontalSlices, svg, phrase);
-            if (gridUnits.length != phrase.length) {
-                console.log("number of cells != phrase length for phrase: " + phrase);
-            }
-
+            // pad polygon between letters and border of shape
+            var solution = module.exports.pad_polygon(path);
+            var slicedNameArray = TextUtil.slicePhrase(solution.length, phrase);
             var chars = [];
+            // for each polygon in the overall shape, fill with text
+            // loop through polygons in result of padding operation
+            for (var poly = 0; poly < solution.length; poly++) {
 
-            // for each unit of the grid, fit a letter into it
-            for (var i = 0; i < gridUnits.length; i++) {
-                chars[chars.length] = module.exports.getCharacterAsSVG(phrase.charAt(i), gridUnits[i], svg, i, textToSVG);
+                var innerPointsList = "";
+                for (var innerPoint = 0; innerPoint < solution[poly].length; innerPoint++) {
+                    if (!isNaN(solution[poly][innerPoint].X)) {
+                        var curr = solution[poly][innerPoint];
+                        innerPointsList += curr.X + "," + curr.Y + " ";
+                    }
+                }
+                var pathCoords3d = NeighborhoodParser.pathArray(innerPointsList);
+
+                //get height and width of polygon - use as boundaries of grid
+                var dimensions = module.exports.getShapeDimensions(pathCoords3d);
+
+                // get number of horizontal slices we should be using for optimal letter fitting
+                var optimalHorizontalSlices = module.exports.testGrid(pathCoords3d,
+                    dimensions, svg, slicedNameArray[poly]);
+
+                console.log("num horizontal slices: " + optimalHorizontalSlices);
+
+                // get individual grid cells that each letter will be fit into
+                // TODO: sometimes this doesn't return enough grid cells!
+                var gridUnits = module.exports.createGrid(pathCoords3d, dimensions,
+                    optimalHorizontalSlices, svg, slicedNameArray[poly]);
+                if (gridUnits.length != slicedNameArray[poly].length) {
+                    console.log("number of cells != phrase length for phrase: "
+                        + slicedNameArray[poly]);
+                }
+
+                // for each unit of the grid, fit a letter into it
+                for (var i = 0; i < gridUnits.length; i++) {
+                    chars[chars.length] =
+                        module.exports.getCharacterAsSVG(slicedNameArray[poly].charAt(i),
+                            gridUnits[i], svg, i, textToSVG);
+                }
             }
-
             callback(chars, shape_info);
         });
+    },
+    pad_polygon: function(coords, padding) {
+        var subj = new Clipper.Paths();
+        var solution = new Clipper.Paths();
+        for (var poly = 0; poly < coords.length; poly++) {
+            var innerArray = [];
+            for (var p = 0; p < coords[poly].length; p++) {
+                innerArray[innerArray.length] = {"X": coords[poly][p][0], "Y": coords[poly][p][1]};
+            }
+            subj[poly] = innerArray;
+        }
+        var co = new Clipper.ClipperOffset(2, 0.25);
+        co.AddPaths(subj, Clipper.JoinType.jtRound, Clipper.EndType.etClosedPolygon);
+        var offset_val = -4.0;
+        co.Execute(solution, offset_val);
+        return solution;
     },
 
     getShapeDimensions: function (pathCoords3d) {
