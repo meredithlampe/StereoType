@@ -44,7 +44,7 @@ module.exports = {
             }
 
             // pad polygon between letters and border of shape
-            var solution = module.exports.pad_polygon(path);
+            var solution = module.exports.pad_polygon(path, padding);
             var slicedNameArray = TextUtil.slicePhrase(solution.length, phrase);
             var chars = [];
             // for each polygon in the overall shape, fill with text
@@ -100,7 +100,7 @@ module.exports = {
         }
         var co = new Clipper.ClipperOffset(2, 0.25);
         co.AddPaths(subj, Clipper.JoinType.jtRound, Clipper.EndType.etClosedPolygon);
-        var offset_val = -4.0;
+        var offset_val = 0 - padding;
         co.Execute(solution, offset_val);
         return solution;
     },

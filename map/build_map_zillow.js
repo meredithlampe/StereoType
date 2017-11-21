@@ -134,7 +134,7 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                         TextPoly.execute(
                             pathCoords3d, // shape outline
                            nameNoSpaces, // phrase
-                            0, // padding (not using this right now)
+                            4, // padding (not using this right now)
                             font_for_map, // font file
                             svg, // phantom SVG (need to move)
                             function (chars, shape_info) { // callback
