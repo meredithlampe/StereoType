@@ -15,15 +15,8 @@ if (!process.argv[2] || !process.argv[3] || !process.argv[4] || !process.argv[5]
     process.exit(1); // failure
 }
 
-const d3 = require('d3');
-
-// make fake svg to use for letter fitting
-const mock_browser = require('mock-browser').mocks.MockBrowser;
-var mock = new mock_browser(),
-    doc = mock.getDocument(),
-    svg = d3.select(doc.createElement('svg'));
-
-const jsonfile = require('jsonfile'),
+const d3 = require('d3'),
+    jsonfile = require('jsonfile'),
     NeighborhoodParser = require("./js/NeighborhoodParser.js"),
     TextUtil = require("./js/TextUtil.js"),
     topojson = require('topojson'),
@@ -127,7 +120,6 @@ jsonfile.readFile(process.argv[4], function (error_config, config) {
                             nameNoSpaces, // phrase
                             4, // padding
                             font_for_map, // font file
-                            svg, // phantom SVG (move this into library)
                             function(chars, shape_info) {
                                 console.log("shapes left" + shapes_left);
                                 shapes_left--;

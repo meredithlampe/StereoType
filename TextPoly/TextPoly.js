@@ -11,8 +11,13 @@ const NeighborhoodParser = require("./js/NeighborhoodParser.js");
 const Clipper = require("./js/Javascript_Clipper_6.2.1.2/clipper.js");
 "use strict";
 // mock browser
+// make fake svg to use for letter fitting
+const d3 = require('d3');
+const mock_browser = require('mock-browser').mocks.MockBrowser;
+var mock = new mock_browser(),
+    doc = mock.getDocument(),
+    svg = d3.select(doc.createElement('svg'));
 
-// constants to control alg
 /*
 Creating grid to overlay on polygon
  */
@@ -33,7 +38,7 @@ module.exports = {
     //slice neighborhood horizontally, then vertically
     //according to length of phrase to get grid over neighborhood.
     //Use inscribed rectangles to fill each grid slot with a letter
-    execute: function (path, phrase, padding, font_file, svg, callback, shape_info) {
+    execute: function (path, phrase, padding, font_file, callback, shape_info) {
 
         var pathCoords = path;
 
