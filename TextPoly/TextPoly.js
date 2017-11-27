@@ -83,6 +83,7 @@ module.exports = {
                         + slicedNameArray[poly]);
                 }
 
+                debugger;
                 // for each unit of the grid, fit a letter into it
                 for (var i = 0; i < gridUnits.length; i++) {
                     chars[chars.length] =
@@ -111,6 +112,7 @@ module.exports = {
     },
 
     getShapeDimensions: function (pathCoords3d) {
+        debugger;
 
         //find max and min y coords
         var firstCoord = pathCoords3d[0][0];
@@ -121,12 +123,12 @@ module.exports = {
 
         for (var i = 0; i < pathCoords3d.length; i++) {
             for (var j = 0; j < pathCoords3d[i].length; j++) {
-                if (j != pathCoords3d[i].length - 2) {
+                // if (j != pathCoords3d[i].length - 2) {
                     max = Math.max(pathCoords3d[i][j][1], max);
                     min = Math.min(pathCoords3d[i][j][1], min);
                     leftMost = Math.min(pathCoords3d[i][j][0], leftMost);
                     rightMost = Math.max(pathCoords3d[i][j][0], rightMost);
-                }
+                // }
             }
         }
         var results = {max: max, min: min, left: leftMost, right: rightMost};
@@ -325,8 +327,7 @@ module.exports = {
 
 
     divide: function (pathCoords3d, num, dimensions, svg, horizontalSliceFlag) {
-
-        //slice (height is width if doing vertical slice)
+      //slice (height is width if doing vertical slice)
         var heightOfSlice = (dimensions.max - dimensions.min) / num;
         var slices = [];
 
@@ -457,6 +458,7 @@ module.exports = {
 
         if (slices != null) {
 
+            debugger;
             // split phrase into chars for each row
             var phrasePieces = module.exports.slicePhrase(slices.length * pathCoords3d.length, phrase);
 
@@ -770,3 +772,5 @@ module.exports = {
 
 }
 ;
+
+var TextPoly = module.exports.execute;

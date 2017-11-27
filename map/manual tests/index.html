@@ -39,57 +39,38 @@
         integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
         crossorigin="anonymous"></script>
 
-  <div class="mapinfo align-items-center">
-    <div class="maplegend">
-      <div class="legend col">
-
-        <div class="legendterm row" id="bestmatch">
-          <div class="termbox">
-            <h1 id="neighborhoodphrase"></h1>
-          </div>
-          <h3 class="legendtitle">Best Match</h3>
-        </div>
-        <div class="legendterm row" id="name">
-          <div class="termbox">
-            <h1 id="neighborhoodname"></h1>
-          </div>
-          <h3 class="legendtitle">Neighborhood Name</h3>
-        </div>
-        <div class="legendterm row" id="category">
-          <div class="termbox">
-            <h1 id="neighborhoodcategory"></h1>
-          </div>
-          <h3 class="legendtitle">Category for Best Match</h3>
-        </div>
-        <div class="legendterm row" id="price">
-          <div class="termbox">
-            <h1 id="neighborhoodprice"></h1>
-          </div>
-          <h3 class="legendtitle">Price Range for Best Match</h3>
-        </div>
-        <div class="legendterm row" id="reviewcount">
-          <div class="termbox">
-            <h1 id="neighborhoodreviewcount"></h1>
-          </div>
-          <h3 class="legendtitle">Review Count for Best Match</h3>
-        </div>
+  <div class="shape">
+    <div class="instructions_container" width="500px">
+      <div class="instruction" id="instructions_1">
+        Click once in this box to start drawing a shape.
       </div>
+      <div class="instruction" id="instructions_2">
+        Click somewhere else to continue drawing a shape.
+      </div>
+      <div class="instruction" id="instructions_3">
+        Click again on the starting point to finish the shape.
+      </div>
+      <div class="instruction" id="instructions_4">
+        Type something in the input box, then click Submit.
+      </div>
+
     </div>
-    <div class="mapcontainer">
-      <!--map gets appended here-->
-      <svg id="map" height="1000" width="500"></svg>
+    <div class="shapecontainer">
+      <canvas id="c" width="500" height="500" style="border:1px solid #ccc"></canvas>
+      <input id="phrase_input" type="text" name="phrase"><br>
+      <input id="submit_button" type="submit" value="Submit">
+    </div>
+    <div class="shapecontainer">
+      <svg id="shape_svg" width="500" height="500" style="border:1px solid #ccc"></svg>
     </div>
     <div id="title_container">
       <h1 id="page_title" class="text-muted">TEST</h1>
     </div>
   </div>
 
-  <!--<footer class="footer" id="my-foot">-->
-    <!--<p>&copy; 2016 TAT Lab, Department of Human Centered Design and Engineering, University of Washington</p>-->
-  <!--</footer>-->
-  <!--<script src="yelp_bundle.js"></script>-->
-<!--<script src="../../TextPoly/bundle.js" type="text/javascript"></script>-->
 <script src="d3.v3.min.js" type="text/javascript"></script>
+<!--<script src="../../TextPoly/TextPoly.js"></script>-->
+<script src="./lib/fabric.js"></script>
 <script src="./bundle.js"></script>
 
 </body>
