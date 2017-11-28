@@ -38,33 +38,41 @@
 <script src="bootstrap/js/bootstrap.min.js"
         integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
         crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
 
+    <!--<div id="title_container">-->
+      <!--<h1 id="page_title" class="text-muted">TEST</h1>-->
+    <!--</div>-->
   <div class="shape">
-    <div class="instructions_container" width="500px">
-      <div class="instruction" id="instructions_1">
-        Click once in this box to start drawing a shape.
-      </div>
-      <div class="instruction" id="instructions_2">
-        Click somewhere else to continue drawing a shape.
-      </div>
-      <div class="instruction" id="instructions_3">
-        Click again on the starting point to finish the shape.
-      </div>
-      <div class="instruction" id="instructions_4">
-        Type something in the input box, then click Submit.
-      </div>
-
-    </div>
-    <div class="shapecontainer">
+    <div class="shapecontainer" width="500">
       <canvas id="c" width="500" height="500" style="border:1px solid #ccc"></canvas>
-      <input id="phrase_input" type="text" name="phrase"><br>
-      <input id="submit_button" type="submit" value="Submit">
+      <div class="instructions_container">
+        <div class="instruction" id="instructions_1">
+          Click once in this box to start drawing a shape.
+        </div>
+        <div class="instruction" id="instructions_2">
+          Click around to continue drawing a shape.
+        </div>
+        <div class="instruction" id="instructions_3">
+          Click again on the starting point to finish the shape.
+        </div>
+        <div class="instruction" id="instructions_4">
+          Type something in the input box, then click Submit.
+        </div>
+        <div id="input_container">
+          <div class="group">
+            <input id="phrase_input" type="text" required>
+            <span class="highlight"></span>
+            <span class="bar"></span>
+            <label>Phrase</label>
+          </div>
+          <!--<input id="phrase_input" type="text" name="phrase">-->
+          <input id="submit_button" type="submit" value="Submit"><br>
+        </div>
+      </div>
     </div>
-    <div class="shapecontainer">
+    <div class="shapecontainer" width="500">
       <svg id="shape_svg" width="500" height="500" style="border:1px solid #ccc"></svg>
-    </div>
-    <div id="title_container">
-      <h1 id="page_title" class="text-muted">TEST</h1>
     </div>
   </div>
 
