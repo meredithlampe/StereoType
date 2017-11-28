@@ -9,6 +9,8 @@ var hasClickedStartingPointAgain = false;
 var hasClickedSubmit = false;
 var c = document.getElementById('c');
 
+var hoverLine;
+
 canvas.on('mouse:down', function(o){
 
     if (!finishedShape) {
@@ -20,6 +22,8 @@ canvas.on('mouse:down', function(o){
         } else {
             // finish current line
             line.set({ x2: pointer.x, y2: pointer.y });
+            canvas.add(line);
+            canvas.remove(hoverLine);
             canvas.renderAll();
             startLine(o);
         }
@@ -41,8 +45,17 @@ canvas.on('mouse:down', function(o){
                 finishedShape = true;
                 d3.select("#instructions_3").style("color", "#bcbcbc");
                 d3.select("#instructions_4").style("color", "#505050");
+                hoverLine = null;
             }
         }
+    }
+});
+
+canvas.on('mouse:move', function(o) {
+    if (hoverLine && !finishedShape) {
+        var pointer = canvas.getPointer(o.e);
+        hoverLine.set({x2: pointer.x, y2: pointer.y});
+        canvas.renderAll();
     }
 });
 
@@ -71,9 +84,18 @@ function startLine(o) {
         fill: 'darkgray',
         stroke: 'darkgray',
         originX: 'center',
-        originY: 'center'
+        originY: 'center',
+        evented: false
     });
-    canvas.add(line);
+    hoverLine = new fabric.Line(points, {
+        strokeWidth: 5,
+        fill: 'darkgray',
+        stroke: 'darkgray',
+        originX: 'center',
+        originY: 'center',
+        evented: false
+    });
+    canvas.add(hoverLine);
 }
 
 function generateTextPolyOutput() {
