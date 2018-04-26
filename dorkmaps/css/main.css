@@ -4,6 +4,10 @@
     src: url(DIN-Condensed-Bold.ttf);
 }
 
+.github_url {
+	margin-top: 10px;
+}
+
 html {
     background-color: #efefef;
 }

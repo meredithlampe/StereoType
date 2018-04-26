@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>City Neighborhood Maps &amp; More by Dork Posters</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
-  <link rel="stylesheet" href="../css/main.css">
-  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>-->
-  <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
-    <link rel-="stylesheet" href="../css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/main.css">
-    <!--&lt;!&ndash;<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>&ndash;&gt;-->
+    <title>City Neighborhood Maps &amp; More by Dork Posters</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--<link rel-="stylesheet" href="../lib/bootstrap/css/bootstrap.min.css">-->
     <script src="../lib/jquery-1.12.2.min.js"></script>
-    <!--&lt;!&ndash;<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>&ndash;&gt;-->
+    <!--<link rel-="stylesheet" href="../lib/bootstrap/css/bootstrap-theme.min.css">-->
+    <link rel="stylesheet" href="../css/main.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="../lib/bootstrap/js/bootstrap.min.js"></script>
 </head>
 
@@ -60,33 +58,32 @@
   </div>
 <div class="col-sm-12 dotstop">
 </div>
-
-
 <nav class="navbar">
-  <div class="container">
- <ul class="nav navbar-nav">
-      <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Shop By Tech<span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="../yelp/index.html">Yelp</a></li>
-          <li><a href="../zillow/index.html">Zillow</a></li>
-          <li><a href="../car2go/index.html">Car2Go</a></li>
+    <div class="container">
+        <ul class="nav navbar-nav">
+            <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Shop By Tech<span
+                    class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="../yelp/index.html">Yelp</a></li>
+                    <li><a href="../zillow/index.html">Zillow</a></li>
+                    <li><a href="../car2go/index.html">Car2Go</a></li>
+                </ul>
+            </li>
+            <li class="active"><a class="main" href="../index.html">All Posters</a></li>
+            <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Besides Posters<span
+                    class="caret"></span></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Seattle Civil Rights and Labor History Project</a></li>
+                    <li><a href="#">Tenants Union of Washington State</a></li>
+                </ul>
+            </li>
         </ul>
-      </li>
-     <li class="active"><a class="main" href="../index.html">All Posters</a></li>
-      <li class="dropdown"><a class="dropdown-toggle main" data-toggle="dropdown" href="#">Besides Posters<span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a href="#">Seattle Civil Rights and Labor History Project</a></li>
-          <li><a href="#">Tenants Union of Washington State</a></li>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a class="main" href="#"><span class="glyphicon glyphicon-shopping-cart"></span> </a></li>
         </ul>
-      </li>
-    </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a class="main" href="#"><span class="glyphicon glyphicon-shopping-cart"></span> </a></li>
-      </ul>
     </div>
-  </div>
+    </div>
 </nav>
-
 
 <div class="container map">
   <div class="row">
@@ -107,7 +104,7 @@
       <p class="s1">Because we care about impressing you, Dork Posters uses only the highest quality  data. This poster is made with Grade A algorithmically generated content which offers a sharp and clean rendering, saturated stereotypes, and archival properties to be sure the projections won’t fade over time.</p>
 
 			<form action="mailto:tatlab@u.washington.edu">
-      <button id="cart_button" type="button" class="btn btn-default">
+      <button id="cart_button" type="submit" class="btn btn-default">
            Add a comment
       </button>
 			</form>
@@ -131,11 +128,6 @@
   <div class="row">
     <div class="col-sm-3" >
 </div>
-
-	<div class="col-sm-2">
-	</div>
-
-
     <div class="col-sm-2" >
       <p class="title">More Info</p> 
       <hr />
@@ -147,24 +139,26 @@
       <p> T’S & C’S</p>
       <p> PAY CUSTOM AMOUNT</p>
     </div>
-    <div class="col-sm-4" >
+    <div class="col-sm-2" >
       <p class="title">Visit Our Flagship Shop</p>
           <hr />
           Located in the heart of Seattle. Find Dork Posters’ maps and select T-shirts, as well as home goods, gifts and artwork from many other independent makers.
     </div>
 
-    <div class="col-sm-3" >
-      <form class="form-inline" action="mailto:tatlab@u.washington.edu">
+    <div class="col-sm-2" >
         <p class="title">Keep in Touch!</p>
               <hr />
-
-        <input type="email" class="form-control" size="20" placeholder="Email Address">
-        <br/>
-        <br/>
-        <button type="button" class="btn btn-danger">Subscribe</button>
-      </form>
+        <form action="mailto:tatlab@u.washington.edu">
+         <button id="cart_button" type="submit" class="btn btn-default">
+             Email Us
+           </button>
+         </form>
+         <a href="https://github.com/meredithlampe/StereoType">
+           <img src="../img/GitHub-Mark-64px.png" />
+           <p class="github_url">github.com/meredithlampe/StereoType</p>
+         </a>
     </div>
-     <div class="col-sm-2" >
+     <div class="col-sm-3" >
 </div>
   </div>
 </div>
